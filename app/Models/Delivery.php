@@ -1,0 +1,54 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+
+class Delivery extends Model
+{
+    use HasUuids, SoftDeletes;
+
+    protected $guarded = [];
+
+    public function sudin()
+    {
+        return $this->belongsTo(Sudin::class);
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function driver()
+    {
+        return $this->belongsTo(Personnel::class, 'driver_id');
+    }
+
+    public function security()
+    {
+        return $this->belongsTo(Personnel::class, 'security_id');
+    }
+
+    public function items()
+    {
+        return $this->hasMany(DeliveryItem::class, 'delivery_id');
+    }
+
+    public function approvals()
+    {
+        return $this->morphMany(RequestApproval::class, 'document');
+    }
+
+    public function documents()
+    {
+        return $this->morphMany(Document::class, 'documentable');
+    }
+}

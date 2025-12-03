@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Services\ApprovalService;
+use App\Services\StockLedgerService;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -11,7 +14,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(ApprovalService::class);
+        $this->app->singleton(StockLedgerService::class);
     }
 
     /**
@@ -19,6 +23,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Livewire::addPersistentMiddleware('plt');
     }
 }

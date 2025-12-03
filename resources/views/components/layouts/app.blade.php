@@ -45,7 +45,7 @@
                         ['title' => 'List Users', 'href' => '/users'],
                         ['title' => 'Roles', 'href' => '/roles'],
                         ['title' => 'Permissions', 'href' => '/permissions']
-                    ]" />
+                    ]" />s
             </ul>
 
         </div>

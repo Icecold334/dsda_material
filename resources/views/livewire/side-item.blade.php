@@ -19,7 +19,7 @@
         @foreach ($items as $item)
         <li>
             <a href="{{ $item['href'] }}"
-                class="flex items-center p-2 ml-6 text-white rounded hover:bg-gray-100 hover:text-primary-600">
+                class="flex items-center pl-5 py-2 pr-2 ml-3  text-white rounded-lg hover:bg-gray-100 hover:text-primary-600">
                 {{ $item['title'] }}
             </a>
         </li>
