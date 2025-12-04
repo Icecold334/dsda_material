@@ -15,11 +15,11 @@
         </svg>
     </button>
 
-    <ul id="collapse-{{ Str::slug($title) }}" class="hidden py-2 space-y-1">
+    <ul id="collapse-{{ Str::slug($title) }}" class="hidden py-2 space-y-1 bg-white rounded-lg mt-2">
         @foreach ($items as $item)
         <li>
-            <a href="{{ $item['href'] }}"
-                class="flex items-center pl-5 py-2 pr-2 ml-3  text-white rounded-lg hover:bg-gray-100 hover:text-primary-600">
+            <a href="{{ $item['href'] }}" wire:navigate
+                class="flex items-center py-2 mx-2 px-4  text-primary-600 rounded-lg hover:bg-primary-600  hover:text-white transition duration-200">
                 {{ $item['title'] }}
             </a>
         </li>
@@ -28,7 +28,7 @@
 
     {{-- NORMAL MENU --}}
     @else
-    <a href="{{ $href }}"
+    <a href="{{ $href }}" wire:navigate
         class="flex items-center p-2 rounded-lg transition duration-150
                 {{ $active ? 'bg-gray-100 hover:text-primary-600 text-primary-600 font-semibold' : 'text-white hover:bg-gray-100 hover:text-primary-600' }}">
 

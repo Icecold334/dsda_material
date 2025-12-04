@@ -9,6 +9,11 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+
+
     {{-- Vite --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -16,7 +21,7 @@
     @livewireStyles
 </head>
 
-<body class="bg-linear-to-br from-primary-100 to-primary-200 min-h-screen">
+<body class="bg-gradient-to-br from-primary-100 to-primary-200 min-h-screen">
 
     {{-- TOP NAV --}}
     <nav class="fixed top-0 z-50 w-full bg-primary-300 shadow-md ">
@@ -35,17 +40,23 @@
 
     {{-- SIDEBAR --}}
     <aside id="sidebar"
-        class="fixed top-0 left-0 z-40 w-64 h-screen pt-16 transition-transform -translate-x-full bg-linear-to-br from-primary-600 to-primary-500   md:translate-x-0">
+        class="fixed top-0 left-0 z-40 w-64 h-screen pt-16 transition-transform -translate-x-full bg-gradient-to-br from-primary-600 to-primary-500  md:translate-x-0">
 
         <div class="h-full px-4 py-4 overflow-y-auto">
 
             <ul class="space-y-2 font-medium">
-                <livewire:side-item title="Dashboard" href="/dashboard" />
+                <livewire:side-item title="Dashboard" href="/" />
+                <livewire:side-item title="table" href="/table" />
                 <livewire:side-item title="User Management" icon="users" :collapsable="true" :items="[
                         ['title' => 'List Users', 'href' => '/users'],
                         ['title' => 'Roles', 'href' => '/roles'],
                         ['title' => 'Permissions', 'href' => '/permissions']
-                    ]" />s
+                    ]" />
+                <livewire:side-item title="User Management 2" icon="users" :collapsable="true" :items="[
+                        ['title' => 'List Users 2', 'href' => '/users'],
+                        ['title' => 'Roles 2', 'href' => '/roles'],
+                        ['title' => 'Permissions 2', 'href' => '/permissions']
+                    ]" />
             </ul>
 
         </div>
@@ -57,9 +68,19 @@
     </main>
 
     {{-- Flowbite JS --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
     @livewireScripts
+    <script type="module">
+        document.addEventListener("DOMContentLoaded", () => {
+            new DataTable("#pagination-table", {
+                    paging: true,
+                    perPage: 5,
+                    perPageSelect: [5, 10, 15, 20, 25],
+                    sortable: false
+                    });
+        })
+
+    </script>
 </body>
 
 </html>
