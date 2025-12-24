@@ -7,12 +7,8 @@
 
     <title>{{ $title ?? 'Dashboard' }}</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-
-
+    <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
+    <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
 
     {{-- Vite --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -67,20 +63,7 @@
         {{ $slot }}
     </main>
 
-    {{-- Flowbite JS --}}
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
     @livewireScripts
-    <script type="module">
-        document.addEventListener("DOMContentLoaded", () => {
-            new DataTable("#pagination-table", {
-                    paging: true,
-                    perPage: 5,
-                    perPageSelect: [5, 10, 15, 20, 25],
-                    sortable: false
-                    });
-        })
-
-    </script>
 </body>
 
 </html>

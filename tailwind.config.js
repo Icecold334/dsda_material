@@ -8,6 +8,7 @@ export default {
         "./storage/framework/views/*.php",
         "./resources/views/**/*.blade.php",
         "./node_modules/flowbite/**/*.js",
+        "./node_modules/simple-datatables/dist/**/*.js",
     ],
 
     theme: {

@@ -19,6 +19,7 @@
     },
     "dependencies": {
         "flowbite": "^4.0.1",
+        "gridjs": "^6.2.0",
         "simple-datatables": "^10.2.0"
     }
 }
