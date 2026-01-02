@@ -1,19 +1,7 @@
 <div class="bg-white p-4 rounded-lg overflow-x-auto">
-    <div id="wrapper"></div>
+    <div data-grid data-api="/json" data-columns='[
+        { "name": "Name", "id": "name" },
+        { "name": "Email", "id": "email" },
+        { "name": "Phone", "id": "phone" }
+    ]' data-limit="10" data-default='{"status":"active"}' wire:ignore></div>
 </div>
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-    new Grid({
-        columns: ["Name", "Email", "Phone"],
-        data: [
-            ["John", "john@mail.com", "08123"],
-            ["Sarah", "sarah@mail.com", "08999"],
-        ],
-        pagination: {
-            limit: 5
-        },
-        search: true,
-        sort: true
-    }).render(document.getElementById("wrapper"));
-});
-</script>
