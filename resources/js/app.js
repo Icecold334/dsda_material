@@ -4,6 +4,7 @@ import { Grid } from "gridjs";
 import "gridjs/dist/theme/mermaid.css";
 import { idID } from "gridjs/l10n";
 function mapByColumns(rows, columns) {
+    
     return rows.map((row) => columns.map((col) => row[col.id]));
 }
 
@@ -23,10 +24,8 @@ function initGrid(wrapper) {
         columns,
         pagination: {
             limit: limit,
-            page: 2,
-            summary: false,
         },
-        search: true,
+        // search: true,
         sort: true,
         page: [5, 10, 15],
         language: idID,
@@ -42,7 +41,9 @@ function initGrid(wrapper) {
                   },
 
                   then: (json) => {
+                    
                       const rows = json.data ?? json;
+                    
                       return mapByColumns(rows, columns);
                   },
               }

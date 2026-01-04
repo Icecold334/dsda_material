@@ -4,14 +4,11 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/json', function () {
-  sleep(10); // Simulate delay
   $items = [];
 
   for ($i = 0; $i < 50; $i++) {
     $items[] = [
-      'name' => fake()->name(),
-      'email' => fake()->email(),
-      'phone' => fake()->phoneNumber(),
+      'nomor' => fake()->name(),
     ];
   }
 
@@ -20,3 +17,5 @@ Route::get('/json', function () {
     'data' => $items
   ]);
 });
+
+require 'app/kontrak.php';

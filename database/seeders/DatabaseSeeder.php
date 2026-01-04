@@ -21,6 +21,9 @@ class DatabaseSeeder extends Seeder
             MasterPositionSeeder::class,
             RolePermissionSeeder::class,
             UserSeeder::class,
+            VendorSeeder::class,
+            ItemSeeder::class,
+            ContractSeeder::class,
         ]);
         User::factory()->create([
             'name' => 'Test User',
