@@ -32,4 +32,9 @@ class Sudin extends Model
     {
         return $this->hasMany(Warehouse::class);
     }
+
+    public function securities()
+    {
+        return $this->hasMany(Security::class);
+    }
 }
