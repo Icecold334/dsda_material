@@ -1,22 +1,42 @@
 <?php
 
 use App\Livewire\Kontrak\Index;
+use App\Livewire\Kontrak\Show;
 use App\Models\Contract;
 use Illuminate\Support\Facades\Route;
 
+Route::prefix('kontrak')->name('kontrak.')->group(function () {
 
+    Route::get('/', Index::class)->name('index');
 
-
-// Route::middleware('auth')->group(function () {
-Route::get('/kontrak', Index::class)->name('kontrak.index');
-Route::get('/kontrak/json', function () {
-    return response()->json(
-        ['status' => 'success',
-        'data'=> Contract::all()->map(fn ($c) => [
+    Route::get('/json', function () {
+        $data = Contract::all()->map(fn($c) => [
             'nomor' => $c->nomor,
-            'action' => '<span class="bg-brand-softer text-fg-brand-strong text-xs font-medium px-1.5 py-0.5 rounded">Brand</span>',
-        ])]
-    );
-})->name('kontrak.json');
+            'status' => '<span class="bg-' . $c->status_color . '-600 text-' . $c->status_color . '-100 text-xs font-medium px-2.5 py-0.5 rounded-full">'
+                . $c->status_text .
+                '</span>',
+            'action' => '<a href="' . route('kontrak.show', $c->id) . '" class="bg-primary-600 text-white text-xs font-medium px-1.5 py-0.5 rounded" wire:navigate>Detail</a>',
+        ]);
 
-// });
+        return response()->json([
+            'status' => 'success',
+            'data' => $data,
+        ]);
+    })->name('json');
+
+    Route::get('/{contract}/json', function (Contract $contract) {
+        $data = $contract->items->map(fn($c) => [
+            'item' => $c->item->name,
+            'qty' => (int) $c->qty . ' ' . $c->item->unit,
+            'action' => '<a href="' . route('kontrak.show', $contract->id) . '" class="bg-primary-600 text-white text-xs font-medium px-1.5 py-0.5 rounded" wire:navigate>Detail</a>',
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $data,
+        ]);
+    })->name('show.json');
+
+    Route::get('/{contract}', Show::class)->name('show');
+
+});

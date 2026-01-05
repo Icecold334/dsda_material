@@ -7,6 +7,9 @@
 
     <title>{{ $title ?? 'Dashboard' }}</title>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
+
     <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
     <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
 
@@ -17,7 +20,7 @@
     @livewireStyles
 </head>
 
-<body class="bg-gradient-to-br from-primary-100 to-primary-200 min-h-screen">
+<body>
 
     {{-- TOP NAV --}}
     <nav class="fixed top-0 z-50 w-full bg-primary-300 shadow-md ">
@@ -40,13 +43,13 @@
 
         <div class="h-full px-4 py-4 overflow-y-auto">
 
-            <x-navbar />
+            <x-sidebar />
 
         </div>
     </aside>
 
     {{-- MAIN CONTENT --}}
-    <main class="p-4 md:ml-64 pt-20">
+    <main class="p-4 md:ml-64 pt-20 bg-gradient-to-br from-primary-100 to-primary-200 min-h-screen">
         {{ $slot }}
     </main>
 

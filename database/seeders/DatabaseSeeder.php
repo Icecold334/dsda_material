@@ -24,6 +24,8 @@ class DatabaseSeeder extends Seeder
             VendorSeeder::class,
             ItemSeeder::class,
             ContractSeeder::class,
+            RabSeeder::class,
+            RabItemSeeder::class,
         ]);
         User::factory()->create([
             'name' => 'Test User',

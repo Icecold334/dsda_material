@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class navbar extends Component
+class Sidebar extends Component
 {
     /**
      * Create a new component instance.
@@ -26,6 +26,7 @@ class navbar extends Component
    <ul class="space-y-2 font-medium">
                 <livewire:side-item title="Dashboard" href="/" />
                 <livewire:side-item title="Kontrak" href="{{ route('kontrak.index') }}" />
+                <livewire:side-item title="RAB" href="{{ route('rab.index') }}" />
                 <livewire:side-item title="User Management" icon="users" :collapsable="true" :items="[
                         ['title' => 'List Users', 'href' => '/users'],
                         ['title' => 'Roles', 'href' => '/roles'],

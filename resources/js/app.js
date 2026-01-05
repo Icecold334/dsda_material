@@ -1,11 +1,11 @@
 import "./bootstrap";
 import "flowbite";
-import { Grid } from "gridjs";
+import { Grid,html } from "gridjs";
 import "gridjs/dist/theme/mermaid.css";
 import { idID } from "gridjs/l10n";
 function mapByColumns(rows, columns) {
     
-    return rows.map((row) => columns.map((col) => row[col.id]));
+    return rows.map((row) => columns.map((col) => html(row[col.id] ?? "")));
 }
 
 function initGrid(wrapper) {
@@ -15,6 +15,8 @@ function initGrid(wrapper) {
 
     const api = wrapper.dataset.api;
     const columns = JSON.parse(wrapper.dataset.columns || "[]");
+
+    
     const limit = Number(wrapper.dataset.limit || 5);
     // const defaultFilter = JSON.parse(wrapper.dataset.default || "{}");
 
@@ -29,23 +31,21 @@ function initGrid(wrapper) {
         sort: true,
         page: [5, 10, 15],
         language: idID,
+        className: {
+            th: 'text-center',
+        },
         server: api
             ? {
-                  // url: `${api}?${params}`,
-                  url: api,
-
-                  handle: (res) => {
-                      if (res.status === 404) return { data: [] };
-                      if (res.ok) return res.json();
-                      throw new Error("Grid server error");
-                  },
-
-                  then: (json) => {
-                    
-                      const rows = json.data ?? json;
-                    
-                      return mapByColumns(rows, columns);
-                  },
+            url: api,
+            handle: (res) => {
+                if (res.status === 404) return { data: [] };
+                    if (res.ok) return res.json();
+                        throw new Error("Grid server error");
+                },
+                then: (json) => {  
+                    const rows = json.data ?? json;
+                    return mapByColumns(rows, columns);
+                },
               }
             : undefined,
     }).render(wrapper);

@@ -11,6 +11,17 @@ export default {
         "./node_modules/simple-datatables/dist/**/*.js",
     ],
 
+        safelist: [
+        {
+            pattern:
+                /(bg|text|border)-(primary|secondary|warning|danger|success|info)-(50|100|200|300|400|500|600|700|800|900)/,
+        },
+        {
+            pattern:
+                /(hover:bg|hover:text|hover:border)-(primary|secondary|warning|danger|success|info)-(50|100|200|300|400|500|600|700|800|900)/,
+        },
+    ],
+
     theme: {
         extend: {
             fontFamily: {
