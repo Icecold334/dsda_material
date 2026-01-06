@@ -169,6 +169,34 @@ document.addEventListener("livewire:init", () => {
             text: "Gudang berhasil diupdate.",
         });
     });
+
+    Livewire.on("item-category-deleted", () => {
+        SwalAlert.success({
+            title: "Terhapus!",
+            text: "Kategori barang berhasil dihapus.",
+        });
+    });
+
+    Livewire.on("item-category-updated", () => {
+        SwalAlert.success({
+            title: "Berhasil!",
+            text: "Kategori barang berhasil diupdate.",
+        });
+    });
+
+    Livewire.on("item-deleted", () => {
+        SwalAlert.success({
+            title: "Terhapus!",
+            text: "Barang berhasil dihapus.",
+        });
+    });
+
+    Livewire.on("item-updated", () => {
+        SwalAlert.success({
+            title: "Berhasil!",
+            text: "Barang berhasil diupdate.",
+        });
+    });
 });
 
 function mapByColumns(rows, columns) {

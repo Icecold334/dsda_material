@@ -25,3 +25,5 @@ require 'app/security.php';
 require 'app/sudin.php';
 require 'app/district.php';
 require 'app/warehouse.php';
+require 'app/item-category.php';
+require 'app/item.php';
