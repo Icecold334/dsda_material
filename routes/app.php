@@ -22,3 +22,5 @@ require 'app/kontrak.php';
 require 'app/rab.php';
 require 'app/driver.php';
 require 'app/security.php';
+require 'app/sudin.php';
+require 'app/district.php';

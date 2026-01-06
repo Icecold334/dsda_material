@@ -30,6 +30,8 @@ class Sidebar extends Component
                 <livewire:side-item title="Master Data" icon="users" :collapsable="true" :items="[
                         ['title' => 'Driver', 'href' => route('driver.index')],
                         ['title' => 'Security', 'href' => route('security.index')],
+                        ['title' => 'Sudin', 'href' => route('sudin.index')],
+                        ['title' => 'Kecamatan', 'href' => route('district.index')],
                     ]" />
             </ul>
 </div>

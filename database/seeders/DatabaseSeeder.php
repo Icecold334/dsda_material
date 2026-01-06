@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
             ContractSeeder::class,
             RabSeeder::class,
             RabItemSeeder::class,
-            SecuritySeeder::class,
+            PersonnelSeeder::class,
         ]);
         User::factory()->create([
             'name' => 'Test User',

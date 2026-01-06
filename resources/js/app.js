@@ -112,6 +112,48 @@ document.addEventListener("livewire:init", () => {
             text: "Security berhasil diupdate.",
         });
     });
+
+    Livewire.on("sudin-deleted", () => {
+        SwalAlert.success({
+            title: "Terhapus!",
+            text: "Sudin berhasil dihapus.",
+        });
+    });
+
+    Livewire.on("sudin-updated", () => {
+        SwalAlert.success({
+            title: "Berhasil!",
+            text: "Sudin berhasil diupdate.",
+        });
+    });
+
+    Livewire.on("district-deleted", () => {
+        SwalAlert.success({
+            title: "Terhapus!",
+            text: "Kecamatan berhasil dihapus.",
+        });
+    });
+
+    Livewire.on("district-updated", () => {
+        SwalAlert.success({
+            title: "Berhasil!",
+            text: "Kecamatan berhasil diupdate.",
+        });
+    });
+
+    Livewire.on("subdistrict-deleted", () => {
+        SwalAlert.success({
+            title: "Terhapus!",
+            text: "Subdistrik berhasil dihapus.",
+        });
+    });
+
+    Livewire.on("subdistrict-updated", () => {
+        SwalAlert.success({
+            title: "Berhasil!",
+            text: "Subdistrik berhasil diupdate.",
+        });
+    });
 });
 
 function mapByColumns(rows, columns) {
