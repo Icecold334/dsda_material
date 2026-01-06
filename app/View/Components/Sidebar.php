@@ -29,6 +29,7 @@ class Sidebar extends Component
                 <livewire:side-item title="RAB" href="{{ route('rab.index') }}" />
                 <livewire:side-item title="Master Data" icon="users" :collapsable="true" :items="[
                         ['title' => 'Driver', 'href' => route('driver.index')],
+                        ['title' => 'Security', 'href' => route('security.index')],
                     ]" />
             </ul>
 </div>

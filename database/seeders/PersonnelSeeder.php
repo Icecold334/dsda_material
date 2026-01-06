@@ -16,7 +16,7 @@ class PersonnelSeeder extends Seeder
         $sudins = Sudin::all();
 
         foreach ($sudins as $sudin) {
-            // Create 2-3 driver per sudin
+            // Create 2 driver entries per sudin
             Personnel::create([
                 'name' => 'Driver ' . $sudin->short . ' 1',
                 'sudin_id' => $sudin->id,
@@ -27,6 +27,19 @@ class PersonnelSeeder extends Seeder
                 'name' => 'Driver ' . $sudin->short . ' 2',
                 'sudin_id' => $sudin->id,
                 'type' => 'driver',
+            ]);
+
+            // Create 2 security entries per sudin
+            Personnel::create([
+                'name' => 'Satpam ' . $sudin->short . ' 1',
+                'sudin_id' => $sudin->id,
+                'type' => 'security',
+            ]);
+
+            Personnel::create([
+                'name' => 'Satpam ' . $sudin->short . ' 2',
+                'sudin_id' => $sudin->id,
+                'type' => 'security',
             ]);
         }
     }

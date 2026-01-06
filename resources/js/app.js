@@ -98,6 +98,20 @@ document.addEventListener("livewire:init", () => {
             text: "Driver berhasil diupdate.",
         });
     });
+
+    Livewire.on("security-deleted", () => {
+        SwalAlert.success({
+            title: "Terhapus!",
+            text: "Security berhasil dihapus.",
+        });
+    });
+
+    Livewire.on("security-updated", () => {
+        SwalAlert.success({
+            title: "Berhasil!",
+            text: "Security berhasil diupdate.",
+        });
+    });
 });
 
 function mapByColumns(rows, columns) {
