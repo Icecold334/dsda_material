@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             ContractSeeder::class,
             RabSeeder::class,
             RabItemSeeder::class,
+            PersonnelSeeder::class,
             RequestSeeder::class,
             WarehouseSeeder::class,
             DeliverySeeder::class,

@@ -22,23 +22,27 @@ class Sidebar extends Component
     public function render(): View|Closure|string
     {
         return <<<'BLADE'
-                    <div>
-                        <ul class="space-y-2 font-medium">
-                            <livewire:side-item title="Dashboard" href="/" />
-                            <livewire:side-item title="Kontrak" href="{{ route('kontrak.index') }}" />
-                            <livewire:side-item title="RAB" href="{{ route('rab.index') }}" />
-                            <livewire:side-item title="Pengiriman Barang" href="{{ route('pengiriman.index') }}" />
+<div>
+   <ul class="space-y-2 font-medium">
+                <livewire:side-item title="Dashboard" href="/" />
+                <livewire:side-item title="Kontrak" href="{{ route('kontrak.index') }}" />
+                <livewire:side-item title="RAB" href="{{ route('rab.index') }}" />
+                <livewire:side-item title="Pengiriman Barang" href="{{ route('pengiriman.index') }}" />
                             <livewire:side-item title="Permintaan Barang" icon="users" :collapsable="true" :items="[
                                             ['title' => 'Menggunakan RAB', 'href' => route('permintaan.rab.index')],
                                                 ['title' => 'Tanpa RAB', 'href' => route('permintaan.nonRab.index')],
                                             ]" />
-                            <livewire:side-item title="User Management 2" icon="users" :collapsable="true" :items="[
-                                            ['title' => 'List Users 2', 'href' => '/users'],
-                                            ['title' => 'Roles 2', 'href' => '/roles'],
-                                            ['title' => 'Permissions 2', 'href' => '/permissions']
-                                            ]" />
-                        </ul>
-                    </div>
-                BLADE;
+                <livewire:side-item title="Master Data" icon="users" :collapsable="true" :items="[
+                        ['title' => 'Driver', 'href' => route('driver.index')],
+                        ['title' => 'Security', 'href' => route('security.index')],
+                        ['title' => 'Sudin', 'href' => route('sudin.index')],
+                        ['title' => 'Kecamatan', 'href' => route('district.index')],
+                        ['title' => 'Gudang', 'href' => route('warehouse.index')],
+                        ['title' => 'Kategori Barang', 'href' => route('item-category.index')],
+                        ['title' => 'Barang', 'href' => route('item.index')],
+                    ]" />
+            </ul>
+</div>
+BLADE;
     }
 }
