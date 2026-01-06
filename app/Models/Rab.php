@@ -2,38 +2,18 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Rab extends Model
 {
-    use HasUuids, SoftDeletes;
+    use HasUuids, SoftDeletes, HasStatus;
 
     protected $guarded = [];
 
-    public function getStatusColorAttribute()
-    {
-        return match ($this->status) {
-            'draft' => 'info',
-            'pending' => 'warning',
-            'approved' => 'success',
-            'expired' => 'secondary',
-            'rejected' => 'danger',
-            default => 'gray',
-        };
-    }
-    public function getStatusTextAttribute()
-    {
-        return match ($this->status) {
-            'draft' => 'Draf',
-            'pending' => 'Menunggu Persetujuan',
-            'approved' => 'Disetujui',
-            'expired' => 'Kadaluarsa',
-            'rejected' => 'Ditolak',
-            default => 'draf',
-        };
-    }
+
 
     public function sudin()
     {

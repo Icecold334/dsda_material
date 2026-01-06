@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Warehouse;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -27,6 +28,9 @@ class DatabaseSeeder extends Seeder
             RabSeeder::class,
             RabItemSeeder::class,
             PersonnelSeeder::class,
+            RequestSeeder::class,
+            WarehouseSeeder::class,
+            DeliverySeeder::class,
         ]);
         User::factory()->create([
             'name' => 'Test User',

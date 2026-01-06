@@ -12,6 +12,7 @@ return new class extends Migration {
     {
         Schema::create('deliveries', function (Blueprint $table) {
             $this->uuid($table);
+            $table->string('nomor')->nullable();     // nomor permintaan
 
             $table->uuid('sudin_id');
             $table->uuid('unit_id')->nullable();

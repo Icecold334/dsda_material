@@ -27,7 +27,7 @@
         <div class="px-4 py-3 flex items-center ">
             {{-- Sidebar toggle (mobile) --}}
             <button data-drawer-target="sidebar" data-drawer-toggle="sidebar" aria-controls="sidebar"
-                class="p-2 text-primary-600 rounded-lg md:hidden me-5 hover:bg-primary-600 hover:text-white focus:ring-2 focus:ring-gray-200 transition duration-200">
+                class="p-2 text-primary-600 rounded-lg  me-5 hover:bg-primary-600 hover:text-white focus:ring-2 focus:ring-gray-200 transition duration-200">
                 <i class="fa-solid fa-bars"></i>
             </button>
 
@@ -39,7 +39,8 @@
 
     {{-- SIDEBAR --}}
     <aside id="sidebar"
-        class="fixed top-0 left-0 z-40 w-64 h-screen pt-16 transition-transform -translate-x-full bg-gradient-to-br from-primary-600 to-primary-500  md:translate-x-0">
+        class="fixed top-0 left-0 z-40 w-64 h-screen pt-16 transition-transform duration-300 bg-gradient-to-br from-primary-600 to-primary-500 -translate-x-full">
+
 
         <div class="h-full px-4 py-4 overflow-y-auto">
 
@@ -49,7 +50,10 @@
     </aside>
 
     {{-- MAIN CONTENT --}}
-    <main class="p-4 md:ml-64 pt-20 bg-gradient-to-br from-primary-100 to-primary-200 min-h-screen">
+    <main id="main-content"
+        class="p-4 pt-20 transition-all duration-300 bg-gradient-to-br from-primary-100 to-primary-200 min-h-screen">
+
+
         {{ $slot }}
     </main>
 

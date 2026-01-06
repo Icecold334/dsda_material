@@ -200,8 +200,20 @@ document.addEventListener("livewire:init", () => {
 });
 
 function mapByColumns(rows, columns) {
-    return rows.map((row) => columns.map((col) => html(row[col.id] ?? "")));
+    return rows.map((row) =>
+        columns.map((col) => {
+            const value = row[col.id] ?? "";
+
+            // Kalau column punya className → bungkus
+            if (col.className) {
+                return html(`<div class="${col.className}">${value}</div>`);
+            }
+
+            return html(value);
+        })
+    );
 }
+    
 
 function initGrid(wrapper) {
     if (!wrapper || !document.body.contains(wrapper)) return;
@@ -222,7 +234,7 @@ function initGrid(wrapper) {
             limit: limit,
         },
         // search: true,
-        sort: true,
+        sort: false,
         page: [5, 10, 15],
         language: idID,
         className: {

@@ -21,12 +21,17 @@ class Sidebar extends Component
      */
     public function render(): View|Closure|string
     {
-        return <<<'blade'
+        return <<<'BLADE'
 <div>
    <ul class="space-y-2 font-medium">
                 <livewire:side-item title="Dashboard" href="/" />
                 <livewire:side-item title="Kontrak" href="{{ route('kontrak.index') }}" />
                 <livewire:side-item title="RAB" href="{{ route('rab.index') }}" />
+                <livewire:side-item title="Pengiriman Barang" href="{{ route('pengiriman.index') }}" />
+                            <livewire:side-item title="Permintaan Barang" icon="users" :collapsable="true" :items="[
+                                            ['title' => 'Menggunakan RAB', 'href' => route('permintaan.rab.index')],
+                                                ['title' => 'Tanpa RAB', 'href' => route('permintaan.nonRab.index')],
+                                            ]" />
                 <livewire:side-item title="Master Data" icon="users" :collapsable="true" :items="[
                         ['title' => 'Driver', 'href' => route('driver.index')],
                         ['title' => 'Security', 'href' => route('security.index')],
@@ -38,6 +43,6 @@ class Sidebar extends Component
                     ]" />
             </ul>
 </div>
-blade;
+BLADE;
     }
 }
