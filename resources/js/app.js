@@ -1,5 +1,6 @@
 import "./bootstrap";
 import "flowbite";
+import { initFlowbite } from "flowbite";
 import { Grid, html } from "gridjs";
 import "gridjs/dist/theme/mermaid.css";
 import { idID } from "gridjs/l10n";
@@ -213,5 +214,12 @@ function scanAndInitGrid() {
     });
 }
 
-document.addEventListener("DOMContentLoaded", scanAndInitGrid);
-document.addEventListener("livewire:navigated", scanAndInitGrid);
+document.addEventListener("DOMContentLoaded", () => {
+    scanAndInitGrid();
+    initFlowbite();
+});
+
+document.addEventListener("livewire:navigated", () => {
+    scanAndInitGrid();
+    initFlowbite();
+});

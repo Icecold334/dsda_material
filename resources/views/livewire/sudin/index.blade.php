@@ -20,7 +20,7 @@
     <div data-grid data-api="{{ route('sudin.json') }}" data-columns='[
         { "name": "Nama", "id": "name","width": "30%" },
         { "name": "Singkatan", "id": "short","width": "20%"  },
-        { "name": "Alamat", "id": "address","width": "40%"  },
+        { "name": "Alamat", "id": "address","width": "20%"  },
         { "name": "", "id": "action" ,"width": "10%"}
     ]' data-limit="10" wire:ignore
         x-data="{ reloadGrid() { this.$el.dispatchEvent(new CustomEvent('reload-grid')); } }"
