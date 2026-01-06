@@ -4,9 +4,20 @@ import { Grid,html } from "gridjs";
 import "gridjs/dist/theme/mermaid.css";
 import { idID } from "gridjs/l10n";
 function mapByColumns(rows, columns) {
-    
-    return rows.map((row) => columns.map((col) => html(row[col.id] ?? "")));
+    return rows.map((row) =>
+        columns.map((col) => {
+            const value = row[col.id] ?? "";
+
+            // Kalau column punya className → bungkus
+            if (col.className) {
+                return html(`<div class="${col.className}">${value}</div>`);
+            }
+
+            return html(value);
+        })
+    );
 }
+    
 
 function initGrid(wrapper) {
     if (!wrapper || !document.body.contains(wrapper)) return;
@@ -28,11 +39,12 @@ function initGrid(wrapper) {
             limit: limit,
         },
         // search: true,
-        sort: true,
+        sort: false,
         page: [5, 10, 15],
         language: idID,
         className: {
             th: 'text-center',
+
         },
         server: api
             ? {
@@ -59,3 +71,5 @@ function scanAndInitGrid() {
 
 document.addEventListener("DOMContentLoaded", scanAndInitGrid);
 document.addEventListener("livewire:navigated", scanAndInitGrid);
+
+

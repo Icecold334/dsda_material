@@ -1,34 +1,38 @@
 <div class="space-y-4">
     <div class="grid grid-cols-2 ">
         <div class="">
-            <div class="text-3xl font-semibold"> Rencana Anggaran Biaya #{{ $rab->nomor }}</div>
+            <div class="text-3xl font-semibold"> Detail Pengiriman #{{ $pengiriman->nomor }}</div>
         </div>
         <div class="text-right">
-            <a href="{{ route('rab.index') }}" wire:navigate
+            <a href="{{ route('pengiriman.index') }}" wire:navigate
                 class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  focus:outline-none">Kembali</a>
         </div>
     </div>
     <div class="grid grid-cols-2 gap-4">
 
-        <x-card title="Detail RAB">
+        <x-card title="Detail Permintaan">
             <div class="">
                 <table class="table-auto w-full text-md space-y-2 ">
                     <tr>
-                        <td class="font-semibold w-1/2">Nomor RAB</td>
-                        <td>{{ $rab->nomor }}</td>
+                        <td class="font-semibold w-1/2">Nomor Permintaan</td>
+                        <td>{{ $pengiriman->nomor }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold w-1/2">Gudang pengiriman</td>
+                        <td>{{ $pengiriman->warehouse->name }}</td>
                     </tr>
                     <tr>
                         <td class="font-semibold">Status</td>
 
                         <td><span
-                                class="bg-{{ $rab->status_color }}-600 text-{{ $rab->status_color }}-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">{{
-                                $rab->status_text }}</span></td>
+                                class="bg-{{ $pengiriman->status_color }}-600 text-{{ $pengiriman->status_color }}-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">{{
+                                $pengiriman->status_text }}</span></td>
                     </tr>
 
                 </table>
             </div>
         </x-card>
-        <x-card title="Dokumen RAB">
+        <x-card title="Dokumen Permintaan">
 
             <ul class="divide-y divide-default">
                 @for ($i = 0; $i < 5; $i++) <li class="p-1">
@@ -51,10 +55,11 @@
     </div>
     <div>
         <x-card title="Daftar Barang">
-            <div data-grid data-api="{{ route('rab.show.json', $rab) }}" data-columns='[
+            <div data-grid data-api="{{ route('pengiriman.show.json', $pengiriman) }}" data-columns='[
+        { "name": "Kode Barang", "id": "kode", "width": "15%" },
         { "name": "Item", "id": "item" },
-        { "name": "Jumlah", "id": "qty"  },
-        { "name": "", "id": "action","width": "10%" , "sortable": false }
+        { "name": "Jumlah", "id": "qty", "width": "15%", "className": "text-right" },
+        { "name": "", "id": "action","width": "10%" , "sortable": false, "className": "text-center" }
     ]' wire:ignore>
             </div>
 
