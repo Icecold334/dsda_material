@@ -32,6 +32,7 @@ class Sidebar extends Component
                         ['title' => 'Security', 'href' => route('security.index')],
                         ['title' => 'Sudin', 'href' => route('sudin.index')],
                         ['title' => 'Kecamatan', 'href' => route('district.index')],
+                        ['title' => 'Gudang', 'href' => route('warehouse.index')],
                     ]" />
             </ul>
 </div>

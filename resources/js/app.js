@@ -145,14 +145,28 @@ document.addEventListener("livewire:init", () => {
     Livewire.on("subdistrict-deleted", () => {
         SwalAlert.success({
             title: "Terhapus!",
-            text: "Subdistrik berhasil dihapus.",
+            text: "Kecamatan berhasil dihapus.",
         });
     });
 
     Livewire.on("subdistrict-updated", () => {
         SwalAlert.success({
             title: "Berhasil!",
-            text: "Subdistrik berhasil diupdate.",
+            text: "Kecamatan berhasil diupdate.",
+        });
+    });
+
+    Livewire.on("warehouse-deleted", () => {
+        SwalAlert.success({
+            title: "Terhapus!",
+            text: "Gudang berhasil dihapus.",
+        });
+    });
+
+    Livewire.on("warehouse-updated", () => {
+        SwalAlert.success({
+            title: "Berhasil!",
+            text: "Gudang berhasil diupdate.",
         });
     });
 });

@@ -10,7 +10,7 @@ use Livewire\Attributes\Title;
 
 class Show extends Component
 {
-    #[Title('Detail District')]
+    #[Title('Detail Kecamatan')]
 
     public District $district;
     public $editSubdistrictId = null;

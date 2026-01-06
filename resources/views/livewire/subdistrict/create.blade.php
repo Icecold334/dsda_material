@@ -1,17 +1,17 @@
 <x-modal name="create-subdistrict-{{ $district->id }}" focusable>
     <form wire:submit="save" class="p-6">
         <h2 class="text-lg font-medium text-gray-900">
-            Tambah Subdistrik Baru
+            Tambah Kelurahan Baru
         </h2>
 
         <div class="mt-6 space-y-4">
             <div>
                 <label for="name-create" class="block text-sm font-medium text-gray-700">
-                    Nama Subdistrik <span class="text-red-500">*</span>
+                    Nama Kelurahan <span class="text-red-500">*</span>
                 </label>
                 <input type="text" id="name-create" wire:model="name"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                    placeholder="Masukkan nama subdistrik">
+                    placeholder="Masukkan nama Kelurahan">
                 @error('name')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror

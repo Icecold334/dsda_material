@@ -18,7 +18,7 @@ Route::prefix('district')->name('district.')->group(function () {
                 <div class="flex gap-1">
                     <a href="' . route('district.show', $d->id) . '" class="bg-blue-600 text-white text-xs font-medium px-1.5 py-0.5 rounded" wire:navigate>Detail</a>
                     <button onclick="window.Livewire.dispatch(\'open-modal\', \'edit-district-' . $d->id . '\')" class="bg-warning-600 text-white text-xs font-medium px-1.5 py-0.5 rounded">Edit</button>
-                    <button onclick="SwalConfirm.delete({ eventName: \'deleteDistrict\', eventData: { districtId: \'' . $d->id . '\' }, title: \'Hapus District?\', text: \'District ' . addslashes($d->name) . ' akan dihapus!\' })" class="bg-red-600 text-white text-xs font-medium px-1.5 py-0.5 rounded">Hapus</button>
+                    <button onclick="SwalConfirm.delete({ eventName: \'deleteDistrict\', eventData: { districtId: \'' . $d->id . '\' }, title: \'Hapus Kecamatan?\', text: \'Kecamatan ' . addslashes($d->name) . ' akan dihapus!\' })" class="bg-red-600 text-white text-xs font-medium px-1.5 py-0.5 rounded">Hapus</button>
                 </div>
             ',
         ]);
@@ -35,7 +35,7 @@ Route::prefix('district')->name('district.')->group(function () {
             'action' => '
                 <div class="flex gap-1">
                     <button onclick="window.Livewire.dispatch(\'open-modal\', \'edit-subdistrict-' . $s->id . '\')" class="bg-warning-600 text-white text-xs font-medium px-1.5 py-0.5 rounded">Edit</button>
-                    <button onclick="SwalConfirm.delete({ eventName: \'deleteSubdistrict\', eventData: { subdistrictId: \'' . $s->id . '\' }, title: \'Hapus Subdistrict?\', text: \'Subdistrict ' . addslashes($s->name) . ' akan dihapus!\' })" class="bg-red-600 text-white text-xs font-medium px-1.5 py-0.5 rounded">Hapus</button>
+                    <button onclick="SwalConfirm.delete({ eventName: \'deleteSubdistrict\', eventData: { subdistrictId: \'' . $s->id . '\' }, title: \'Hapus Kelurahan?\', text: \'Kelurahan ' . addslashes($s->name) . ' akan dihapus!\' })" class="bg-red-600 text-white text-xs font-medium px-1.5 py-0.5 rounded">Hapus</button>
                 </div>
             ',
         ]);
