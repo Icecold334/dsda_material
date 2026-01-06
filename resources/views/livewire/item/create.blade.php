@@ -1,4 +1,4 @@
-<x-modal name="create-item" focusable>
+<x-modal name="{{ $itemCategory ? 'create-item-' . $itemCategory->id : 'create-item' }}" focusable>
     <form wire:submit="save" class="p-6">
         <h2 class="text-lg font-medium text-gray-900">
             Tambah Barang Baru
@@ -83,7 +83,8 @@
         </div>
 
         <div class="mt-6 flex justify-end gap-3">
-            <button type="button" x-on:click="$dispatch('close-modal', 'create-item')"
+            <button type="button"
+                x-on:click="$dispatch('close-modal', '{{ $itemCategory ? 'create-item-' . $itemCategory->id : 'create-item' }}')"
                 class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
                 Batal
             </button>

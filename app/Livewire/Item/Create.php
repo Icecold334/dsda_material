@@ -9,12 +9,21 @@ use Livewire\Component;
 
 class Create extends Component
 {
+    public ?ItemCategory $itemCategory = null;
     public $name = '';
     public $sudin_id = '';
     public $item_category_id = '';
     public $spec = '';
     public $unit = '';
     public $active = true;
+
+    public function mount()
+    {
+        if ($this->itemCategory) {
+            $this->item_category_id = $this->itemCategory->id;
+            $this->sudin_id = $this->itemCategory->sudin_id;
+        }
+    }
 
     public function rules()
     {
@@ -43,10 +52,14 @@ class Create extends Component
 
         session()->flash('message', 'Barang berhasil ditambahkan.');
 
-        $this->dispatch('close-modal', 'create-item');
+        $modalName = $this->itemCategory ? 'create-item-' . $this->itemCategory->id : 'create-item';
+        $this->dispatch('close-modal', $modalName);
         $this->dispatch('item-created');
 
-        $this->reset();
+        $this->reset(['name', 'spec', 'unit', 'active']);
+        if (!$this->itemCategory) {
+            $this->reset(['sudin_id', 'item_category_id']);
+        }
     }
 
     public function render()

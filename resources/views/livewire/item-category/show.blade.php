@@ -26,4 +26,31 @@
         </x-card>
 
     </div>
+
+    <div>
+        <x-card title="Daftar Barang">
+            <div class="mb-4">
+                <button type="button" x-on:click="$dispatch('open-modal', 'create-item-{{ $itemCategory->id }}')"
+                    class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none">
+                    Tambah Barang
+                </button>
+            </div>
+
+            <div data-grid data-api="{{ route('item-category.show.json', $itemCategory) }}" data-columns='[
+                { "name": "Nama", "id": "name","width": "30%" },
+                { "name": "Sudin", "id": "sudin","width": "25%" },
+                { "name": "Satuan", "id": "unit","width": "15%" },
+                { "name": "Status", "id": "status","width": "15%" },
+                { "name": "", "id": "action","width": "15%", "sortable": false }
+            ]' wire:ignore x-data="{ reloadGrid() { this.$el.dispatchEvent(new CustomEvent('reload-grid')); } }"
+                @refresh-grid.window="reloadGrid()">
+            </div>
+        </x-card>
+    </div>
+
+    <livewire:item.create :itemCategory="$itemCategory" />
+
+    @foreach($items as $item)
+        <livewire:item.edit :item="$item" :key="'edit-item-' . $item->id" />
+    @endforeach
 </div>
