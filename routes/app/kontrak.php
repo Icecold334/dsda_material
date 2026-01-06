@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Kontrak\Create;
 use App\Livewire\Kontrak\Index;
 use App\Livewire\Kontrak\Show;
 use App\Models\Contract;
@@ -37,6 +38,7 @@ Route::prefix('kontrak')->name('kontrak.')->group(function () {
         ]);
     })->name('show.json');
 
+    Route::get('/create', Create::class)->name('create');
     Route::get('/{contract}', Show::class)->name('show');
 
 });

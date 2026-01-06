@@ -123,4 +123,9 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+
+    'api_emonev' => env('API_EMONEV'),
+    'api_emonev_key' => env('API_EMONEV_KEY'),
+
+
 ];
