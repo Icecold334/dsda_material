@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Personnel;
 use App\Models\Sudin;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Driver;
-class DriverSeeder extends Seeder
+
+class PersonnelSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,15 +16,17 @@ class DriverSeeder extends Seeder
         $sudins = Sudin::all();
 
         foreach ($sudins as $sudin) {
-            // Create 2-3 driver entries per sudin
-            Driver::create([
+            // Create 2-3 driver per sudin
+            Personnel::create([
                 'name' => 'Driver ' . $sudin->short . ' 1',
                 'sudin_id' => $sudin->id,
+                'type' => 'driver',
             ]);
 
-            Driver::create([
+            Personnel::create([
                 'name' => 'Driver ' . $sudin->short . ' 2',
                 'sudin_id' => $sudin->id,
+                'type' => 'driver',
             ]);
         }
     }

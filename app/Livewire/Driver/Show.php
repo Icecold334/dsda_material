@@ -3,14 +3,14 @@
 namespace App\Livewire\Driver;
 
 use Livewire\Component;
-use App\Models\Driver;
+use App\Models\Personnel;
 use Livewire\Attributes\Title;
 
 class Show extends Component
 {
     #[Title('Detail Driver')]
 
-    public Driver $driver;
+    public Personnel $driver;
 
 
     public function render()

@@ -1,10 +1,106 @@
 import "./bootstrap";
 import "flowbite";
-import { Grid,html } from "gridjs";
+import { Grid, html } from "gridjs";
 import "gridjs/dist/theme/mermaid.css";
 import { idID } from "gridjs/l10n";
+import Swal from "sweetalert2";
+
+// Reusable SweetAlert Functions
+window.SwalConfirm = {
+    delete: function (options = {}) {
+        const defaults = {
+            title: "Yakin ingin menghapus?",
+            text: "Data yang dihapus tidak dapat dikembalikan!",
+            confirmText: "Ya, hapus!",
+            cancelText: "Batal",
+            eventName: "delete",
+            eventData: {},
+        };
+        const config = { ...defaults, ...options };
+
+        return Swal.fire({
+            title: config.title,
+            text: config.text,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: config.confirmText,
+            cancelButtonText: config.cancelText,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.Livewire.dispatch(config.eventName, config.eventData);
+            }
+        });
+    },
+};
+
+window.SwalAlert = {
+    success: function (options = {}) {
+        const defaults = {
+            title: "Berhasil!",
+            text: "Operasi berhasil dilakukan.",
+            timer: 2000,
+            showConfirmButton: false,
+        };
+        const config = { ...defaults, ...options };
+
+        return Swal.fire({
+            title: config.title,
+            text: config.text,
+            icon: "success",
+            timer: config.timer,
+            showConfirmButton: config.showConfirmButton,
+        });
+    },
+    error: function (options = {}) {
+        const defaults = {
+            title: "Gagal!",
+            text: "Terjadi kesalahan.",
+        };
+        const config = { ...defaults, ...options };
+
+        return Swal.fire({
+            title: config.title,
+            text: config.text,
+            icon: "error",
+            confirmButtonText: "OK",
+        });
+    },
+    info: function (options = {}) {
+        const defaults = {
+            title: "Informasi",
+            text: "",
+        };
+        const config = { ...defaults, ...options };
+
+        return Swal.fire({
+            title: config.title,
+            text: config.text,
+            icon: "info",
+            confirmButtonText: "OK",
+        });
+    },
+};
+
+// Listen untuk success events
+document.addEventListener("livewire:init", () => {
+    Livewire.on("driver-deleted", () => {
+        SwalAlert.success({
+            title: "Terhapus!",
+            text: "Driver berhasil dihapus.",
+        });
+    });
+
+    Livewire.on("driver-updated", () => {
+        SwalAlert.success({
+            title: "Berhasil!",
+            text: "Driver berhasil diupdate.",
+        });
+    });
+});
+
 function mapByColumns(rows, columns) {
-    
     return rows.map((row) => columns.map((col) => html(row[col.id] ?? "")));
 }
 
@@ -16,13 +112,12 @@ function initGrid(wrapper) {
     const api = wrapper.dataset.api;
     const columns = JSON.parse(wrapper.dataset.columns || "[]");
 
-    
     const limit = Number(wrapper.dataset.limit || 5);
     // const defaultFilter = JSON.parse(wrapper.dataset.default || "{}");
 
     // const params = new URLSearchParams(defaultFilter).toString();
 
-    new Grid({
+    const grid = new Grid({
         columns,
         pagination: {
             limit: limit,
@@ -32,23 +127,28 @@ function initGrid(wrapper) {
         page: [5, 10, 15],
         language: idID,
         className: {
-            th: 'text-center',
+            th: "text-center",
         },
         server: api
             ? {
-            url: api,
-            handle: (res) => {
-                if (res.status === 404) return { data: [] };
-                    if (res.ok) return res.json();
-                        throw new Error("Grid server error");
-                },
-                then: (json) => {  
-                    const rows = json.data ?? json;
-                    return mapByColumns(rows, columns);
-                },
+                  url: api,
+                  handle: (res) => {
+                      if (res.status === 404) return { data: [] };
+                      if (res.ok) return res.json();
+                      throw new Error("Grid server error");
+                  },
+                  then: (json) => {
+                      const rows = json.data ?? json;
+                      return mapByColumns(rows, columns);
+                  },
               }
             : undefined,
     }).render(wrapper);
+
+    // Add reload event listener
+    wrapper.addEventListener("reload-grid", () => {
+        grid.forceRender();
+    });
 }
 
 function scanAndInitGrid() {

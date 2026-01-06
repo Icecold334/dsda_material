@@ -27,7 +27,6 @@ class DatabaseSeeder extends Seeder
             RabSeeder::class,
             RabItemSeeder::class,
             SecuritySeeder::class,
-            DriverSeeder::class,
         ]);
         User::factory()->create([
             'name' => 'Test User',
