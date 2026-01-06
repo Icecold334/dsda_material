@@ -27,15 +27,8 @@ class Sidebar extends Component
                 <livewire:side-item title="Dashboard" href="/" />
                 <livewire:side-item title="Kontrak" href="{{ route('kontrak.index') }}" />
                 <livewire:side-item title="RAB" href="{{ route('rab.index') }}" />
-                <livewire:side-item title="User Management" icon="users" :collapsable="true" :items="[
-                        ['title' => 'List Users', 'href' => '/users'],
-                        ['title' => 'Roles', 'href' => '/roles'],
-                        ['title' => 'Permissions', 'href' => '/permissions']
-                    ]" />
-                <livewire:side-item title="User Management 2" icon="users" :collapsable="true" :items="[
-                        ['title' => 'List Users 2', 'href' => '/users'],
-                        ['title' => 'Roles 2', 'href' => '/roles'],
-                        ['title' => 'Permissions 2', 'href' => '/permissions']
+                <livewire:side-item title="Master Data" icon="users" :collapsable="true" :items="[
+                        ['title' => 'Driver', 'href' => route('driver.index')],
                     ]" />
             </ul>
 </div>
