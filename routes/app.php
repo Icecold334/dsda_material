@@ -12,3 +12,4 @@ require 'app/item.php';
 require 'app/permintaan.php';
 require 'app/pengiriman.php';
 require 'app/user.php';
+require 'app/stock.php';
