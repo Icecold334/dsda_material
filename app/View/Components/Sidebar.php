@@ -40,6 +40,7 @@ class Sidebar extends Component
                         ['title' => 'Gudang', 'href' => route('warehouse.index')],
                         ['title' => 'Kategori Barang', 'href' => route('item-category.index')],
                         ['title' => 'Barang', 'href' => route('item.index')],
+                        ['title' => 'Pengguna', 'href' => route('user.index')],
                     ]" />
             </ul>
 </div>

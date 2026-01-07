@@ -197,6 +197,20 @@ document.addEventListener("livewire:init", () => {
             text: "Barang berhasil diupdate.",
         });
     });
+
+    Livewire.on("user-deleted", () => {
+        SwalAlert.success({
+            title: "Terhapus!",
+            text: "Pengguna berhasil dihapus.",
+        });
+    });
+
+    Livewire.on("user-updated", () => {
+        SwalAlert.success({
+            title: "Berhasil!",
+            text: "Pengguna berhasil diupdate.",
+        });
+    });
 });
 
 function mapByColumns(rows, columns) {
@@ -213,7 +227,6 @@ function mapByColumns(rows, columns) {
         })
     );
 }
-    
 
 function initGrid(wrapper) {
     if (!wrapper || !document.body.contains(wrapper)) return;
