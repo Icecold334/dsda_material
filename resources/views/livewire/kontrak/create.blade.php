@@ -18,23 +18,23 @@
                 <div class="font-semibold text-2xl">Masukkan Nomor Kontrak</div>
             </div>
 
-            <form>
+            {{-- <form method="GET" action="{{ route('kontrak.emonev') }}"> --}}
                 <div class="flex">
-                    <input type="text" wire:model="nomorKontrak"
-                        class="rounded-none rounded-s-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 text-sm p-2.5"
-                        placeholder="Masukkan Nomor Kontrak">
+                    <input type="text" id="nomorKontrak"
+                        class="rounded-none rounded-s-lg bg-gray-50 border border-gray-300 text-gray-900 block flex-1 text-sm p-2.5"
+                        placeholder="Masukkan Nomor Kontrak" required>
 
-                    <input type="text" wire:model="tahunKontrak"
-                        class="rounded-none bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block w-20 text-sm p-2.5"
-                        placeholder="Tahun">
+                    <input type="text" id="tahunKontrak"
+                        class="rounded-none bg-gray-50 border border-gray-300 text-gray-900 block w-20 text-sm p-2.5"
+                        placeholder="Tahun" required>
 
-                    <button type="button" wire:click="cariKontrak"
+                    <button type="button" id="btnCari"
                         class="inline-flex items-center px-3 text-sm text-white bg-primary-600 hover:bg-primary-800 rounded-e-md transition">
                         Cari
                     </button>
                 </div>
-
-            </form>
+                {{--
+            </form> --}}
         </div>
     </x-modal>
 </div>

@@ -6,198 +6,148 @@ import "gridjs/dist/theme/mermaid.css";
 import { idID } from "gridjs/l10n";
 import Swal from "sweetalert2";
 
-// Reusable SweetAlert Functions
-window.SwalConfirm = {
-    delete: function (options = {}) {
-        const defaults = {
-            title: "Yakin ingin menghapus?",
-            text: "Data yang dihapus tidak dapat dikembalikan!",
-            confirmText: "Ya, hapus!",
-            cancelText: "Batal",
-            eventName: "delete",
-            eventData: {},
-        };
-        const config = { ...defaults, ...options };
+window.showConfirm = function ({
+    title = "Yakin?",
+    text = "",
+    type = "warning",
+    confirmButtonText = "Ya",
+    cancelButtonText = "Batal",
+    callbackEvent = null,
+    callbackData = {},
+} = {}) {
 
-        return Swal.fire({
-            title: config.title,
-            text: config.text,
-            icon: "warning",
+    return Swal.fire({
+        title,
+        text,
+        icon: type,
+        showCancelButton: true,
+        confirmButtonText,
+        cancelButtonText,
+    }).then((result) => {
+        if (callbackEvent) {
+            window.Livewire.dispatch(callbackEvent, {
+                confirmed: result.isConfirmed,
+                ...callbackData,
+            });
+        }
+    });
+};
+
+
+window.showAlert = function ({
+    mode = "alert",        // alert | confirm
+    type = "success",      // success | error | info | warning
+    title = "",
+    text = "",
+    timer = 2000,
+    showConfirmButton = false,
+    confirmButtonText = "OK",
+    cancelButtonText = "Batal",
+    confirmEvent = null,
+    confirmData = {},
+} = {}) {
+
+    const options = {
+        title,
+        text,
+        icon: type,
+    };
+
+    // CONFIRM MODE
+    if (mode === "confirm") {
+        Object.assign(options, {
             showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: config.confirmText,
-            cancelButtonText: config.cancelText,
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.Livewire.dispatch(config.eventName, config.eventData);
-            }
+            confirmButtonText,
+            cancelButtonText,
         });
-    },
+    } else {
+        Object.assign(options, {
+            showConfirmButton,
+            timer: showConfirmButton ? undefined : timer,
+        });
+    }
+
+    return Swal.fire(options).then((result) => {
+        if (
+            mode === "confirm" &&
+            result.isConfirmed &&
+            confirmEvent
+        ) {
+            window.Livewire.dispatch(confirmEvent, confirmData);
+        }
+    });
 };
 
-window.SwalAlert = {
-    success: function (options = {}) {
-        const defaults = {
-            title: "Berhasil!",
-            text: "Operasi berhasil dilakukan.",
-            timer: 2000,
-            showConfirmButton: false,
-        };
-        const config = { ...defaults, ...options };
 
-        return Swal.fire({
-            title: config.title,
-            text: config.text,
-            icon: "success",
-            timer: config.timer,
-            showConfirmButton: config.showConfirmButton,
-        });
-    },
-    error: function (options = {}) {
-        const defaults = {
-            title: "Gagal!",
-            text: "Terjadi kesalahan.",
-        };
-        const config = { ...defaults, ...options };
-
-        return Swal.fire({
-            title: config.title,
-            text: config.text,
-            icon: "error",
-            confirmButtonText: "OK",
-        });
-    },
-    info: function (options = {}) {
-        const defaults = {
-            title: "Informasi",
-            text: "",
-        };
-        const config = { ...defaults, ...options };
-
-        return Swal.fire({
-            title: config.title,
-            text: config.text,
-            icon: "info",
-            confirmButtonText: "OK",
-        });
-    },
-};
-
-// Listen untuk success events
 document.addEventListener("livewire:init", () => {
-    Livewire.on("driver-deleted", () => {
-        SwalAlert.success({
-            title: "Terhapus!",
-            text: "Driver berhasil dihapus.",
+    document.getElementById("btnCari").addEventListener("click", async () => {
+    const nomorKontrak = document.getElementById("nomorKontrak").value.trim();
+    const tahun = document.getElementById("tahunKontrak").value.trim();
+    
+    if (!nomorKontrak || !tahun) {
+        showAlert({
+            icon: "error",
+            title: "Lengkapi Data!",
+            text: "Nomor kontrak dan tahun wajib diisi",
+            showConfirmButton: true,
         });
-    });
+        return;
+    }
 
-    Livewire.on("driver-updated", () => {
-        SwalAlert.success({
+    try {
+        const params = new URLSearchParams({
+            nomor_kontrak: nomorKontrak,
+            tahun: tahun,
+        });
+
+        const res = await fetch(`/kontrak/api/emonev?${params.toString()}`, {
+            headers: {
+                "Accept": "application/json",
+            },
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.message || "Terjadi kesalahan");
+        }
+
+        // 🔥 SUCCESS
+        console.log(data.data); // kontrak object
+
+        showAlert({
+            icon: "success",
             title: "Berhasil!",
-            text: "Driver berhasil diupdate.",
+            text: "Kontrak ditemukan",
         });
+
+        // TODO:
+        // render ke table / modal / component
+        // open modal detail kontrak
+
+    } catch (err) {
+        showAlert({
+            icon: "error",
+            title: "Gagal!",
+            text: err.message,
+            showConfirmButton: true,
+        });
+    }
+});
+
+    Livewire.on("confirm", (payload = {}) => {
+        
+        showConfirm(payload);
     });
 
-    Livewire.on("security-deleted", () => {
-        SwalAlert.success({
-            title: "Terhapus!",
-            text: "Security berhasil dihapus.",
-        });
-    });
-
-    Livewire.on("security-updated", () => {
-        SwalAlert.success({
-            title: "Berhasil!",
-            text: "Security berhasil diupdate.",
-        });
-    });
-
-    Livewire.on("sudin-deleted", () => {
-        SwalAlert.success({
-            title: "Terhapus!",
-            text: "Sudin berhasil dihapus.",
-        });
-    });
-
-    Livewire.on("sudin-updated", () => {
-        SwalAlert.success({
-            title: "Berhasil!",
-            text: "Sudin berhasil diupdate.",
-        });
-    });
-
-    Livewire.on("district-deleted", () => {
-        SwalAlert.success({
-            title: "Terhapus!",
-            text: "Kecamatan berhasil dihapus.",
-        });
-    });
-
-    Livewire.on("district-updated", () => {
-        SwalAlert.success({
-            title: "Berhasil!",
-            text: "Kecamatan berhasil diupdate.",
-        });
-    });
-
-    Livewire.on("subdistrict-deleted", () => {
-        SwalAlert.success({
-            title: "Terhapus!",
-            text: "Kecamatan berhasil dihapus.",
-        });
-    });
-
-    Livewire.on("subdistrict-updated", () => {
-        SwalAlert.success({
-            title: "Berhasil!",
-            text: "Kecamatan berhasil diupdate.",
-        });
-    });
-
-    Livewire.on("warehouse-deleted", () => {
-        SwalAlert.success({
-            title: "Terhapus!",
-            text: "Gudang berhasil dihapus.",
-        });
-    });
-
-    Livewire.on("warehouse-updated", () => {
-        SwalAlert.success({
-            title: "Berhasil!",
-            text: "Gudang berhasil diupdate.",
-        });
-    });
-
-    Livewire.on("item-category-deleted", () => {
-        SwalAlert.success({
-            title: "Terhapus!",
-            text: "Kategori barang berhasil dihapus.",
-        });
-    });
-
-    Livewire.on("item-category-updated", () => {
-        SwalAlert.success({
-            title: "Berhasil!",
-            text: "Kategori barang berhasil diupdate.",
-        });
-    });
-
-    Livewire.on("item-deleted", () => {
-        SwalAlert.success({
-            title: "Terhapus!",
-            text: "Barang berhasil dihapus.",
-        });
-    });
-
-    Livewire.on("item-updated", () => {
-        SwalAlert.success({
-            title: "Berhasil!",
-            text: "Barang berhasil diupdate.",
-        });
+    Livewire.on("alert", (payload = {}) => {
+        showAlert(payload); // alert biasa
     });
 });
+
+
+
+
 
 function mapByColumns(rows, columns) {
     return rows.map((row) =>

@@ -10,48 +10,75 @@ use Illuminate\Support\Facades\Http;
 class Create extends Component
 {
     #[Title("Tambah Kontrak")]
-    public $nomorKontrak, $tahunKontrak;
+    public $nomorKontrak = '20397/PN01.02', $tahunKontrak = 2025;
 
-    #[On("cari-kontrak")]
-    public function cariKontrak()
+    // #[On("cari-kontrak")]
+    // public function cariKontrak()
+    // {
+    //     $nomorKontrak = trim($this->nomorKontrak);
+    //     $tahunKontrak = trim($this->tahunKontrak);
+    //     return $this->dispatch(
+    //         'confirm',
+    //         title: 'Yakin ingin menghapus?',
+    //         text: 'Data yang dihapus tidak bisa dikembalikan',
+    //         callbackEvent: 'confirm-result',
+    //         callbackData: ['memek' => 'jancok'],
+    //     );
+    //     if (!$tahunKontrak || !$nomorKontrak) {
+    //         $this->dispatch(
+    //             'alert',
+    //             type: 'error',
+    //             title: 'Lengkapi Data!',
+    //             // text: 'Nomor kontrak dan tahun wajib diisi.',
+    //         );
+
+    //         return;
+    //     }
+
+
+    //     $response = Http::timeout(180)
+    //         ->withBasicAuth('inventa', 'aF7xPq92LmZTkw38RbCn0vMUyJDg1shKXtbEWuAQ5oYclVGriHzSmNd6jeLfOBT3')
+    //         ->get(rtrim(config('app.api_emonev'), '/') . '/' . $tahunKontrak);
+
+
+
+    //     if (!$response->successful()) {
+    //         return session()->flash('error', 'Gagal mengambil data kontrak dari API');
+    //     }
+
+    //     $data = $response->json()['data'];
+    //     /**
+    //      * Cocokkan nomor kontrak dari batch JSON
+    //      * asumsi struktur data berupa array kontrak
+    //      */
+    //     $kontrak = collect($data)->first(function ($item) use ($nomorKontrak) {
+    //         return isset($item['no_spk'])
+    //             && strcasecmp(trim($item['no_spk']), $nomorKontrak) === 0;
+    //     });
+
+    //     if (!$kontrak) {
+    //         return session()->flash('error', 'Nomor kontrak tidak ditemukan');
+    //     }
+
+    //     // kalau ketemu
+    //     return $this->dispatch(
+    //         'alert',
+    //         mode: 'confirm',
+    //         type: 'warning',
+    //         title: 'Yakin ingin menghapus?',
+    //         text: 'Data yang dihapus tidak dapat dikembalikan!',
+    //         confirmButtonText: 'Ya, hapus!',
+    //         cancelButtonText: 'Batal',
+    //         confirmEvent: 'delete-driver',
+    //     );
+
+    // }
+
+
+    #[On("confirm-result")]
+    public function confirmResult($data)
     {
-        $nomorKontrak = trim($this->nomorKontrak);
-        $tahunKontrak = trim($this->tahunKontrak);
-
-        // validasi sederhana
-        if (!$tahunKontrak || !$nomorKontrak) {
-            return $this->dispatch('sudin-created');
-            ;
-        }
-
-        // hit API: /api/kontrak/{tahun}
-        $response = Http::withHeaders([
-            'X-API-KEY' => config('app.api_emonev_key'),
-        ])->get(
-                rtrim(config('app.api_emonev'), '/') . '/' . $tahunKontrak
-            );
-
-        if (!$response->successful()) {
-            return session()->flash('error', 'Gagal mengambil data kontrak dari API');
-        }
-
-        $data = $response->json();
-
-        /**
-         * Cocokkan nomor kontrak dari batch JSON
-         * asumsi struktur data berupa array kontrak
-         */
-        $kontrak = collect($data)->first(function ($item) use ($nomorKontrak) {
-            return isset($item['nomor_kontrak'])
-                && strcasecmp(trim($item['nomor_kontrak']), $nomorKontrak) === 0;
-        });
-
-        if (!$kontrak) {
-            return session()->flash('error', 'Nomor kontrak tidak ditemukan');
-        }
-
-        // kalau ketemu
-        dd($kontrak);
+        dd('as');
     }
     public function render()
     {

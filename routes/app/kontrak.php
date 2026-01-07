@@ -1,10 +1,12 @@
 <?php
 
-use App\Livewire\Kontrak\Create;
-use App\Livewire\Kontrak\Index;
-use App\Livewire\Kontrak\Show;
 use App\Models\Contract;
+use App\Livewire\Kontrak\Show;
+use App\Livewire\Kontrak\Index;
+use App\Livewire\Kontrak\Create;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Request;
 
 Route::prefix('kontrak')->name('kontrak.')->group(function () {
 
@@ -38,7 +40,43 @@ Route::prefix('kontrak')->name('kontrak.')->group(function () {
         ]);
     })->name('show.json');
 
+    Route::get('/api/emonev', function (Request $request) {
+
+        $nomorKontrak = trim(request('nomor_kontrak'));
+        $tahun = trim(request('tahun'));
+
+
+        // validasi
+        if (!$nomorKontrak || !$tahun) {
+            return back()->with('error', 'Nomor kontrak dan tahun wajib diisi');
+        }
+
+        // hit API
+        $response = Http::timeout(180)
+            ->withBasicAuth(
+                'inventa',
+                config('app.api_emonev_key')
+            )
+            ->get(rtrim(config('app.api_emonev'), '/') . '/' . $tahun);
+
+        if (!$response->successful()) {
+            return back()->with('error', 'Gagal mengambil data kontrak dari API');
+        }
+        $data = $response->json('data');
+
+        $kontrak = collect($data)->first(
+            fn($item) =>
+            isset($item['no_spk']) &&
+            strcasecmp(trim($item['no_spk']), $nomorKontrak) === 0
+        );
+
+        if (!$kontrak) {
+            return back()->with('error', 'Nomor kontrak tidak ditemukan');
+        }
+        return response()->json(['status' => 'success', 'data' => $kontrak]);
+    })->name('emonev');
     Route::get('/create', Create::class)->name('create');
     Route::get('/{contract}', Show::class)->name('show');
+
 
 });
