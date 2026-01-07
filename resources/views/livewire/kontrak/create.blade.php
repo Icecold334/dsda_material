@@ -20,14 +20,20 @@
 
             <form>
                 <div class="flex">
-                    <input type="text" wire:model="nomor_kontrak"
-                        class="rounded-none rounded-s-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  "
+                    <input type="text" wire:model="nomorKontrak"
+                        class="rounded-none rounded-s-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 text-sm p-2.5"
                         placeholder="Masukkan Nomor Kontrak">
+
+                    <input type="text" wire:model="tahunKontrak"
+                        class="rounded-none bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block w-20 text-sm p-2.5"
+                        placeholder="Tahun">
+
                     <button type="button" wire:click="cariKontrak"
-                        class="inline-flex items-center px-3 text-sm text-white bg-primary-600 border border-e-0 border-gray-300 hover:bg-primary-800 rounded-e-md transition duration-200">
+                        class="inline-flex items-center px-3 text-sm text-white bg-primary-600 hover:bg-primary-800 rounded-e-md transition">
                         Cari
                     </button>
                 </div>
+
             </form>
         </div>
     </x-modal>
