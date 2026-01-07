@@ -100,6 +100,68 @@
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
+
+            <div x-data="{
+                canvas: null,
+                ctx: null,
+                isDrawing: false,
+                init() {
+                    this.canvas = this.$refs.signatureCanvas;
+                    this.ctx = this.canvas.getContext('2d');
+                    this.ctx.strokeStyle = '#000000';
+                    this.ctx.lineWidth = 2;
+                    this.ctx.lineCap = 'round';
+                },
+                getCoordinates(e) {
+                    const rect = this.canvas.getBoundingClientRect();
+                    const scaleX = this.canvas.width / rect.width;
+                    const scaleY = this.canvas.height / rect.height;
+                    return {
+                        x: (e.clientX - rect.left) * scaleX,
+                        y: (e.clientY - rect.top) * scaleY
+                    };
+                },
+                startDrawing(e) {
+                    this.isDrawing = true;
+                    const coords = this.getCoordinates(e);
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(coords.x, coords.y);
+                },
+                draw(e) {
+                    if (!this.isDrawing) return;
+                    const coords = this.getCoordinates(e);
+                    this.ctx.lineTo(coords.x, coords.y);
+                    this.ctx.stroke();
+                },
+                stopDrawing() {
+                    this.isDrawing = false;
+                    this.saveSignature();
+                },
+                clearCanvas() {
+                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                    $wire.set('ttd', '');
+                },
+                saveSignature() {
+                    const dataURL = this.canvas.toDataURL('image/png');
+                    $wire.set('ttd', dataURL);
+                }
+            }">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Tanda Tangan
+                </label>
+                <div class="border-2 border-gray-300 rounded-md p-2 bg-white">
+                    <canvas x-ref="signatureCanvas" width="400" height="200"
+                        class="border border-gray-300 rounded cursor-crosshair w-full" @mousedown="startDrawing($event)"
+                        @mousemove="draw($event)" @mouseup="stopDrawing()" @mouseleave="stopDrawing()"></canvas>
+                    <button type="button" @click="clearCanvas()"
+                        class="mt-2 px-3 py-1 text-sm text-gray-700 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200">
+                        Hapus Tanda Tangan
+                    </button>
+                </div>
+                @error('ttd')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
         </div>
 
         <div class="mt-6 flex justify-end gap-3">

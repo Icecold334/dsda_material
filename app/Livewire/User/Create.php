@@ -8,6 +8,7 @@ use App\Models\Division;
 use App\Models\Position;
 use Livewire\Component;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class Create extends Component
 {
@@ -18,6 +19,7 @@ class Create extends Component
     public $sudin_id = '';
     public $division_id = '';
     public $position_id = '';
+    public $ttd = '';
 
     public function rules()
     {
@@ -28,12 +30,27 @@ class Create extends Component
             'sudin_id' => 'nullable|exists:sudins,id',
             'division_id' => 'nullable|exists:divisions,id',
             'position_id' => 'nullable|exists:positions,id',
+            'ttd' => 'nullable|string',
         ];
     }
 
     public function save()
     {
         $this->validate();
+
+        $ttdPath = null;
+
+        // Simpan tanda tangan jika ada
+        if ($this->ttd) {
+            // Decode base64 image
+            $image = str_replace('data:image/png;base64,', '', $this->ttd);
+            $image = str_replace(' ', '+', $image);
+            $imageName = 'ttd_' . time() . '_' . uniqid() . '.png';
+
+            // Simpan ke folder public/ttd
+            Storage::disk('public')->put('ttd/' . $imageName, base64_decode($image));
+            $ttdPath = 'ttd/' . $imageName;
+        }
 
         User::create([
             'name' => $this->name,
@@ -42,6 +59,7 @@ class Create extends Component
             'sudin_id' => $this->sudin_id ?: null,
             'division_id' => $this->division_id ?: null,
             'position_id' => $this->position_id ?: null,
+            'ttd' => $ttdPath,
         ]);
 
         session()->flash('message', 'Pengguna berhasil ditambahkan.');
