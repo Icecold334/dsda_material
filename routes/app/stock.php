@@ -35,8 +35,8 @@ Route::prefix('stock')->name('stock.')->group(function () {
             'unit' => $s->item->unit ?? '-',
             'qty' => number_format($s->qty, 2),
             'status' => $s->item->active
-                ? '<span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Aktif</span>'
-                : '<span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Tidak Aktif</span>',
+                ? '<span class="bg-success-600 text-white text-xs font-medium px-2 py-0.5 rounded">Aktif</span>'
+                : '<span class="bg-danger-600 text-white text-xs font-medium px-2 py-0.5 rounded">Nonaktif</span>',
         ]);
 
         return response()->json([

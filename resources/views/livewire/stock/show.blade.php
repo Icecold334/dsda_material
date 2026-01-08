@@ -40,8 +40,8 @@
             { "name": "Kode Barang", "id": "code", "width": "15%" },
             { "name": "Nama Barang", "id": "name", "width": "20%" },
             { "name": "Spek", "id": "spec", "width": "20%" },
-            { "name": "Satuan/Unit", "id": "unit", "width": "10%" },
             { "name": "Jumlah", "id": "qty", "width": "10%" },
+            { "name": "Satuan", "id": "unit", "width": "10%" },
             { "name": "Status", "id": "status", "width": "10%", "sortable": false }
         ]' data-limit="10" wire:ignore>
         </div>

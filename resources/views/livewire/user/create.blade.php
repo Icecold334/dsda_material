@@ -6,99 +6,52 @@
 
         <div class="mt-6 space-y-4">
             <div>
-                <label for="name" class="block text-sm font-medium text-gray-700">
-                    Nama <span class="text-red-500">*</span>
-                </label>
-                <input type="text" id="name" wire:model="name"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                    placeholder="Masukkan nama">
-                @error('name')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <x-input-label for="name" value="Nama" />
+                <x-text-input id="name" wire:model="name" type="text" class="mt-1 block w-full"
+                    placeholder="Masukkan nama" />
+                <x-input-error :messages="$errors->get('name')" class="mt-2" />
             </div>
 
             <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">
-                    Email <span class="text-red-500">*</span>
-                </label>
-                <input type="email" id="email" wire:model="email"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                    placeholder="email@example.com">
-                @error('email')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <x-input-label for="email" value="Email" />
+                <x-text-input id="email" wire:model="email" type="email" class="mt-1 block w-full"
+                    placeholder="email@example.com" />
+                <x-input-error :messages="$errors->get('email')" class="mt-2" />
             </div>
 
             <div>
-                <label for="password" class="block text-sm font-medium text-gray-700">
-                    Password <span class="text-red-500">*</span>
-                </label>
-                <input type="password" id="password" wire:model="password"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                    placeholder="Minimal 8 karakter">
-                @error('password')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <x-input-label for="password" value="Password" />
+                <x-text-input id="password" wire:model="password" type="password" class="mt-1 block w-full"
+                    placeholder="Minimal 8 karakter" />
+                <x-input-error :messages="$errors->get('password')" class="mt-2" />
             </div>
 
             <div>
-                <label for="password_confirmation" class="block text-sm font-medium text-gray-700">
-                    Konfirmasi Password <span class="text-red-500">*</span>
-                </label>
-                <input type="password" id="password_confirmation" wire:model="password_confirmation"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                    placeholder="Ulangi password">
-                @error('password_confirmation')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <x-input-label for="password_confirmation" value="Konfirmasi Password" />
+                <x-text-input id="password_confirmation" wire:model="password_confirmation" type="password"
+                    class="mt-1 block w-full" placeholder="Ulangi password" />
+                <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
             </div>
 
             <div>
-                <label for="sudin_id" class="block text-sm font-medium text-gray-700">
-                    Sudin
-                </label>
-                <select id="sudin_id" wire:model="sudin_id"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
-                    <option value="">-- Pilih Sudin --</option>
-                    @foreach ($sudins as $sudin)
-                        <option value="{{ $sudin->id }}">{{ $sudin->name }}</option>
-                    @endforeach
-                </select>
-                @error('sudin_id')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <x-input-label for="sudin_id" value="Sudin" />
+                <x-select-input id="sudin_id" wire:model="sudin_id" class="mt-1 block w-full"
+                    placeholder="-- Pilih Sudin --" :options="$sudins->pluck('name', 'id')" />
+                <x-input-error :messages="$errors->get('sudin_id')" class="mt-2" />
             </div>
 
             <div>
-                <label for="division_id" class="block text-sm font-medium text-gray-700">
-                    Divisi
-                </label>
-                <select id="division_id" wire:model="division_id"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
-                    <option value="">-- Pilih Divisi --</option>
-                    @foreach ($divisions as $division)
-                        <option value="{{ $division->id }}">{{ $division->name }}</option>
-                    @endforeach
-                </select>
-                @error('division_id')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <x-input-label for="division_id" value="Divisi" />
+                <x-select-input id="division_id" wire:model="division_id" class="mt-1 block w-full"
+                    placeholder="-- Pilih Divisi --" :options="$divisions->pluck('name', 'id')" />
+                <x-input-error :messages="$errors->get('division_id')" class="mt-2" />
             </div>
 
             <div>
-                <label for="position_id" class="block text-sm font-medium text-gray-700">
-                    Jabatan
-                </label>
-                <select id="position_id" wire:model="position_id"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
-                    <option value="">-- Pilih Jabatan --</option>
-                    @foreach ($positions as $position)
-                        <option value="{{ $position->id }}">{{ $position->name }}</option>
-                    @endforeach
-                </select>
-                @error('position_id')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <x-input-label for="position_id" value="Jabatan" />
+                <x-select-input id="position_id" wire:model="position_id" class="mt-1 block w-full"
+                    placeholder="-- Pilih Jabatan --" :options="$positions->pluck('name', 'id')" />
+                <x-input-error :messages="$errors->get('position_id')" class="mt-2" />
             </div>
 
             <div x-data="{
@@ -146,33 +99,26 @@
                     $wire.set('ttd', dataURL);
                 }
             }">
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Tanda Tangan
-                </label>
+                <x-input-label value="Tanda Tangan" class="mb-2" />
                 <div class="border-2 border-gray-300 rounded-md p-2 bg-white">
                     <canvas x-ref="signatureCanvas" width="400" height="200"
                         class="border border-gray-300 rounded cursor-crosshair w-full" @mousedown="startDrawing($event)"
                         @mousemove="draw($event)" @mouseup="stopDrawing()" @mouseleave="stopDrawing()"></canvas>
-                    <button type="button" @click="clearCanvas()"
-                        class="mt-2 px-3 py-1 text-sm text-gray-700 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200">
+                    <x-secondary-button type="button" @click="clearCanvas()" class="mt-2">
                         Hapus Tanda Tangan
-                    </button>
+                    </x-secondary-button>
                 </div>
-                @error('ttd')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <x-input-error :messages="$errors->get('ttd')" class="mt-2" />
             </div>
         </div>
 
         <div class="mt-6 flex justify-end gap-3">
-            <button type="button" x-on:click="$dispatch('close-modal', 'create-user')"
-                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+            <x-secondary-button type="button" x-on:click="$dispatch('close-modal', 'create-user')">
                 Batal
-            </button>
-            <button type="submit"
-                class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700">
+            </x-secondary-button>
+            <x-primary-button type="submit">
                 Simpan
-            </button>
+            </x-primary-button>
         </div>
     </form>
 </x-modal>

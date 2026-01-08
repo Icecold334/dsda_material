@@ -6,71 +6,38 @@
 
         <div class="mt-6 space-y-4">
             <div>
-                <label for="name" class="block text-sm font-medium text-gray-700">
-                    Nama Barang <span class="text-red-500">*</span>
-                </label>
-                <input type="text" id="name" wire:model="name"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                    placeholder="Masukkan nama barang">
-                @error('name')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <x-input-label for="name" value="Nama Barang" />
+                <x-text-input id="name" wire:model="name" type="text" class="mt-1 block w-full"
+                    placeholder="Masukkan nama barang" />
+                <x-input-error :messages="$errors->get('name')" class="mt-2" />
             </div>
 
             <div>
-                <label for="sudin_id" class="block text-sm font-medium text-gray-700">
-                    Sudin <span class="text-red-500">*</span>
-                </label>
-                <select id="sudin_id" wire:model="sudin_id"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
-                    <option value="">-- Pilih Sudin --</option>
-                    @foreach ($sudins as $sudin)
-                        <option value="{{ $sudin->id }}">{{ $sudin->name }}</option>
-                    @endforeach
-                </select>
-                @error('sudin_id')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <x-input-label for="sudin_id" value="Sudin" />
+                <x-select-input id="sudin_id" wire:model="sudin_id" class="mt-1 block w-full"
+                    placeholder="-- Pilih Sudin --" :options="$sudins->pluck('name', 'id')" />
+                <x-input-error :messages="$errors->get('sudin_id')" class="mt-2" />
             </div>
 
             <div>
-                <label for="item_category_id" class="block text-sm font-medium text-gray-700">
-                    Kategori
-                </label>
-                <select id="item_category_id" wire:model="item_category_id"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
-                    <option value="">-- Pilih Kategori --</option>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                    @endforeach
-                </select>
-                @error('item_category_id')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <x-input-label for="item_category_id" value="Kategori" />
+                <x-select-input id="item_category_id" wire:model="item_category_id" class="mt-1 block w-full"
+                    placeholder="-- Pilih Kategori --" :options="$categories->pluck('name', 'id')" />
+                <x-input-error :messages="$errors->get('item_category_id')" class="mt-2" />
             </div>
 
             <div>
-                <label for="spec" class="block text-sm font-medium text-gray-700">
-                    Spesifikasi
-                </label>
-                <input type="text" id="spec" wire:model="spec"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                    placeholder="Masukkan spesifikasi">
-                @error('spec')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <x-input-label for="spec" value="Spesifikasi" />
+                <x-text-input id="spec" wire:model="spec" type="text" class="mt-1 block w-full"
+                    placeholder="Masukkan spesifikasi" />
+                <x-input-error :messages="$errors->get('spec')" class="mt-2" />
             </div>
 
             <div>
-                <label for="unit" class="block text-sm font-medium text-gray-700">
-                    Satuan
-                </label>
-                <input type="text" id="unit" wire:model="unit"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                    placeholder="Contoh: pcs, liter, meter">
-                @error('unit')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <x-input-label for="unit" value="Satuan" />
+                <x-text-input id="unit" wire:model="unit" type="text" class="mt-1 block w-full"
+                    placeholder="Contoh: pcs, liter, meter" />
+                <x-input-error :messages="$errors->get('unit')" class="mt-2" />
             </div>
 
             <div>
@@ -83,15 +50,13 @@
         </div>
 
         <div class="mt-6 flex justify-end gap-3">
-            <button type="button"
-                x-on:click="$dispatch('close-modal', '{{ $itemCategory ? 'create-item-' . $itemCategory->id : 'create-item' }}')"
-                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+            <x-secondary-button type="button"
+                x-on:click="$dispatch('close-modal', '{{ $itemCategory ? 'create-item-' . $itemCategory->id : 'create-item' }}')">
                 Batal
-            </button>
-            <button type="submit"
-                class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700">
+            </x-secondary-button>
+            <x-primary-button type="submit">
                 Simpan
-            </button>
+            </x-primary-button>
         </div>
     </form>
 </x-modal>
