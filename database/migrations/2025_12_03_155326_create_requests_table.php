@@ -14,7 +14,16 @@ return new class extends Migration {
             $this->uuid($table);
 
             $table->string('nomor')->nullable();     // nomor permintaan
+            $table->string('name');
             $table->uuid('sudin_id');               // data milik Sudin apa
+            $table->uuid('warehouse_id')->nullable();
+            $table->uuid('district_id')->nullable();
+            $table->uuid('subdistrict_id')->nullable();
+            $table->text('address');
+            $table->string('panjang')->nullable();
+            $table->string('lebar')->nullable();
+            $table->string('tinggi')->nullable();
+            $table->string('nopol')->nullable();
             $table->uuid('unit_id')->nullable();    // unit kerja tujuan barang
             $table->uuid('user_id');                // pembuat permintaan
 
@@ -28,6 +37,9 @@ return new class extends Migration {
 
             // FK
             $table->foreign('sudin_id')->references('id')->on('sudins');
+            $table->foreign('warehouse_id')->references('id')->on('warehouses');
+            $table->foreign('district_id')->references('id')->on('districts');
+            $table->foreign('subdistrict_id')->references('id')->on('subdistricts');
             $table->foreign('unit_id')->references('id')->on('units');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('driver_id')->references('id')->on('personnels');

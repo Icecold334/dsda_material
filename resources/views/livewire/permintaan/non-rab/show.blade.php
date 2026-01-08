@@ -4,7 +4,7 @@
             <div class="text-3xl font-semibold"> Detail Permintaan #{{ $permintaan->nomor }}</div>
         </div>
         <div class="text-right">
-            <a href="{{ route('permintaan.rab.index') }}" wire:navigate
+            <a href="{{ route('permintaan.nonRab.index') }}" wire:navigate
                 class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  focus:outline-none">Kembali</a>
         </div>
     </div>
@@ -22,7 +22,7 @@
 
                         <td><span
                                 class="bg-{{ $permintaan->status_color }}-600 text-{{ $permintaan->status_color }}-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">{{
-                                $permintaan->status_text }}</span></td>
+    $permintaan->status_text }}</span></td>
                     </tr>
 
                 </table>
@@ -31,19 +31,20 @@
         <x-card title="Dokumen Permintaan">
 
             <ul class="divide-y divide-default">
-                @for ($i = 0; $i < 5; $i++) <li class="p-1">
-                    <div class="flex items-center space-x-4 rtl:space-x-reverse">
-                        <div class="shrink-0 text-success-600">
-                            <i class="fa-solid fa-file"></i>
+                @for ($i = 0; $i < 5; $i++)
+                    <li class="p-1">
+                        <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                            <div class="shrink-0 text-success-600">
+                                <i class="fa-solid fa-file"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-heading truncate">
+                                    {{ fake()->sentence }}
+                                </p>
+                            </div>
                         </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-heading truncate">
-                                {{ fake()->sentence }}
-                            </p>
-                        </div>
-                    </div>
                     </li>
-                    @endfor
+                @endfor
             </ul>
 
         </x-card>

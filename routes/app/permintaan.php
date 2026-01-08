@@ -6,6 +6,7 @@ use App\Livewire\Permintaan\Rab\Show as ShowRab;
 use App\Livewire\Permintaan\Rab\Index as IndexRab;
 use App\Livewire\Permintaan\NonRab\Show as ShowNonRab;
 use App\Livewire\Permintaan\NonRab\Index as IndexNonRab;
+use App\Livewire\Permintaan\NonRab\Create as CreateNonRab;
 
 
 Route::prefix('permintaan')->name('permintaan.')->group(function () {
@@ -48,6 +49,7 @@ Route::prefix('permintaan')->name('permintaan.')->group(function () {
     });
     Route::prefix('non-rab')->name('nonRab.')->group(function () {
         Route::get('/', IndexNonRab::class)->name('index');
+        Route::get('/create', CreateNonRab::class)->name('create');
         Route::get('/json', function () {
             $data = RequestModel::whereNull('rab_id')->get()->map(fn($r) => [
                 'nomor' => $r->nomor,

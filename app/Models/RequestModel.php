@@ -39,6 +39,21 @@ class RequestModel extends Model
         return $this->belongsTo(Personnel::class, 'security_id');
     }
 
+    public function warehouse()
+    {
+        return $this->belongsTo(Warehouse::class);
+    }
+
+    public function district()
+    {
+        return $this->belongsTo(District::class);
+    }
+
+    public function subdistrict()
+    {
+        return $this->belongsTo(Subdistrict::class);
+    }
+
     public function items()
     {
         return $this->hasMany(RequestItem::class, 'request_id');
