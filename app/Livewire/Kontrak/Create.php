@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Http;
 class Create extends Component
 {
     #[Title("Tambah Kontrak")]
-    public $nomorKontrak = '20397/PN01.02', $tahunKontrak = 2025;
+    public $nomorKontrak, $tahunKontrak, $apiExist;
 
     // #[On("cari-kontrak")]
     // public function cariKontrak()
@@ -75,11 +75,16 @@ class Create extends Component
     // }
 
 
-    #[On("confirm-result")]
+    #[On("FillVar")]
     public function confirmResult($data)
     {
-        dd('as');
+        $this->nomorKontrak = $data['nomor_kontrak'];
+        $this->tahunKontrak = $data['tahun'];
+        $this->apiExist = $data['apiExist'];
+        dd($this->nomorKontrak, $this->tahunKontrak, $this->apiExist);
     }
+
+
     public function render()
     {
         $this->dispatch('open-modal', 'input-nomor-kontrak');

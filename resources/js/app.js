@@ -12,8 +12,8 @@ window.showConfirm = function ({
     type = "warning",
     confirmButtonText = "Ya",
     cancelButtonText = "Batal",
-    callbackEvent = null,
-    callbackData = {},
+    onConfirm = null,     // 👈 FUNCTION
+    onCancel = null,      // 👈 OPTIONAL
 } = {}) {
 
     return Swal.fire({
@@ -24,14 +24,18 @@ window.showConfirm = function ({
         confirmButtonText,
         cancelButtonText,
     }).then((result) => {
-        if (callbackEvent) {
-            window.Livewire.dispatch(callbackEvent, {
-                confirmed: result.isConfirmed,
-                ...callbackData,
-            });
+
+        if (result.isConfirmed && typeof onConfirm === "function") {
+            onConfirm(result);
         }
+
+        if (result.isDismissed && typeof onCancel === "function") {
+            onCancel(result);
+        }
+
     });
 };
+
 
 
 window.showAlert = function ({
@@ -81,59 +85,85 @@ window.showAlert = function ({
 
 document.addEventListener("livewire:init", () => {
     document.getElementById("btnCari").addEventListener("click", async () => {
-    const nomorKontrak = document.getElementById("nomorKontrak").value.trim();
-    const tahun = document.getElementById("tahunKontrak").value.trim();
-    
-    if (!nomorKontrak || !tahun) {
-        showAlert({
-            icon: "error",
-            title: "Lengkapi Data!",
-            text: "Nomor kontrak dan tahun wajib diisi",
-            showConfirmButton: true,
-        });
-        return;
-    }
-
-    try {
-        const params = new URLSearchParams({
-            nomor_kontrak: nomorKontrak,
-            tahun: tahun,
-        });
-
-        const res = await fetch(`/kontrak/api/emonev?${params.toString()}`, {
-            headers: {
-                "Accept": "application/json",
-            },
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-            throw new Error(data.message || "Terjadi kesalahan");
+        Swal.showLoading();
+        const nomorKontrak = document.getElementById("nomorKontrak").value.trim();
+        const tahun = document.getElementById("tahunKontrak").value.trim();
+        
+        if (!nomorKontrak || !tahun) {
+            showAlert({
+                type: "warning",
+                title: "Lengkapi Data!",
+                text: "Nomor kontrak dan tahun wajib diisi",
+                showConfirmButton: false,
+            });
+            return;
         }
 
-        // 🔥 SUCCESS
-        console.log(data.data); // kontrak object
+        try {
+            const params = new URLSearchParams({
+                nomor_kontrak: nomorKontrak,
+                tahun: tahun,
+            });
 
-        showAlert({
-            icon: "success",
-            title: "Berhasil!",
-            text: "Kontrak ditemukan",
-        });
+            const res = await fetch(`/kontrak/api/emonev?${params.toString()}`, {
+                headers: {
+                    "Accept": "application/json",
+                },
+            });
 
-        // TODO:
-        // render ke table / modal / component
-        // open modal detail kontrak
+            const data = await res.json();
+            
+            if (!res.ok) {
+                throw new Error(data.message || "Terjadi kesalahan");
+            }
 
-    } catch (err) {
-        showAlert({
-            icon: "error",
-            title: "Gagal!",
-            text: err.message,
-            showConfirmButton: true,
-        });
-    }
-});
+            showConfirm({
+                title: "Kontrak Ditemukan",
+                text: "Pastikan nomor kontrak dan tahun sudah benar. Lanjutkan pendaftaran?",
+                type: "info",
+                confirmButtonText: "Ya, Lanjutkan",
+                cancelButtonText: "Cek Ulang",
+                onConfirm: () => {
+                    window.Livewire.dispatch('close-modal', {
+                        name: 'input-nomor-kontrak'
+                    });
+
+                    window.Livewire.dispatch('FillVar', {
+                        data: {
+                            nomor_kontrak: nomorKontrak,
+                            tahun: tahun,
+                            apiExist: true,
+                        }
+                    });
+                }
+            });
+
+
+
+
+        } catch (err) {
+            
+            showConfirm({
+                title: "Gagal!",
+                text: 'Daftarkan kontrak secara manual?',
+                type: "error",
+                confirmButtonText: "Ya",
+                cancelButtonText: "Tidak",
+                onConfirm: () => {
+                    Livewire.dispatch('close-modal', 'input-nomor-kontrak');
+
+
+                    Livewire.dispatch("FillVar", {
+                        data: {
+                            nomor_kontrak: nomorKontrak,
+                            tahun: tahun,
+                            apiExist: false,
+                        }
+                    });
+                }
+            });
+        }
+    });
 
     Livewire.on("confirm", (payload = {}) => {
         
@@ -142,6 +172,12 @@ document.addEventListener("livewire:init", () => {
 
     Livewire.on("alert", (payload = {}) => {
         showAlert(payload); // alert biasa
+    });
+    Livewire.on("loading", (payload = {}) => {
+        Swal.showLoading();
+    });
+    Livewire.on("endLoading", (payload = {}) => {
+        Swal.close();
     });
 });
 

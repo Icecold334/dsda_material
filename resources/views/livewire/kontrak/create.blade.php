@@ -8,7 +8,7 @@
                 class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  focus:outline-none">Kembali</a>
         </div>
     </div>
-    <x-modal name="input-nomor-kontrak">
+    <x-modal name="input-nomor-kontrak" :dismissable="false">
         <div class="p-6 space-y-4">
             <div class="flex items-center gap-2">
                 <div class="text-lg text-primary-700">
@@ -28,8 +28,8 @@
                         class="rounded-none bg-gray-50 border border-gray-300 text-gray-900 block w-20 text-sm p-2.5"
                         placeholder="Tahun" required>
 
-                    <button type="button" id="btnCari"
-                        class="inline-flex items-center px-3 text-sm text-white bg-primary-600 hover:bg-primary-800 rounded-e-md transition">
+                    <button type="button" id="btnCari" class=" inline-flex items-center px-3 text-sm text-white bg-primary-600 hover:bg-primary-800
+                        rounded-e-md transition">
                         Cari
                     </button>
                 </div>
