@@ -4,8 +4,8 @@
             <div class="text-3xl font-semibold">Buat Permintaan Non RAB</div>
         </div>
         <div class="text-right">
-            <a href="{{ route('permintaan.nonRab.index') }}" wire:navigate
-                class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none">Kembali</a>
+            <x-primary-button href="{{ route('permintaan.nonRab.index') }}" wire:navigate
+                >Kembali</x-primary-button>
         </div>
     </div>
 
@@ -63,13 +63,13 @@
                         <div class="input w-full max-w-[500px] flex flex-col gap-4">
                             <div class="grid-cols-2 flex gap-4">
                                 <div class="w-full ">
-                                    <x-select-input id="district_id" wire:model.live="district_id" class=""
+                                    <x-select-input id="district_id" wire:model.live="district_id" class="w-full"
                                         placeholder="-- Pilih Kecamatan --" :options="$districts->pluck('name', 'id')" />
                                     <x-input-error :messages="$errors->get('district_id')" class="mt-2" />
                                 </div>
                                 <div class="w-full ">
-                                    <x-select-input id="subdistrict_id" wire:model="subdistrict_id"
-                                        class="block w-full " placeholder="-- Pilih Kelurahan --"
+                                    <x-select-input id="subdistrict_id" wire:model="subdistrict_id" class="w-full"
+                                        placeholder="-- Pilih Kelurahan --"
                                         :options="$subdistricts->pluck('name', 'id')" />
                                     <x-input-error :messages="$errors->get('subdistrict_id')" class="mt-2" />
                                 </div>
@@ -99,6 +99,16 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </x-card>
+
+
+
+            <x-card title="Lampiran Permintaan">
+                <div class="space-y-4">
+                    <x-primary-button type="button" wire:click="addAttachment">
+                        Tambah Lampiran
+                    </x-primary-button>
                 </div>
             </x-card>
         </div>
