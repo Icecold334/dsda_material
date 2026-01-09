@@ -73,21 +73,31 @@ class Create extends Component
     //     );
 
     // }
+    public function mount()
+    {
 
+        $this->dispatch('open-modal', 'input-nomor-kontrak');
+    }
 
-    #[On("FillVar")]
+    #[On("confirmKontrak")]
     public function confirmResult($data)
     {
-        $this->nomorKontrak = $data['nomor_kontrak'];
-        $this->tahunKontrak = $data['tahun'];
-        $this->apiExist = $data['apiExist'];
-        dd($this->nomorKontrak, $this->tahunKontrak, $this->apiExist);
+        $this->dispatch('endLoading');
+        $this->dispatch('open-modal', 'confirm-kontrak');
+    }
+
+    #[On("proceedCreateKontrak")]
+    public function proceedCreateKontrak($data)
+    {
+        $this->nomorKontrak = $data['no_spk'];
+        $this->tahunKontrak = $data['tahun_anggaran'];
+        $this->apiExist = true;
     }
 
 
     public function render()
     {
-        $this->dispatch('open-modal', 'input-nomor-kontrak');
+
         return view('livewire.kontrak.create');
     }
 }

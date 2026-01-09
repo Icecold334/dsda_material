@@ -5,6 +5,7 @@ import { Grid, html } from "gridjs";
 import "gridjs/dist/theme/mermaid.css";
 import { idID } from "gridjs/l10n";
 import Swal from "sweetalert2";
+window.Swal = Swal;
 
 window.showConfirm = function ({
     title = "Yakin?",
@@ -35,9 +36,6 @@ window.showConfirm = function ({
 
     });
 };
-
-
-
 window.showAlert = function ({
     mode = "alert",        // alert | confirm
     type = "success",      // success | error | info | warning
@@ -81,92 +79,8 @@ window.showAlert = function ({
         }
     });
 };
-
-
-document.addEventListener("livewire:init", () => {
-    document.getElementById("btnCari").addEventListener("click", async () => {
-        Swal.showLoading();
-        const nomorKontrak = document.getElementById("nomorKontrak").value.trim();
-        const tahun = document.getElementById("tahunKontrak").value.trim();
-        
-        if (!nomorKontrak || !tahun) {
-            showAlert({
-                type: "warning",
-                title: "Lengkapi Data!",
-                text: "Nomor kontrak dan tahun wajib diisi",
-                showConfirmButton: false,
-            });
-            return;
-        }
-
-        try {
-            const params = new URLSearchParams({
-                nomor_kontrak: nomorKontrak,
-                tahun: tahun,
-            });
-
-            const res = await fetch(`/kontrak/api/emonev?${params.toString()}`, {
-                headers: {
-                    "Accept": "application/json",
-                },
-            });
-
-            const data = await res.json();
-            
-            if (!res.ok) {
-                throw new Error(data.message || "Terjadi kesalahan");
-            }
-
-            showConfirm({
-                title: "Kontrak Ditemukan",
-                text: "Pastikan nomor kontrak dan tahun sudah benar. Lanjutkan pendaftaran?",
-                type: "info",
-                confirmButtonText: "Ya, Lanjutkan",
-                cancelButtonText: "Cek Ulang",
-                onConfirm: () => {
-                    window.Livewire.dispatch('close-modal', {
-                        name: 'input-nomor-kontrak'
-                    });
-
-                    window.Livewire.dispatch('FillVar', {
-                        data: {
-                            nomor_kontrak: nomorKontrak,
-                            tahun: tahun,
-                            apiExist: true,
-                        }
-                    });
-                }
-            });
-
-
-
-
-        } catch (err) {
-            
-            showConfirm({
-                title: "Gagal!",
-                text: 'Daftarkan kontrak secara manual?',
-                type: "error",
-                confirmButtonText: "Ya",
-                cancelButtonText: "Tidak",
-                onConfirm: () => {
-                    Livewire.dispatch('close-modal', 'input-nomor-kontrak');
-
-
-                    Livewire.dispatch("FillVar", {
-                        data: {
-                            nomor_kontrak: nomorKontrak,
-                            tahun: tahun,
-                            apiExist: false,
-                        }
-                    });
-                }
-            });
-        }
-    });
-
+function app(){
     Livewire.on("confirm", (payload = {}) => {
-        
         showConfirm(payload);
     });
 
@@ -174,13 +88,20 @@ document.addEventListener("livewire:init", () => {
         showAlert(payload); // alert biasa
     });
     Livewire.on("loading", (payload = {}) => {
-        Swal.showLoading();
+        Swal.fire({
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        
+        });
     });
     Livewire.on("endLoading", (payload = {}) => {
         Swal.close();
     });
-});
 
+}
 
 
 
@@ -257,9 +178,11 @@ function scanAndInitGrid() {
 document.addEventListener("DOMContentLoaded", () => {
     scanAndInitGrid();
     initFlowbite();
+    app();
 });
 
 document.addEventListener("livewire:navigated", () => {
     scanAndInitGrid();
     initFlowbite();
+    app();
 });
