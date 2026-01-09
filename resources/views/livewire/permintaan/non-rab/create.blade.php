@@ -117,9 +117,14 @@
 
             <x-card title="Lampiran">
                 <div class="space-y-4">
-                    <x-primary-button type="button">
-                        Tambah Lampiran
-                    </x-primary-button>
+                    <livewire:components.document-upload 
+                        mode="create"
+                        modelType="App\Models\RequestModel"
+                        category="lampiran_permintaan"
+                        label="Upload Lampiran"
+                        :multiple="true"
+                        accept="image/*,.pdf,.doc,.docx"
+                        :key="'doc-upload-lampiran'" />
                 </div>
             </x-card>
         </div>

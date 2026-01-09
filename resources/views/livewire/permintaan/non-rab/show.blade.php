@@ -29,24 +29,8 @@
             </div>
         </x-card>
         <x-card title="Dokumen Permintaan">
-
-            <ul class="divide-y divide-default">
-                @for ($i = 0; $i < 5; $i++)
-                    <li class="p-1">
-                        <div class="flex items-center space-x-4 rtl:space-x-reverse">
-                            <div class="shrink-0 text-success-600">
-                                <i class="fa-solid fa-file"></i>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-heading truncate">
-                                    {{ fake()->sentence }}
-                                </p>
-                            </div>
-                        </div>
-                    </li>
-                @endfor
-            </ul>
-
+            <livewire:components.document-upload mode="show" modelType="App\Models\RequestModel"
+                :modelId="$permintaan->id" category="lampiran_permintaan" label="Lampiran Permintaan" :key="'doc-show-' . $permintaan->id" />
         </x-card>
 
     </div>
