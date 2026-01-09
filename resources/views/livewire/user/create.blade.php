@@ -35,22 +35,22 @@
 
             <div>
                 <x-input-label for="sudin_id" value="Sudin" />
-                <x-select-input id="sudin_id" wire:model="sudin_id" class="mt-1 block w-full"
-                    placeholder="-- Pilih Sudin --" :options="$sudins->pluck('name', 'id')" />
+                <livewire:components.select-input wire:model="sudin_id" :options="$sudins->pluck('name', 'id')"
+                    placeholder="-- Pilih Sudin --" :key="'sudin-select'" />
                 <x-input-error :messages="$errors->get('sudin_id')" class="mt-2" />
             </div>
 
             <div>
                 <x-input-label for="division_id" value="Divisi" />
-                <x-select-input id="division_id" wire:model="division_id" class="mt-1 block w-full"
-                    placeholder="-- Pilih Divisi --" :options="$divisions->pluck('name', 'id')" />
+                <livewire:components.select-input wire:model="division_id" :options="$divisions->pluck('name', 'id')"
+                    placeholder="-- Pilih Divisi --" :key="'division-select'" />
                 <x-input-error :messages="$errors->get('division_id')" class="mt-2" />
             </div>
 
             <div>
                 <x-input-label for="position_id" value="Jabatan" />
-                <x-select-input id="position_id" wire:model="position_id" class="mt-1 block w-full"
-                    placeholder="-- Pilih Jabatan --" :options="$positions->pluck('name', 'id')" />
+                <livewire:components.select-input wire:model="position_id" :options="$positions->pluck('name', 'id')"
+                    placeholder="-- Pilih Jabatan --" :key="'position-select'" />
                 <x-input-error :messages="$errors->get('position_id')" class="mt-2" />
             </div>
 

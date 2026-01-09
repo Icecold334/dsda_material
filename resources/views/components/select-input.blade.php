@@ -3,32 +3,33 @@
 @php
     $wireModel = $attributes->wire('model')->value();
     $id = $attributes->get('id', 'select-' . uniqid());
+    $processedOptions = collect($options)->map(fn($label, $value) => ['value' => $value, 'label' => $label])->values()->toArray();
 @endphp
 
-<div x-data="{
-    open: false,
-    search: '',
-    selected: @entangle($wireModel),
-    placeholder: '{{ $placeholder }}',
-    options: {{ json_encode(collect($options)->map(fn($label, $value) => ['value' => $value, 'label' => $label])->values()) }},
-    get filteredOptions() {
-        if (this.search === '') {
-            return this.options;
+<div wire:key="{{ md5(json_encode($processedOptions)) }}" x-data="{
+        open: false,
+        search: '',
+        selected: @entangle($wireModel),
+        placeholder: '{{ $placeholder }}',
+        options: {{ json_encode($processedOptions) }},
+        get filteredOptions() {
+            if (this.search === '') {
+                return this.options;
+            }
+            return this.options.filter(option => 
+                option.label.toLowerCase().includes(this.search.toLowerCase())
+            );
+        },
+        get selectedLabel() {
+            const option = this.options.find(opt => opt.value == this.selected);
+            return option ? option.label : this.placeholder;
+        },
+        selectOption(value) {
+            this.selected = value;
+            this.open = false;
+            this.search = '';
         }
-        return this.options.filter(option => 
-            option.label.toLowerCase().includes(this.search.toLowerCase())
-        );
-    },
-    get selectedLabel() {
-        const option = this.options.find(opt => opt.value == this.selected);
-        return option ? option.label : this.placeholder;
-    },
-    selectOption(value) {
-        this.selected = value;
-        this.open = false;
-        this.search = '';
-    }
-}" @click.away="open = false" class="relative">
+    }" @click.away="open = false" class="relative">
     <!-- Hidden select for form compatibility -->
     <select {{ $disabled ? 'disabled' : '' }} x-model="selected" class="hidden" {!! $attributes->except(['class', 'wire:model', 'wire:model.live', 'wire:model.defer']) !!}>
         <option value="">{{ $placeholder }}</option>

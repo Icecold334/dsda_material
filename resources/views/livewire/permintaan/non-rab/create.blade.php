@@ -34,8 +34,11 @@
                     <div class="flex items-center justify-between">
                         <x-input-label for="sudin_id" value="Sudin" />
                         <div class="mt-1 block w-full max-w-[500px]">
-                            <x-select-input id="sudin_id" wire:model.live="sudin_id" class="w-full"
-                                placeholder="-- Pilih Sudin --" :options="$sudins->pluck('name', 'id')" />
+                            <livewire:components.select-input
+                                wire:model.live="sudin_id"
+                                :options="$sudins->pluck('name', 'id')"
+                                placeholder="-- Pilih Sudin --"
+                                :key="'sudin-select'" />
                             <x-input-error :messages="$errors->get('sudin_id')" class="mt-2" />
                         </div>
                     </div>
@@ -43,11 +46,14 @@
                     <div class="flex items-center justify-between">
                         <x-input-label for="warehouse_id" value="Gudang" />
                         <div class="mt-1 block w-full max-w-[500px]">
-                            <x-select-input id="warehouse_id" wire:model="warehouse_id" class="w-full "
-                                placeholder="-- Pilih Gudang --" :options="$warehouses->pluck('name', 'id')" />
+                            <livewire:components.select-input
+                                wire:model="warehouse_id"
+                                :options="$warehouses->pluck('name', 'id')"
+                                placeholder="-- Pilih Gudang --"
+                                :key="'warehouse-select-' . $sudin_id" />
                             <x-input-error :messages="$errors->get('warehouse_id')" class="mt-2" />
                         </div>
-                    </div class="flex items-center justify-between">
+                    </div>
 
                     <div class="flex items-center justify-between">
                         <x-input-label for="tanggal_permintaan" value="Tanggal Permintaan" />
@@ -63,14 +69,19 @@
                         <div class="input w-full max-w-[500px] flex flex-col gap-4">
                             <div class="grid-cols-2 flex gap-4">
                                 <div class="w-full ">
-                                    <x-select-input id="district_id" wire:model.live="district_id" class="w-full"
-                                        placeholder="-- Pilih Kecamatan --" :options="$districts->pluck('name', 'id')" />
+                                    <livewire:components.select-input
+                                        wire:model.live="district_id"
+                                        :options="$districts->pluck('name', 'id')"
+                                        placeholder="-- Pilih Kecamatan --"
+                                        :key="'district-select-' . $sudin_id" />
                                     <x-input-error :messages="$errors->get('district_id')" class="mt-2" />
                                 </div>
                                 <div class="w-full ">
-                                    <x-select-input id="subdistrict_id" wire:model="subdistrict_id" class="w-full"
+                                    <livewire:components.select-input
+                                        wire:model="subdistrict_id"
+                                        :options="$subdistricts->pluck('name', 'id')"
                                         placeholder="-- Pilih Kelurahan --"
-                                        :options="$subdistricts->pluck('name', 'id')" />
+                                        :key="'subdistrict-select-' . $district_id" />
                                     <x-input-error :messages="$errors->get('subdistrict_id')" class="mt-2" />
                                 </div>
                             </div>
@@ -104,9 +115,9 @@
 
 
 
-            <x-card title="Lampiran Permintaan">
+            <x-card title="Lampiran">
                 <div class="space-y-4">
-                    <x-primary-button type="button" wire:click="addAttachment">
+                    <x-primary-button type="button">
                         Tambah Lampiran
                     </x-primary-button>
                 </div>

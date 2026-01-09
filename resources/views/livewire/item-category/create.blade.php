@@ -14,8 +14,8 @@
 
             <div>
                 <x-input-label for="sudin_id" value="Sudin" />
-                <x-select-input id="sudin_id" wire:model="sudin_id" class="mt-1 block w-full"
-                    placeholder="-- Pilih Sudin --" :options="$sudins->pluck('name', 'id')" />
+                <livewire:components.select-input wire:model="sudin_id" :options="$sudins->pluck('name', 'id')"
+                    placeholder="-- Pilih Sudin --" :key="'sudin-select'" />
                 <x-input-error :messages="$errors->get('sudin_id')" class="mt-2" />
             </div>
         </div>

@@ -25,15 +25,21 @@
 
             <div>
                 <x-input-label for="sudin_id-{{ $item->id }}" value="Sudin" />
-                <x-select-input id="sudin_id-{{ $item->id }}" wire:model="sudin_id" class="mt-1 block w-full"
-                    placeholder="-- Pilih Sudin --" :options="$sudins->pluck('name', 'id')" />
+                <livewire:components.select-input
+                    wire:model.live="sudin_id"
+                    :options="$sudins->pluck('name', 'id')"
+                    placeholder="-- Pilih Sudin --"
+                    :key="'sudin-select-' . $item->id" />
                 <x-input-error :messages="$errors->get('sudin_id')" class="mt-2" />
             </div>
 
             <div>
                 <x-input-label for="item_category_id-{{ $item->id }}" value="Kategori" />
-                <x-select-input id="item_category_id-{{ $item->id }}" wire:model="item_category_id"
-                    class="mt-1 block w-full" placeholder="-- Pilih Kategori --" :options="$categories->pluck('name', 'id')" />
+                <livewire:components.select-input
+                    wire:model="item_category_id"
+                    :options="$categories->pluck('name', 'id')"
+                    placeholder="-- Pilih Kategori --"
+                    :key="'item-category-select-' . $item->id . '-' . $sudin_id" />
                 <x-input-error :messages="$errors->get('item_category_id')" class="mt-2" />
             </div>
 
