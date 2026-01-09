@@ -120,7 +120,6 @@ function mapByColumns(rows, columns) {
         })
     );
 }
-    
 
 function initGrid(wrapper) {
     if (!wrapper || !document.body.contains(wrapper)) return;

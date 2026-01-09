@@ -27,6 +27,7 @@ class Sidebar extends Component
                 <livewire:side-item title="Dashboard" href="/" />
                 <livewire:side-item title="Kontrak" href="{{ route('kontrak.index') }}" />
                 <livewire:side-item title="RAB" href="{{ route('rab.index') }}" />
+                <livewire:side-item title="Stok" href="{{ route('stock.index') }}" />
                 <livewire:side-item title="Pengiriman Barang" href="{{ route('pengiriman.index') }}" />
                             <livewire:side-item title="Permintaan Barang" icon="users" :collapsable="true" :items="[
                                             ['title' => 'Menggunakan RAB', 'href' => route('permintaan.rab.index')],
@@ -40,6 +41,7 @@ class Sidebar extends Component
                         ['title' => 'Gudang', 'href' => route('warehouse.index')],
                         ['title' => 'Kategori Barang', 'href' => route('item-category.index')],
                         ['title' => 'Barang', 'href' => route('item.index')],
+                        ['title' => 'Pengguna', 'href' => route('user.index')],
                     ]" />
             </ul>
 </div>

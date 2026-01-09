@@ -21,4 +21,9 @@ class District extends Model
     {
         return $this->hasMany(Subdistrict::class);
     }
+
+    public function requests()
+    {
+        return $this->hasMany(RequestModel::class);
+    }
 }

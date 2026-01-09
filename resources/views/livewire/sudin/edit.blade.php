@@ -17,51 +17,35 @@
 
         <div class="mt-6 space-y-4">
             <div>
-                <label for="name-{{ $sudin->id }}" class="block text-sm font-medium text-gray-700">
-                    Nama Sudin <span class="text-red-500">*</span>
-                </label>
-                <input type="text" id="name-{{ $sudin->id }}" wire:model="name"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                    placeholder="Masukkan nama sudin">
-                @error('name')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <x-input-label for="name-{{ $sudin->id }}" value="Nama Sudin" />
+                <x-text-input id="name-{{ $sudin->id }}" wire:model="name" type="text" class="mt-1 block w-full"
+                    placeholder="Masukkan nama sudin" />
+                <x-input-error :messages="$errors->get('name')" class="mt-2" />
             </div>
 
             <div>
-                <label for="short-{{ $sudin->id }}" class="block text-sm font-medium text-gray-700">
-                    Singkatan <span class="text-red-500">*</span>
-                </label>
-                <input type="text" id="short-{{ $sudin->id }}" wire:model="short"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                    placeholder="Masukkan singkatan">
-                @error('short')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <x-input-label for="short-{{ $sudin->id }}" value="Singkatan" />
+                <x-text-input id="short-{{ $sudin->id }}" wire:model="short" type="text" class="mt-1 block w-full"
+                    placeholder="Masukkan singkatan" />
+                <x-input-error :messages="$errors->get('short')" class="mt-2" />
             </div>
 
             <div>
-                <label for="address-{{ $sudin->id }}" class="block text-sm font-medium text-gray-700">
-                    Alamat
-                </label>
+                <x-input-label for="address-{{ $sudin->id }}" value="Alamat" />
                 <textarea id="address-{{ $sudin->id }}" wire:model="address" rows="3"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                    class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
                     placeholder="Masukkan alamat"></textarea>
-                @error('address')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <x-input-error :messages="$errors->get('address')" class="mt-2" />
             </div>
         </div>
 
         <div class="mt-6 flex justify-end gap-3">
-            <button type="button" x-on:click="$dispatch('close-modal', 'edit-sudin-{{ $sudin->id }}')"
-                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+            <x-secondary-button type="button" x-on:click="$dispatch('close-modal', 'edit-sudin-{{ $sudin->id }}')">
                 Batal
-            </button>
-            <button type="button" @click="confirmUpdate()"
-                class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700">
+            </x-secondary-button>
+            <x-primary-button type="button" @click="confirmUpdate()">
                 Update
-            </button>
+            </x-primary-button>
         </div>
     </form>
 </x-modal>

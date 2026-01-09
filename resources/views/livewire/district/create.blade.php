@@ -6,43 +6,27 @@
 
         <div class="mt-6 space-y-4">
             <div>
-                <label for="name" class="block text-sm font-medium text-gray-700">
-                    Nama Kecamatan <span class="text-red-500">*</span>
-                </label>
-                <input type="text" id="name" wire:model="name"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                    placeholder="Masukkan nama Kecamatan">
-                @error('name')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <x-input-label for="name" value="Nama Kecamatan" />
+                <x-text-input id="name" wire:model="name" type="text" class="mt-1 block w-full"
+                    placeholder="Masukkan nama Kecamatan" />
+                <x-input-error :messages="$errors->get('name')" class="mt-2" />
             </div>
 
             <div>
-                <label for="sudin_id" class="block text-sm font-medium text-gray-700">
-                    Sudin <span class="text-red-500">*</span>
-                </label>
-                <select id="sudin_id" wire:model="sudin_id"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
-                    <option value="">-- Pilih Sudin --</option>
-                    @foreach ($sudins as $sudin)
-                        <option value="{{ $sudin->id }}">{{ $sudin->name }}</option>
-                    @endforeach
-                </select>
-                @error('sudin_id')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <x-input-label for="sudin_id" value="Sudin" />
+                <livewire:components.select-input wire:model="sudin_id" :options="$sudins->pluck('name', 'id')"
+                    placeholder="-- Pilih Sudin --" :key="'sudin-select'" />
+                <x-input-error :messages="$errors->get('sudin_id')" class="mt-2" />
             </div>
         </div>
 
         <div class="mt-6 flex justify-end gap-3">
-            <button type="button" x-on:click="$dispatch('close-modal', 'create-district')"
-                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+            <x-secondary-button type="button" x-on:click="$dispatch('close-modal', 'create-district')">
                 Batal
-            </button>
-            <button type="submit"
-                class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700">
+            </x-secondary-button>
+            <x-primary-button type="submit">
                 Simpan
-            </button>
+            </x-primary-button>
         </div>
     </form>
 </x-modal>

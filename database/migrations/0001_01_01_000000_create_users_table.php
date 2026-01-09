@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->string('password');
 
             // DSDA custom fields
+            $table->string('ttd')->nullable();
             $table->uuid('sudin_id')->nullable();
             $table->uuid('division_id')->nullable();
             $table->uuid('position_id')->nullable();

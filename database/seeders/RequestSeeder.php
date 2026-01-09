@@ -12,6 +12,9 @@ use App\Models\User;
 use App\Models\Personnel;
 use App\Models\Item;
 use App\Models\Rab;
+use App\Models\Warehouse;
+use App\Models\District;
+use App\Models\Subdistrict;
 
 class RequestSeeder extends Seeder
 {
@@ -23,6 +26,9 @@ class RequestSeeder extends Seeder
         $rab = Rab::all()->random();
         $driver = Personnel::where('type', 'driver')->first();
         $security = Personnel::where('type', 'security')->first();
+        $warehouse = Warehouse::first();
+        $district = District::first();
+        $subdistrict = Subdistrict::first();
         $items = Item::all();
 
         if (!$sudin || !$user || $items->isEmpty()) {
@@ -35,8 +41,17 @@ class RequestSeeder extends Seeder
 
             $request = RequestModel::create([
                 'nomor' => 'REQ-' . now()->format('Ymd') . '-' . str_pad($i, 3, '0', STR_PAD_LEFT),
+                'name' => 'Permintaan Barang ' . $i,
                 'rab_id' => fake()->boolean ? $rab->id : null,
                 'sudin_id' => $sudin->id,
+                'warehouse_id' => $warehouse?->id,
+                'district_id' => $district?->id,
+                'subdistrict_id' => $subdistrict?->id,
+                'address' => fake()->address,
+                'panjang' => rand(100, 500),
+                'lebar' => rand(50, 200),
+                'tinggi' => rand(50, 200),
+                'nopol' => 'B ' . rand(1000, 9999) . ' ' . fake()->randomLetter() . fake()->randomLetter(),
                 'unit_id' => $unit?->id,
                 'user_id' => $user->id,
                 'driver_id' => $driver?->id,

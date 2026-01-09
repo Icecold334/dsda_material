@@ -6,27 +6,21 @@
 
         <div class="mt-6 space-y-4">
             <div>
-                <label for="name-create" class="block text-sm font-medium text-gray-700">
-                    Nama Kelurahan <span class="text-red-500">*</span>
-                </label>
-                <input type="text" id="name-create" wire:model="name"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                    placeholder="Masukkan nama Kelurahan">
-                @error('name')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <x-input-label for="name-create" value="Nama Kelurahan" />
+                <x-text-input id="name-create" wire:model="name" type="text" class="mt-1 block w-full"
+                    placeholder="Masukkan nama Kelurahan" />
+                <x-input-error :messages="$errors->get('name')" class="mt-2" />
             </div>
         </div>
 
         <div class="mt-6 flex justify-end gap-3">
-            <button type="button" x-on:click="$dispatch('close-modal', 'create-subdistrict-{{ $district->id }}')"
-                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+            <x-secondary-button type="button"
+                x-on:click="$dispatch('close-modal', 'create-subdistrict-{{ $district->id }}')">
                 Batal
-            </button>
-            <button type="submit"
-                class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700">
+            </x-secondary-button>
+            <x-primary-button type="submit">
                 Simpan
-            </button>
+            </x-primary-button>
         </div>
     </form>
 </x-modal>

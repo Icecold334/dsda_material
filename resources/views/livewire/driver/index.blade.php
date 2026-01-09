@@ -10,10 +10,9 @@
             <div class="text-3xl font-semibold"> Daftar Driver </div>
         </div>
         <div class="text-right">
-            <button type="button" x-on:click="$dispatch('open-modal', 'create-driver')"
-                class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none">
+            <x-primary-button x-on:click="$dispatch('open-modal', 'create-driver')">
                 Tambah Driver
-            </button>
+            </x-primary-button>
         </div>
     </div>
 
