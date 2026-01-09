@@ -4,7 +4,7 @@
             <div class="text-3xl font-semibold"> Daftar Pengiriman Barang </div>
         </div>
     </div>
-    <div data-grid data-api="{{ route('pengiriman.json') }}" data-columns='[
+    <div data-grid data-api="{{ route('delivery.json') }}" data-columns='[
         { "name": "Nomor Pengiriman", "id": "nomor","width": "50%" },
         { "name": "Gudang Pengiriman", "id": "gudang","width": "20%" },
         { "name": "Status", "id": "status","width": "20%", "className": "text-center"  },

@@ -22,7 +22,7 @@ return new class extends Migration {
             $table->uuid('driver_id')->nullable();
             $table->uuid('security_id')->nullable();
 
-            $table->date('tanggal_pengiriman')->nullable();
+            $table->date('tanggal_delivery')->nullable();
             $table->string('status')->default('draft');   // draft / waiting / approved / rejected
             $table->text('notes')->nullable();
 

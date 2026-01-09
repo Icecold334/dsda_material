@@ -1,14 +1,14 @@
 <?php
 
 use App\Models\Contract;
-use App\Livewire\Kontrak\Show;
-use App\Livewire\Kontrak\Index;
-use App\Livewire\Kontrak\Create;
+use App\Livewire\Contract\Show;
+use App\Livewire\Contract\Index;
+use App\Livewire\Contract\Create;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
 
-Route::prefix('kontrak')->name('kontrak.')->group(function () {
+Route::prefix('contract')->name('contract.')->group(function () {
 
     Route::get('/', Index::class)->name('index');
 
@@ -18,7 +18,7 @@ Route::prefix('kontrak')->name('kontrak.')->group(function () {
             'status' => '<span class="bg-' . $c->status_color . '-600 text-' . $c->status_color . '-100 text-xs font-medium px-2.5 py-0.5 rounded-full">'
                 . $c->status_text .
                 '</span>',
-            'action' => '<a href="' . route('kontrak.show', $c->id) . '" class="bg-primary-600 text-white text-xs font-medium px-1.5 py-0.5 rounded" wire:navigate>Detail</a>',
+            'action' => '<a href="' . route('contract.show', $c->id) . '" class="bg-primary-600 text-white text-xs font-medium px-1.5 py-0.5 rounded" wire:navigate>Detail</a>',
         ]);
 
         return response()->json([
@@ -29,9 +29,10 @@ Route::prefix('kontrak')->name('kontrak.')->group(function () {
 
     Route::get('/{contract}/json', function (Contract $contract) {
         $data = $contract->items->map(fn($c) => [
-            'item' => $c->item->name,
-            'qty' => (int) $c->qty . ' ' . $c->item->unit,
-            'action' => '<a href="' . route('kontrak.show', $contract->id) . '" class="bg-primary-600 text-white text-xs font-medium px-1.5 py-0.5 rounded" wire:navigate>Detail</a>',
+            'code' => $c->item->code,
+            'item' => $c->item->category->name . ' | ' . $c->item->spec,
+            'qty' => (int) $c->qty . ' ' . $c->item->category->unit->name,
+            'action' => '<a href="' . route('contract.show', $contract->id) . '" class="bg-primary-600 text-white text-xs font-medium px-1.5 py-0.5 rounded" wire:navigate>Detail</a>',
         ]);
 
         return response()->json([
@@ -42,13 +43,13 @@ Route::prefix('kontrak')->name('kontrak.')->group(function () {
 
     Route::get('/api/emonev', function (Request $request) {
 
-        $nomorKontrak = trim(request('nomor_kontrak'));
+        $nomorContract = trim(request('nomor_kontrak'));
         $tahun = trim(request('tahun'));
 
 
         // validasi
-        if (!$nomorKontrak || !$tahun) {
-            return back()->with('error', 'Nomor kontrak dan tahun wajib diisi');
+        if (!$nomorContract || !$tahun) {
+            return back()->with('error', 'Nomor contract dan tahun wajib diisi');
         }
 
         // hit API
@@ -60,20 +61,20 @@ Route::prefix('kontrak')->name('kontrak.')->group(function () {
             ->get(rtrim(config('app.api_emonev'), '/') . '/' . $tahun);
 
         if (!$response->successful()) {
-            return back()->with('error', 'Gagal mengambil data kontrak dari API');
+            return back()->with('error', 'Gagal mengambil data contract dari API');
         }
         $data = $response->json('data');
 
-        $kontrak = collect($data)->first(
+        $contract = collect($data)->first(
             fn($item) =>
             isset($item['no_spk']) &&
-            strcasecmp(trim($item['no_spk']), $nomorKontrak) === 0
+            strcasecmp(trim($item['no_spk']), $nomorContract) === 0
         );
 
-        if (!$kontrak) {
-            return back()->with('error', 'Nomor kontrak tidak ditemukan');
+        if (!$contract) {
+            return back()->with('error', 'Nomor contract tidak ditemukan');
         }
-        return response()->json(['status' => 'success', 'data' => $kontrak]);
+        return response()->json(['status' => 'success', 'data' => $contract]);
     })->name('emonev');
     Route::get('/create', Create::class)->name('create');
     Route::get('/{contract}', Show::class)->name('show');

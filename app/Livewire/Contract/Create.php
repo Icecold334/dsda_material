@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Kontrak;
+namespace App\Livewire\Contract;
 
 use Livewire\Component;
 use Livewire\Attributes\On;
@@ -10,13 +10,14 @@ use Illuminate\Support\Facades\Http;
 class Create extends Component
 {
     #[Title("Tambah Kontrak")]
-    public $nomorKontrak, $tahunKontrak, $apiExist;
+    public $build = false;
+    public $nomorContract, $contractYear, $apiExist;
 
-    // #[On("cari-kontrak")]
-    // public function cariKontrak()
+    // #[On("cari-contract")]
+    // public function cariContract()
     // {
-    //     $nomorKontrak = trim($this->nomorKontrak);
-    //     $tahunKontrak = trim($this->tahunKontrak);
+    //     $nomorContract = trim($this->nomorContract);
+    //     $contractYear = trim($this->contractYear);
     //     return $this->dispatch(
     //         'confirm',
     //         title: 'Yakin ingin menghapus?',
@@ -24,12 +25,12 @@ class Create extends Component
     //         callbackEvent: 'confirm-result',
     //         callbackData: ['memek' => 'jancok'],
     //     );
-    //     if (!$tahunKontrak || !$nomorKontrak) {
+    //     if (!$contractYear || !$nomorContract) {
     //         $this->dispatch(
     //             'alert',
     //             type: 'error',
     //             title: 'Lengkapi Data!',
-    //             // text: 'Nomor kontrak dan tahun wajib diisi.',
+    //             // text: 'Nomor contract dan tahun wajib diisi.',
     //         );
 
     //         return;
@@ -38,26 +39,26 @@ class Create extends Component
 
     //     $response = Http::timeout(180)
     //         ->withBasicAuth('inventa', 'aF7xPq92LmZTkw38RbCn0vMUyJDg1shKXtbEWuAQ5oYclVGriHzSmNd6jeLfOBT3')
-    //         ->get(rtrim(config('app.api_emonev'), '/') . '/' . $tahunKontrak);
+    //         ->get(rtrim(config('app.api_emonev'), '/') . '/' . $contractYear);
 
 
 
     //     if (!$response->successful()) {
-    //         return session()->flash('error', 'Gagal mengambil data kontrak dari API');
+    //         return session()->flash('error', 'Gagal mengambil data contract dari API');
     //     }
 
     //     $data = $response->json()['data'];
     //     /**
-    //      * Cocokkan nomor kontrak dari batch JSON
-    //      * asumsi struktur data berupa array kontrak
+    //      * Cocokkan nomor contract dari batch JSON
+    //      * asumsi struktur data berupa array contract
     //      */
-    //     $kontrak = collect($data)->first(function ($item) use ($nomorKontrak) {
+    //     $contract = collect($data)->first(function ($item) use ($nomorContract) {
     //         return isset($item['no_spk'])
-    //             && strcasecmp(trim($item['no_spk']), $nomorKontrak) === 0;
+    //             && strcasecmp(trim($item['no_spk']), $nomorContract) === 0;
     //     });
 
-    //     if (!$kontrak) {
-    //         return session()->flash('error', 'Nomor kontrak tidak ditemukan');
+    //     if (!$contract) {
+    //         return session()->flash('error', 'Nomor contract tidak ditemukan');
     //     }
 
     //     // kalau ketemu
@@ -76,21 +77,27 @@ class Create extends Component
     public function mount()
     {
 
-        $this->dispatch('open-modal', 'input-nomor-kontrak');
+        if ($this->build) {
+            $this->nomorContract = '20397/PN01.02';
+            $this->contractYear = '2025';
+            $this->apiExist = true;
+        } else {
+            $this->dispatch('open-modal', 'input-contract-number');
+        }
     }
 
-    #[On("confirmKontrak")]
+    #[On("confirmContract")]
     public function confirmResult($data)
     {
         $this->dispatch('endLoading');
-        $this->dispatch('open-modal', 'confirm-kontrak');
+        $this->dispatch('open-modal', 'confirm-contract');
     }
 
-    #[On("proceedCreateKontrak")]
-    public function proceedCreateKontrak($data)
+    #[On("proceedCreateContract")]
+    public function proceedCreateContract($data)
     {
-        $this->nomorKontrak = $data['no_spk'];
-        $this->tahunKontrak = $data['tahun_anggaran'];
+        $this->nomorContract = $data['no_spk'];
+        $this->contractYear = $data['tahun_anggaran'];
         $this->apiExist = true;
     }
 
@@ -98,6 +105,6 @@ class Create extends Component
     public function render()
     {
 
-        return view('livewire.kontrak.create');
+        return view('livewire.contract.create');
     }
 }

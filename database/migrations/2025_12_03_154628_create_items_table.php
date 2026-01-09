@@ -16,9 +16,8 @@ return new class extends Migration {
             $table->uuid('sudin_id');              // tiap sudin punya barang sendiri
             $table->uuid('item_category_id')->nullable();
 
-            $table->string('name');                // nama barang
-            $table->string('spec')->nullable();    // spesifikasi tambahan
-            $table->string('unit')->nullable();    // satuan: pcs, liter, meter
+            $table->string('spec');    // spesifikasi tambahan
+            $table->string('slug');
             $table->boolean('active')->default(true);
 
             $table->foreign('sudin_id')->references('id')->on('sudins')->cascadeOnDelete();

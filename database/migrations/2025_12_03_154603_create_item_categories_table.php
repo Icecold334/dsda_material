@@ -13,10 +13,11 @@ return new class extends Migration {
         Schema::create('item_categories', function (Blueprint $table) {
             $this->uuid($table);
 
-            $table->uuid('sudin_id');
+            $table->uuid('item_unit_id');
             $table->string('name');
+            $table->string('slug')->unique();
 
-            $table->foreign('sudin_id')->references('id')->on('sudins')->cascadeOnDelete();
+            $table->foreign('item_unit_id')->references('id')->on('item_units')->cascadeOnDelete();
         });
     }
 

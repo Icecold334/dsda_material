@@ -17,7 +17,7 @@ return new class extends Migration {
             // $table->uuid('vendor_id');
             $table->uuid('user_id')->nullable();
 
-            $table->string('nomor')->nullable();     // nomor kontrak
+            $table->string('nomor')->nullable();     // nomor contract
             $table->date('tanggal_mulai')->nullable();
             $table->date('tanggal_selesai')->nullable();
 

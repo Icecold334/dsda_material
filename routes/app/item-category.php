@@ -12,7 +12,6 @@ Route::prefix('item-category')->name('item-category.')->group(function () {
     Route::get('/json', function () {
         $data = ItemCategory::with('sudin')->get()->map(fn($c) => [
             'name' => $c->name,
-            'sudin' => $c->sudin?->name ?? '-',
             'action' => '
                 <div class="flex gap-1">
                     <a href="' . route('item-category.show', $c->id) . '" class="bg-blue-600 text-white text-xs font-medium px-1.5 py-0.5 rounded" wire:navigate>Detail</a>

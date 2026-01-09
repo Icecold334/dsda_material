@@ -24,7 +24,7 @@ class ContractSeeder extends Seeder
             return;
         }
 
-        // bikin 5 kontrak
+        // bikin 5 contract
         foreach (range(1, 5) as $i) {
 
             $contract = Contract::create([

@@ -14,7 +14,7 @@ return new class extends Migration {
             $this->uuid($table);
 
             $table->uuid('sudin_id');
-            $table->string('module');           // 'rab', 'kontrak', 'permintaan', 'pengiriman', etc.
+            $table->string('module');           // 'rab', 'contract', 'permintaan', 'delivery', etc.
             $table->integer('level');           // urutan 1 → 2 → 3
             $table->uuid('position_id');        // jabatan yang approve level ini
             $table->uuid('division_id')->nullable(); // jika NULL → lintas divisi

@@ -29,7 +29,7 @@ class ItemSeeder extends Seeder
             $sudinCode = strtoupper(fake()->lexify('SD??'));
 
             for ($i = 1; $i <= $totalItem; $i++) {
-
+                $spec = fake()->sentence;
                 Item::create([
                     'sudin_id' => $sudin->id,
 
@@ -44,9 +44,9 @@ class ItemSeeder extends Seeder
                         $i
                     ),
 
-                    'name' => ucfirst(fake()->words(rand(2, 4), true)),
-                    'spec' => fake()->optional()->sentence,
-                    'unit' => fake()->randomElement(['pcs', 'unit', 'liter', 'meter', 'paket']),
+
+                    'spec' => $spec,
+                    'slug' => Str::slug($spec),
                     'active' => fake()->boolean(90),
                 ]);
             }

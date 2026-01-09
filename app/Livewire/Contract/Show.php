@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Kontrak;
+namespace App\Livewire\Contract;
 
 use Livewire\Component;
 use App\Models\Contract;
@@ -15,6 +15,6 @@ class Show extends Component
 
     public function render()
     {
-        return view('livewire.kontrak.show');
+        return view('livewire.contract.show');
     }
 }

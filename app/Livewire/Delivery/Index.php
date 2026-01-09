@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Pengiriman;
+namespace App\Livewire\Delivery;
 
 use Livewire\Component;
 
@@ -8,6 +8,6 @@ class Index extends Component
 {
     public function render()
     {
-        return view('livewire.pengiriman.index');
+        return view('livewire.delivery.index');
     }
 }

@@ -40,7 +40,7 @@ class DeliverySeeder extends Seeder
                 'nomor' => 'DEL-' . now()->format('Ymd') . '-' . str_pad($i, 4, '0', STR_PAD_LEFT),
                 'sudin_id' => $sudins->random(),
                 'user_id' => $users->random(),
-                'tanggal_pengiriman' => now()->addDays(rand(1, 7)),
+                'tanggal_delivery' => now()->addDays(rand(1, 7)),
                 'status' => collect(['draft', 'pending', 'approved'])->random(),
                 'notes' => 'Seeder delivery ke-' . $i,
                 'created_at' => now(),

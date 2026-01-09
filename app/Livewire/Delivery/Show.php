@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Pengiriman;
+namespace App\Livewire\Delivery;
 
 use Livewire\Component;
 use App\Models\Delivery;
@@ -8,10 +8,10 @@ use Livewire\Attributes\Title;
 
 class Show extends Component
 {
-    #[Title('Detail Pengiriman')]
-    public Delivery $pengiriman;
+    #[Title('Detail Delivery')]
+    public Delivery $delivery;
     public function render()
     {
-        return view('livewire.pengiriman.show');
+        return view('livewire.delivery.show');
     }
 }

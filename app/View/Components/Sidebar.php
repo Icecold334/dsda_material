@@ -25,10 +25,10 @@ class Sidebar extends Component
 <div>
    <ul class="space-y-2 font-medium">
                 <livewire:side-item title="Dashboard" href="/" />
-                <livewire:side-item title="Kontrak" href="{{ route('kontrak.index') }}" />
+                <livewire:side-item title="Kontrak" href="{{ route('contract.index') }}" />
                 <livewire:side-item title="RAB" href="{{ route('rab.index') }}" />
                 <livewire:side-item title="Stok" href="{{ route('stock.index') }}" />
-                <livewire:side-item title="Pengiriman Barang" href="{{ route('pengiriman.index') }}" />
+                <livewire:side-item title="Delivery Barang" href="{{ route('delivery.index') }}" />
                             <livewire:side-item title="Permintaan Barang" icon="users" :collapsable="true" :items="[
                                             ['title' => 'Menggunakan RAB', 'href' => route('permintaan.rab.index')],
                                                 ['title' => 'Tanpa RAB', 'href' => route('permintaan.nonRab.index')],

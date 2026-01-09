@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             UserSeeder::class,
             VendorSeeder::class,
+            ItemUnitSeeder::class,
+            ItemCategorySeeder::class,
             ItemSeeder::class,
             ContractSeeder::class,
             RabSeeder::class,

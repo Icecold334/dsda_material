@@ -45,7 +45,7 @@ class RolePermissionSeeder extends Seeder
             'create_rab',
             'edit_rab',
 
-            // Kontrak
+            // Contract
             'view_kontrak',
             'create_kontrak',
             'edit_kontrak',
@@ -54,9 +54,9 @@ class RolePermissionSeeder extends Seeder
             'view_permintaan',
             'create_permintaan',
 
-            // Pengiriman
-            'view_pengiriman',
-            'create_pengiriman',
+            // Delivery
+            'view_delivery',
+            'create_delivery',
 
             // Stok
             'view_stok',
