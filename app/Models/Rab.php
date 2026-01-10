@@ -20,6 +20,21 @@ class Rab extends Model
         return $this->belongsTo(Sudin::class);
     }
 
+    public function district()
+    {
+        return $this->belongsTo(District::class);
+    }
+
+    public function subdistrict()
+    {
+        return $this->belongsTo(Subdistrict::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     // public function aktivitasSubKegiatan()
     // {
     //     return $this->belongsTo(AktivitasSubKegiatan::class, 'aktivitas_sub_kegiatan_id');
