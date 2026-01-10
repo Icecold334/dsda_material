@@ -13,6 +13,10 @@ class Rab extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'tanggal_mulai' => 'date',
+        'tanggal_selesai' => 'date',
+    ];
 
 
     public function sudin()
