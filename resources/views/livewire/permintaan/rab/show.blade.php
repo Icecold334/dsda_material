@@ -14,41 +14,90 @@
             <div class="">
                 <table class="table-auto w-full text-md space-y-2 ">
                     <tr>
-                        <td class="font-semibold w-1/2">Nomor Permintaan</td>
+                        <td class="font-semibold w-1/2">Nomor SPB</td>
                         <td>{{ $permintaan->nomor }}</td>
                     </tr>
                     <tr>
+                        <td class="font-semibold">Nama Permintaan</td>
+                        <td>{{ $permintaan->name }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Tanggal Permintaan</td>
+                        <td>{{ $permintaan->tanggal_permintaan?->format('d/m/Y') ?? '-' }}</td>
+                    </tr>
+                    <tr>
                         <td class="font-semibold">Status</td>
-
                         <td><span
                                 class="bg-{{ $permintaan->status_color }}-600 text-{{ $permintaan->status_color }}-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">{{
-                                $permintaan->status_text }}</span></td>
+    $permintaan->status_text }}</span></td>
                     </tr>
-
+                    <tr>
+                        <td class="font-semibold">Pemohon</td>
+                        <td>{{ $permintaan->user?->name ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Sudin</td>
+                        <td>{{ $permintaan->sudin?->name ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Gudang</td>
+                        <td>{{ $permintaan->warehouse?->name ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Nomor RAB</td>
+                        <td>
+                            @if($permintaan->rab_id)
+                                <a href="{{ route('rab.show', $permintaan->rab_id) }}" wire:navigate
+                                    class="text-primary-600 hover:underline">
+                                    {{ $permintaan->rab?->nomor ?? '-' }}
+                                </a>
+                            @else
+                                -
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Tahun Anggaran</td>
+                        <td>{{ $permintaan->rab?->tahun ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Kecamatan</td>
+                        <td>{{ $permintaan->district?->name ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Kelurahan</td>
+                        <td>{{ $permintaan->subdistrict?->name ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Alamat</td>
+                        <td>{{ $permintaan->address ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Panjang</td>
+                        <td>{{ $permintaan->panjang ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Lebar</td>
+                        <td>{{ $permintaan->lebar ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Tinggi</td>
+                        <td>{{ $permintaan->tinggi ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Keterangan</td>
+                        <td>{{ $permintaan->notes ?? '-' }}</td>
+                    </tr>
                 </table>
             </div>
         </x-card>
+
         <x-card title="Dokumen Permintaan">
-
-            <ul class="divide-y divide-default">
-                @for ($i = 0; $i < 5; $i++) <li class="p-1">
-                    <div class="flex items-center space-x-4 rtl:space-x-reverse">
-                        <div class="shrink-0 text-success-600">
-                            <i class="fa-solid fa-file"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-heading truncate">
-                                {{ fake()->sentence }}
-                            </p>
-                        </div>
-                    </div>
-                    </li>
-                    @endfor
-            </ul>
-
+            <livewire:components.document-upload mode="show" modelType="App\Models\RequestModel"
+                :modelId="$permintaan->id" category="lampiran_permintaan" label="Lampiran Permintaan" :key="'doc-show-' . $permintaan->id" />
         </x-card>
-
     </div>
+
     <div>
         <x-card title="Daftar Barang">
             <div data-grid data-api="{{ route('permintaan.rab.show.json', $permintaan) }}" data-columns='[
@@ -58,7 +107,6 @@
         { "name": "", "id": "action","width": "10%" , "sortable": false }
     ]' wire:ignore>
             </div>
-
         </x-card>
     </div>
 </div>

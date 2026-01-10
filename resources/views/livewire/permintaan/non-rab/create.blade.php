@@ -110,6 +110,16 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="flex items-center justify-between">
+                        <x-input-label for="notes" value="Keterangan" />
+                        <div class="mt-1 block w-full max-w-[500px]">
+                            <textarea id="notes" wire:model="notes" rows="3"
+                                class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full"
+                                placeholder="Masukkan keterangan (opsional)"></textarea>
+                            <x-input-error :messages="$errors->get('notes')" class="mt-2" />
+                        </div>
+                    </div>
                 </div>
             </x-card>
 
