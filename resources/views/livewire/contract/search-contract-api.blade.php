@@ -93,10 +93,10 @@
                     onConfirm: () => {
                         window.Livewire.dispatch('close-modal', 'input-contract-number');
 
-                        window.Livewire.dispatch("FillVar", {
+                        window.Livewire.dispatch("proceedCreateContract", {
                             data: {
-                                nomor_kontrak: nomorContract,
-                                tahun: tahun,
+                                no_spk: nomorContract,
+                                tahun_anggaran: tahun,
                                 apiExist: false,
                             }
                         });

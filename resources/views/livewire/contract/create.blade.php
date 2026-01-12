@@ -1,7 +1,9 @@
 <div class="space-y-4">
     <div class="{{ $nomorContract ? 'grid' :'hidden' }} grid grid-cols-2">
         <div class="">
-            <div class="text-3xl font-semibold">Tambah Kontrak {{ $nomorContract ?? '' }}</div>
+            <div class="text-3xl font-semibold">Tambah Kontrak {{ $nomorContract ?? '' }} <span class="bg-{{ $apiExist ? 'success':'warning' }}-600 text-{{ $apiExist ? 'success' :'warning' }}-100
+                    text-xs font-medium px-2.5 py-0.5 rounded-full">{{ $apiExist ? "Terdaftar pada sistem
+                    e-monev":"Tidak terdaftar pada sistem e-monev" }}</span></div>
         </div>
         <div class="text-right">
             @if ($apiExist)

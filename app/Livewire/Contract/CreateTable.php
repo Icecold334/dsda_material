@@ -17,7 +17,7 @@ class CreateTable extends Component
 {
     public $namaBarang, $spesifikasiBarang, $satuanBarang, $jumlahBarang, $hargaSatuanBarang, $ppnBarang = 0;
     public $listBarang = [];
-    public $contractNumber, $contractYear, $apiExist, $dataContract = [];
+    public $contractNumber, $contractYear, $apiExist = false, $dataContract = [];
 
     public function mount()
     {
@@ -59,7 +59,7 @@ class CreateTable extends Component
         $this->dataContract = $data['dataContract'];
         $this->contractNumber = $data['no_spk'];
         $this->contractYear = $data['tahun_anggaran'];
-        $this->apiExist = $this->dataContract ? true : false;
+        $this->apiExist = $data['apiExist'];
     }
 
 
@@ -131,7 +131,6 @@ class CreateTable extends Component
     #[On("saveContract")]
     public function saveContract()
     {
-
         $sudin = Sudin::all()->first(); // ambil sudin pertama untuk testing
         $contract = Contract::create([
             'is_api' => $this->apiExist,
