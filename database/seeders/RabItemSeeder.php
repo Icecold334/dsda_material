@@ -30,7 +30,6 @@ class RabItemSeeder extends Seeder
                 $subtotal = $qty * $price;
 
                 RabItem::create([
-                    'id' => (string) Str::uuid(),
                     'rab_id' => $rab->id,
                     'item_id' => $item->id,
                     'qty' => $qty,

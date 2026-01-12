@@ -13,6 +13,11 @@ class RequestModel extends Model
 
     protected $table = 'requests';   // penting!
     protected $guarded = [];
+
+    protected $casts = [
+        'tanggal_permintaan' => 'date',
+    ];
+
     // Relations
     public function sudin()
     {

@@ -13,11 +13,30 @@ class Rab extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'tanggal_mulai' => 'date',
+        'tanggal_selesai' => 'date',
+    ];
 
 
     public function sudin()
     {
         return $this->belongsTo(Sudin::class);
+    }
+
+    public function district()
+    {
+        return $this->belongsTo(District::class);
+    }
+
+    public function subdistrict()
+    {
+        return $this->belongsTo(Subdistrict::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     // public function aktivitasSubKegiatan()

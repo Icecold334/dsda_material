@@ -10,42 +10,75 @@ class SelectInput extends Component
     #[Modelable]
     public $value;
 
-    public $options = [];
+    public $rawOptions = [];
     public $placeholder = '-- Pilih --';
     public $disabled = false;
+    public $freetext = false;
     public $search = '';
     public $open = false;
 
-    public function mount($options = [], $placeholder = '-- Pilih --', $disabled = false)
+    public function mount($options = [], $placeholder = '-- Pilih --', $disabled = false, $freetext = false)
     {
-        $this->options = $this->processOptions($options);
+        $this->rawOptions = $options;
         $this->placeholder = $placeholder;
         $this->disabled = $disabled;
+        $this->freetext = $freetext;
     }
 
     public function updatedValue($value)
     {
-        $this->search = '';
+        // Don't clear search when value updates
     }
 
-    public function selectOption($optionValue)
+    public function getOptionsProperty()
     {
-        $this->value = $optionValue;
+        return $this->processOptions($this->rawOptions);
+    }
+
+    public function updatedSearch($value)
+    {
+        if (!empty($value)) {
+            $this->open = true;
+        }
+    }
+
+    public function selectOption($optionValue, $optionLabel = null)
+    {
+        if ($this->freetext && $optionLabel) {
+            $this->value = $optionLabel;
+            $this->search = $optionLabel;
+        } else {
+            $this->value = $optionValue;
+            $selected = collect($this->options)->firstWhere('value', $optionValue);
+            $this->search = $selected ? $selected['label'] : '';
+        }
         $this->open = false;
-        $this->search = '';
     }
 
     public function toggleDropdown()
     {
         if (!$this->disabled) {
             $this->open = !$this->open;
+            if ($this->open) {
+                $this->search = '';
+            }
+        }
+    }
+
+    public function openDropdown()
+    {
+        if (!$this->disabled) {
+            $this->open = true;
         }
     }
 
     public function closeDropdown()
     {
         $this->open = false;
-        $this->search = '';
+        // Keep search value for freetext mode
+        if ($this->freetext && !empty($this->search)) {
+            $this->value = $this->search;
+        }
     }
 
     public function getFilteredOptionsProperty()
@@ -61,8 +94,16 @@ class SelectInput extends Component
 
     public function getSelectedLabelProperty()
     {
+        if (!empty($this->search)) {
+            return $this->search;
+        }
+
+        if ($this->freetext) {
+            return $this->value ?: '';
+        }
+
         $selected = collect($this->options)->firstWhere('value', $this->value);
-        return $selected ? $selected['label'] : $this->placeholder;
+        return $selected ? $selected['label'] : '';
     }
 
     private function processOptions($options)

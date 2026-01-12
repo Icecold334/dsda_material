@@ -3,6 +3,12 @@
         <div class="">
             <div class="text-3xl font-semibold"> Daftar Rencana Anggaran Biaya </div>
         </div>
+        <div class="text-right">
+            <a href="{{ route('rab.create') }}" wire:navigate
+                class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none">
+                Buat RAB
+            </a>
+        </div>
     </div>
     <div data-grid data-api="{{ route('rab.json') }}" data-columns='[
         { "name": "Nomor RAB", "id": "nomor","width": "70%" },
