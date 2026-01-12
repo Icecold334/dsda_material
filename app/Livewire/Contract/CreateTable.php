@@ -16,11 +16,14 @@ use Illuminate\Support\Facades\Validator;
 class CreateTable extends Component
 {
     public $namaBarang, $spesifikasiBarang, $satuanBarang, $jumlahBarang, $hargaSatuanBarang, $ppnBarang = 0;
+    public $barangs, $units;
     public $listBarang = [];
     public $contractNumber, $contractYear, $apiExist = false, $dataContract = [];
 
     public function mount()
     {
+        $this->barangs = ItemCategory::all();
+        $this->units = ItemUnit::all();
         // isi $listBarang dengan data awal untuk kebutuhan testing
         $this->listBarang = [
             [
@@ -114,7 +117,7 @@ class CreateTable extends Component
         $this->dispatch('listCountUpdated', count($this->listBarang));
 
         // reset input setelah disave
-        $this->resetExcept(['listBarang', 'contractNumber', 'contractYear', 'apiExist', 'dataContract',]);
+        $this->resetExcept(['listBarang', 'contractNumber', 'contractYear', 'apiExist', 'dataContract', 'barangs', 'units']);
 
     }
     public function removeItem($index)
