@@ -18,42 +18,79 @@
                         <td>{{ $rab->nomor }}</td>
                     </tr>
                     <tr>
+                        <td class="font-semibold">Nama Kegiatan</td>
+                        <td>{{ $rab->name }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Tahun Anggaran</td>
+                        <td>{{ $rab->tahun }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Tanggal Mulai</td>
+                        <td>{{ $rab->tanggal_mulai?->format('d/m/Y') ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Tanggal Selesai</td>
+                        <td>{{ $rab->tanggal_selesai?->format('d/m/Y') ?? '-' }}</td>
+                    </tr>
+                    <tr>
                         <td class="font-semibold">Status</td>
-
                         <td><span
                                 class="bg-{{ $rab->status_color }}-600 text-{{ $rab->status_color }}-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">{{
-                                $rab->status_text }}</span></td>
+    $rab->status_text }}</span></td>
                     </tr>
-
+                    <tr>
+                        <td class="font-semibold">Pembuat</td>
+                        <td>{{ $rab->user?->name ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Total Anggaran</td>
+                        <td>Rp {{ number_format($rab->total, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Sudin</td>
+                        <td>{{ $rab->sudin?->name ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Kecamatan</td>
+                        <td>{{ $rab->district?->name ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Kelurahan</td>
+                        <td>{{ $rab->subdistrict?->name ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Alamat</td>
+                        <td>{{ $rab->address ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Panjang</td>
+                        <td>{{ $rab->panjang ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Lebar</td>
+                        <td>{{ $rab->lebar ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-semibold">Tinggi</td>
+                        <td>{{ $rab->tinggi ?? '-' }}</td>
+                    </tr>
                 </table>
             </div>
         </x-card>
+
         <x-card title="Dokumen RAB">
-
-            <ul class="divide-y divide-default">
-                @for ($i = 0; $i < 5; $i++) <li class="p-1">
-                    <div class="flex items-center space-x-4 rtl:space-x-reverse">
-                        <div class="shrink-0 text-success-600">
-                            <i class="fa-solid fa-file"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-heading truncate">
-                                {{ fake()->sentence }}
-                            </p>
-                        </div>
-                    </div>
-                    </li>
-                    @endfor
-            </ul>
-
+            <livewire:components.document-upload mode="show" modelType="App\Models\Rab" :modelId="$rab->id"
+                category="lampiran_rab" label="Lampiran RAB" :key="'doc-show-' . $rab->id" />
         </x-card>
 
     </div>
     <div>
         <x-card title="Daftar Barang">
             <div data-grid data-api="{{ route('rab.show.json', $rab) }}" data-columns='[
-        { "name": "Item", "id": "item" },
-        { "name": "Jumlah", "id": "qty"  },
+        { "name": "Kode", "id": "code", "width": "20%" },
+        { "name": "Spesifikasi", "id": "item" },
+        { "name": "Jumlah", "id": "qty", "width": "15%" },
         { "name": "", "id": "action","width": "10%" , "sortable": false }
     ]' wire:ignore>
             </div>

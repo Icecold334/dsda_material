@@ -32,4 +32,9 @@ class Sudin extends Model
     {
         return $this->hasMany(Warehouse::class);
     }
+
+    public function rabs()
+    {
+        return $this->hasMany(Rab::class);
+    }
 }

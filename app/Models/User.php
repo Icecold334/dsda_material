@@ -78,4 +78,9 @@ class User extends Authenticatable
     {
         return $this->morphMany(Document::class, 'documentable');
     }
+
+    public function rabs()
+    {
+        return $this->hasMany(Rab::class);
+    }
 }
