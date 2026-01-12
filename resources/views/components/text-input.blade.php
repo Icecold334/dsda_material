@@ -27,7 +27,7 @@
         x-model="displayValue"
         @input="updateValue($event)"
         @disabled($disabled)
-        {{ $attributes->except(['wire:model', 'wire:model.live', 'wire:model.defer', 'wire:model.lazy'])->merge(['class' => 'border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm']) }}
+        {{ $attributes->except(['wire:model', 'wire:model.live', 'wire:model.defer', 'wire:model.lazy'])->merge(['class' => 'border-gray-300    focus:border-indigo-500 :border-indigo-600 focus:ring-indigo-500 :ring-indigo-600 rounded-md shadow-sm']) }}
         autocomplete="off"
     >
     <input 
@@ -38,5 +38,5 @@
     <input type="hidden" x-ref="input" value="{{ $attributes->get('value', '') }}">
 </div>
 @else
-<input @disabled($disabled) {{ $attributes->merge(['class' => 'border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm']) }}>
+<input @disabled($disabled) {{ $attributes->merge(['class' => 'border-gray-300    focus:border-indigo-500 :border-indigo-600 focus:ring-indigo-500 :ring-indigo-600 rounded-md shadow-sm']) }}>
 @endif
