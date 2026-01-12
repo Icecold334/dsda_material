@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Http;
 class Create extends Component
 {
     #[Title("Tambah Kontrak")]
-    public $build = false, $listCount = 0;
+    public $build = true, $listCount = 0;
     public $nomorContract, $contractYear, $apiExist;
 
     // #[On("cari-contract")]
@@ -77,9 +77,9 @@ class Create extends Component
     public function mount()
     {
         if ($this->build) {
-            $this->nomorContract = '20397/PN01.02';
+            $this->nomorContract = '20397/PN01.05';
             $this->contractYear = '2025';
-            $this->apiExist = true;
+            $this->apiExist = false;
         } else {
             $this->dispatch('open-modal', 'input-contract-number');
         }

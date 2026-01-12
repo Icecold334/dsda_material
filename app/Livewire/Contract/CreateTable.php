@@ -134,6 +134,7 @@ class CreateTable extends Component
 
         $sudin = Sudin::all()->first(); // ambil sudin pertama untuk testing
         $contract = Contract::create([
+            'is_api' => $this->apiExist,
             'sudin_id' => $sudin->id,
             'nomor' => $this->contractNumber,
             'tanggal_mulai' => $this->dataContract['tgl_spk'] ?? null,
