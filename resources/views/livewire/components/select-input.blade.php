@@ -1,3 +1,5 @@
+<!-- default adalah binding id -->
+<!-- mode freetext tambahkan attribute :freetext="true"  -->
 <div class="relative" x-data="{ open: @entangle('open') }" @click.away="$wire.closeDropdown()">
     <!-- Search Input -->
     <div class="relative">
