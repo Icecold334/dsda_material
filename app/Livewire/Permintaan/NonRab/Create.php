@@ -57,6 +57,17 @@ class Create extends Component
         $this->subdistrict_id = '';
     }
 
+    public function getFileCountProperty()
+    {
+        // Get file count from child DocumentUpload component
+        foreach ($this->getComponents() as $component) {
+            if ($component instanceof \App\Livewire\Components\DocumentUpload) {
+                return $component->getFileCount();
+            }
+        }
+        return 0;
+    }
+
     public function save()
     {
         $this->validate();
