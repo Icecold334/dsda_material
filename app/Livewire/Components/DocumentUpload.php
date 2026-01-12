@@ -19,6 +19,7 @@ class DocumentUpload extends Component
     public $label = 'Upload Dokumen'; // Label yang ditampilkan
     public $multiple = false; // Allow multiple upload
     public $accept = '*'; // File types accepted
+    public $modalId = 'document-upload-modal'; // Unique modal ID
 
     // State
     public $files = []; // For upload (create mode)
@@ -56,6 +57,10 @@ class DocumentUpload extends Component
         ];
 
         $this->validate($rules);
+
+        // Dispatch event to update file count in parent
+        $this->dispatch('fileCountUpdated', count: count($this->files))->self();
+        $this->js("window.dispatchEvent(new CustomEvent('file-count-updated-internal', { detail: { count: " . count($this->files) . " } }));");
     }
 
     public function removeFile($index)
@@ -63,6 +68,10 @@ class DocumentUpload extends Component
         if (isset($this->files[$index])) {
             unset($this->files[$index]);
             $this->files = array_values($this->files); // Re-index array
+
+            // Dispatch event to update file count
+            $this->dispatch('fileCountUpdated', count: count($this->files))->self();
+            $this->js("window.dispatchEvent(new CustomEvent('file-count-updated-internal', { detail: { count: " . count($this->files) . " } }));");
         }
     }
 
@@ -147,8 +156,26 @@ class DocumentUpload extends Component
         return $this->files;
     }
 
+    /**
+     * Get total file count
+     */
+    public function getFileCount()
+    {
+        return count($this->files);
+    }
+
+    /**
+     * Computed property for file count (for blade reactivity)
+     */
+    public function getFileCountProperty()
+    {
+        return count($this->files);
+    }
+
     public function render()
     {
-        return view('livewire.components.document-upload');
+        return view('livewire.components.document-upload', [
+            'fileCount' => count($this->files)
+        ]);
     }
 }

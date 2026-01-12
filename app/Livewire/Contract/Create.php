@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Http;
 class Create extends Component
 {
     #[Title("Tambah Kontrak")]
-    public $build = false, $listCount = 0;
+    public $build = true, $listCount = 0;
     public $nomorContract, $contractYear, $apiExist;
 
     // #[On("cari-contract")]

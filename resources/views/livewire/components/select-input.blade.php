@@ -1,25 +1,45 @@
-<!-- default adalah binding id -->
-<!-- mode freetext tambahkan attribute :freetext="true"  -->
 <div class="relative" x-data="{ open: @entangle('open') }" @click.away="$wire.closeDropdown()">
-    <!-- Search Input -->
-    <div class="relative">
-        <input type="text" wire:model.live="search" wire:focus="openDropdown"
-            @keydown.enter.prevent="@if($freetext) $wire.selectOption('', $event.target.value); $wire.closeDropdown() @endif"
-            @keydown.escape="$wire.closeDropdown()" placeholder="{{ $placeholder }}" {{ $disabled ? 'disabled' : '' }}
-            class="w-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-1 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm px-3 py-2 pr-10 disabled:opacity-50 disabled:cursor-not-allowed">
+    @if($freetext)
+        <!-- Mode Freetext: Search Input -->
+        <div class="relative">
+            <input type="text" wire:model.live="search" wire:focus="openDropdown"
+                @keydown.enter.prevent="$wire.selectOption('', $event.target.value); $wire.closeDropdown()"
+                @keydown.escape="$wire.closeDropdown()" placeholder="{{ $placeholder }}" {{ $disabled ? 'disabled' : '' }}
+                class="w-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-1 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm px-3 py-2 pr-10 disabled:opacity-50 disabled:cursor-not-allowed">
+            <button type="button" wire:click="toggleDropdown" :disabled="{{ $disabled ? 'true' : 'false' }}"
+                class="absolute inset-y-0 right-0 flex items-center px-2">
+                <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 transition-transform" :class="{ 'rotate-180': open }"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+        </div>
+    @else
+        <!-- Mode Normal: Button Select -->
         <button type="button" wire:click="toggleDropdown" :disabled="{{ $disabled ? 'true' : 'false' }}"
-            class="absolute inset-y-0 right-0 flex items-center px-2">
-            <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 transition-transform {{ $open ? 'rotate-180' : '' }}"
+            class="w-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-1 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm px-3 py-2 text-left flex items-center justify-between disabled:opacity-50 disabled:cursor-not-allowed">
+            <span class="{{ !$value ? 'text-gray-400 dark:text-gray-500' : '' }}">
+                {{ $this->selectedLabel }}
+            </span>
+            <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 transition-transform" :class="{ 'rotate-180': open }"
                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
             </svg>
         </button>
-    </div>
+    @endif
 
     <!-- Dropdown -->
     @if($open)
         <div
             class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-lg">
+            <!-- Search Input (hanya untuk mode normal) -->
+            @if(!$freetext)
+                <div class="p-2 border-b border-gray-300 dark:border-gray-700">
+                    <input type="text" wire:model.live="search" @click.stop placeholder="Cari..."
+                        class="w-full px-3 py-2 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm text-sm">
+                </div>
+            @endif
+
             <!-- Options List -->
             <div class="max-h-60 overflow-y-auto">
                 <!-- Empty option -->

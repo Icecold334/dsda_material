@@ -27,7 +27,7 @@ class SelectInput extends Component
 
     public function updatedValue($value)
     {
-        // Don't clear search when value updates
+        // Jangan clear search saat value update
     }
 
     public function getOptionsProperty()
@@ -44,10 +44,12 @@ class SelectInput extends Component
 
     public function selectOption($optionValue, $optionLabel = null)
     {
-        if ($this->freetext && $optionLabel) {
-            $this->value = $optionLabel;
-            $this->search = $optionLabel;
+        if ($this->freetext) {
+            // Mode freetext: simpan label sebagai value
+            $this->value = $optionLabel ?? $optionValue;
+            $this->search = $this->value;
         } else {
+            // Mode normal: simpan value
             $this->value = $optionValue;
             $selected = collect($this->options)->firstWhere('value', $optionValue);
             $this->search = $selected ? $selected['label'] : '';
@@ -59,7 +61,7 @@ class SelectInput extends Component
     {
         if (!$this->disabled) {
             $this->open = !$this->open;
-            if ($this->open) {
+            if ($this->open && !$this->freetext) {
                 $this->search = '';
             }
         }
@@ -75,9 +77,13 @@ class SelectInput extends Component
     public function closeDropdown()
     {
         $this->open = false;
-        // Keep search value for freetext mode
+
+        // Untuk freetext, pastikan value tersimpan dari search
         if ($this->freetext && !empty($this->search)) {
             $this->value = $this->search;
+        } else if (!$this->freetext) {
+            // Untuk non-freetext, reset search
+            $this->search = '';
         }
     }
 
@@ -94,16 +100,12 @@ class SelectInput extends Component
 
     public function getSelectedLabelProperty()
     {
-        if (!empty($this->search)) {
-            return $this->search;
-        }
-
         if ($this->freetext) {
-            return $this->value ?: '';
+            return $this->value ?: $this->placeholder;
         }
 
         $selected = collect($this->options)->firstWhere('value', $this->value);
-        return $selected ? $selected['label'] : '';
+        return $selected ? $selected['label'] : $this->placeholder;
     }
 
     private function processOptions($options)
