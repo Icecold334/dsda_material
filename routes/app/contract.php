@@ -46,6 +46,12 @@ Route::prefix('contract')->name('contract.')->group(function () {
         $nomorContract = trim(request('nomor_kontrak'));
         $tahun = trim(request('tahun'));
 
+        $contractExist = Contract::where('nomor', $nomorContract)->get()->count();
+
+        if ($contractExist) {
+            return response()->json(['status' => 'error', 'data' => 'Kontrak sudah terdaftar!']);
+        }
+
 
         // validasi
         if (!$nomorContract || !$tahun) {

@@ -1,4 +1,4 @@
-<x-modal name="confirm-contract">
+<x-modal name="confirm-contract" maxWidth="4xl">
     <div class="p-6 space-y-6">
 
         {{-- Header --}}
@@ -6,9 +6,9 @@
             <h2 class="text-3xl font-semibold text-gray-900">
                 {{ $titleModal }}
             </h2>
-            @if ($showDetail)
+            @if (!$showDetail)
             <p class="text-sm text-gray-500 ">
-                Pastikan data contract berikut sudah benar sebelum dilanjutkan.
+                Pastikan data kontrak berikut sudah benar sebelum dilanjutkan.
             </p>
             @endif
         </div>
@@ -55,6 +55,12 @@
                             <td class="font-semibold bg-gray-50 px-4 py-2">Sub Kegiatan</td>
                             <td class="px-4 py-2">{{ $dataContract['sub_kegiatan'] }}</td>
                         </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-700 border border-gray-200 rounded-lg">
+                    <tbody class="divide-y divide-gray-200">
                         <tr>
                             <td class="font-semibold bg-gray-50 px-4 py-2">Kode Rekening</td>
                             <td class="px-4 py-2">{{ $dataContract['kode_rekening'] }}</td>
@@ -63,12 +69,6 @@
                             <td class="font-semibold bg-gray-50 px-4 py-2">Nama Penyedia</td>
                             <td class="px-4 py-2">{{ $dataContract['nama_penyedia'] ?? '-' }}</td>
                         </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left text-gray-700 border border-gray-200 rounded-lg">
-                    <tbody class="divide-y divide-gray-200">
                         <tr>
                             <td class="font-semibold bg-gray-50 px-4 py-2">Uraian Rekening</td>
                             <td class="px-4 py-2">{{ $dataContract['uraian_kode_rekening'] }}</td>
@@ -117,14 +117,16 @@
             <button type="button"
                 class="text-gray-700 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5"
                 x-on:click="$dispatch('close-modal', 'confirm-contract')">
-                Tidak
+                {{ $showDetail ? "Tutup":"Tidak" }}
             </button>
 
+            @if (!$showDetail)
             <button type="button"
                 x-on:click="$dispatch('proceedCreateContract', {data:{{ json_encode($dataContract) }}}), $dispatch('close-modal', 'confirm-contract'),$dispatch('close-modal', 'input-contract-number')"
                 class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
                 Ya, Lanjutkan
             </button>
+            @endif
         </div>
 
     </div>

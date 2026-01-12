@@ -4,8 +4,13 @@
             <div class="text-3xl font-semibold">Tambah Kontrak {{ $nomorContract ?? '' }}</div>
         </div>
         <div class="text-right">
-            <button type="button" x-on:click="$dispatch('open-modal', 'confirm-contract-api')"
+            @if ($apiExist)
+            <button type="button" x-on:click="$dispatch('contractDetail')"
                 class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  focus:outline-none">Detail
+                Kontrak</button>
+            @endif
+            <button type="button" id="btnSaveContract"
+                class="{{ $listCount > 0 ? '':'hidden' }} text-white bg-success-700 hover:bg-success-800 focus:ring-4 focus:ring-success-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  focus:outline-none">Simpan
                 Kontrak</button>
 
             <a href="{{ route('contract.index') }}" wire:navigate
@@ -18,3 +23,34 @@
     <livewire:contract.create-table />
     @endif
 </div>
+@push('scripts')
+<script type="module">
+    let btnSaveContract = document.getElementById("btnSaveContract");
+    if (btnSaveContract) {
+        btnSaveContract.addEventListener("click", async () => {
+            proceedSaveContract();
+        });
+        function proceedSaveContract() {
+            showConfirm({
+                    title: "Konfirmasi Simpan Kontrak",
+                    text: "Apakah anda yakin ingin menyimpan kontrak ini beserta barang-barangnya?",
+                    type: "question",
+                    confirmButtonText: "Ya",
+                    cancelButtonText: "Tidak",
+                    onConfirm: () => {
+                        Swal.fire({
+                            title: "Menyimpan Kontrak...",
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            },
+                        });
+                        window.Livewire.dispatch('saveContract');
+                    }
+            });
+        }
+    }
+</script>
+
+@endpush

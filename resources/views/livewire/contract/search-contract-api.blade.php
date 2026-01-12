@@ -5,14 +5,14 @@
                 <a href="{{ route('contract.index') }}" wire:navigate><i
                         class="fa-solid fa-circle-chevron-left"></i></a>
             </div>
-            <div class="font-semibold text-2xl">Masukkan Nomor Contract</div>
+            <div class="font-semibold text-2xl">Masukkan Nomor Kontrak</div>
         </div>
 
         {{-- <form method="GET" action="{{ route('contract.emonev') }}"> --}}
             <div class="flex">
                 <input type="text" id="nomorContract"
                     class="rounded-none rounded-s-lg bg-gray-50 border border-gray-300 text-gray-900 block flex-1 text-sm p-2.5"
-                    placeholder="Masukkan Nomor Contract" required>
+                    placeholder="Masukkan Nomor Kontrak" required>
 
                 <input type="text" id="contractYear"
                     class="rounded-none bg-gray-50 border border-gray-300 text-gray-900 block w-20 text-sm p-2.5"
@@ -32,7 +32,6 @@
     const btnCariContract = document.getElementById("btnCariContract");
     if (btnCariContract) {
         btnCariContract.addEventListener("click", async () => {
-            window.Livewire.dispatch('loading');
 
 
             const nomorContract = document.getElementById("nomorContract")?.value.trim();
@@ -42,13 +41,14 @@
                 showAlert({
                     type: "warning",
                     title: "Lengkapi Data!",
-                    text: "Nomor contract dan tahun wajib diisi",
+                    text: "Nomor kontrak dan tahun wajib diisi",
                     showConfirmButton: false,
                 });
                 return;
             }
 
             try {
+                window.Livewire.dispatch('loading');
                 const params = new URLSearchParams({
                     nomor_kontrak: nomorContract,
                     tahun: tahun,
@@ -61,23 +61,32 @@
                 });
 
                 const data = await res.json();
-
+                
                 if (!res.ok) {
                     throw new Error(data.message || "Terjadi kesalahan");
                 }
+                if (data.status == 'error') {
+                    showAlert({
+                    type: "error",
+                    title: "Gagal!",
+                    text: data.data,
+                    showConfirmButton: false,
+                    })
+                }else{
+                    window.Livewire.dispatch('confirmContract', {
+                                data: {
+                                    nomor_kontrak: nomorContract,
+                                    tahun: tahun,
+                                    apiExist: true,
+                                    dataContract: data.data,
+                                    }
+                    });
+                }
                 // window.Livewire.dispatch('close-modal', 'input-contract-number');
-                window.Livewire.dispatch('confirmContract', {
-                            data: {
-                                nomor_kontrak: nomorContract,
-                                tahun: tahun,
-                                apiExist: true,
-                                dataContract: data.data,
-                                }
-                            });
             } catch (err) {
                 showConfirm({
                     title: "Gagal!",
-                    text: "Daftarkan contract secara manual?",
+                    text: "Daftarkan kontrak secara manual?",
                     type: "error",
                     confirmButtonText: "Ya",
                     cancelButtonText: "Tidak",

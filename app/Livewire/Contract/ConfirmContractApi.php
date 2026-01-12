@@ -25,7 +25,7 @@ class ConfirmContractApi extends Component
     {
         $this->showDetail = true;
         $this->changeTitleModal();
-        $this->dispatch('open-modal', 'confirm-contract-api');
+        $this->dispatch('open-modal', 'confirm-contract');
     }
 
     private function changeTitleModal()

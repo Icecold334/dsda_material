@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Http;
 class Create extends Component
 {
     #[Title("Tambah Kontrak")]
-    public $build = false;
+    public $build = false, $listCount = 0;
     public $nomorContract, $contractYear, $apiExist;
 
     // #[On("cari-contract")]
@@ -76,7 +76,6 @@ class Create extends Component
     // }
     public function mount()
     {
-
         if ($this->build) {
             $this->nomorContract = '20397/PN01.02';
             $this->contractYear = '2025';
@@ -99,8 +98,18 @@ class Create extends Component
         $this->nomorContract = $data['no_spk'];
         $this->contractYear = $data['tahun_anggaran'];
         $this->apiExist = true;
+        $this->dispatch('proceedCreateContractAgain', data: [
+            'dataContract' => $data,
+            'no_spk' => $data['no_spk'],
+            'tahun_anggaran' => $data['tahun_anggaran'],
+        ]);
     }
 
+    #[On("listCountUpdated")]
+    public function updateListCount($count)
+    {
+        $this->listCount = $count;
+    }
 
     public function render()
     {

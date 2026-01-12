@@ -8,6 +8,10 @@ use Livewire\Component;
 class Index extends Component
 {
     #[Title('Daftar Kontrak')]
+    public function mount()
+    {
+
+    }
     public function render()
     {
         return view('livewire.contract.index');

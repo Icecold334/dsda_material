@@ -22,7 +22,7 @@ return new class extends Migration {
             $table->date('tanggal_selesai')->nullable();
 
             // $table->decimal('nilai_kontrak', 18, 2)->default(0);
-            $table->string('status')->default('draft');  // draft / approved
+            $table->string('status')->default('approved');  // draft / approved
 
             $table->foreign('sudin_id')->references('id')->on('sudins');
             $table->foreign('user_id')->references('id')->on('users');
