@@ -4,13 +4,16 @@ namespace App\Livewire\Delivery;
 
 use Livewire\Component;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Title;
 
 class Create extends Component
 {
-    public $contractNumber, $isApi;
+    #[Title('Tambah Pengiriman')]
+    public $contractNumber, $isApi = true, $warehouse;
     public function mount()
     {
         $this->dispatch('open-modal', 'input-contract-number');
+        // $this->contractNumber = '20397/PN01.02';
     }
 
     #[On("confirmContract")]
@@ -20,21 +23,12 @@ class Create extends Component
         $this->dispatch('open-modal', 'confirm-contract');
     }
 
-    #[On("proceedCreateContract")]
-    public function proceedCreateContract($data)
+    #[On('proceedCreateContractAgain')]
+    public function confirmContractAgain($contractNumber)
     {
-        $this->isApi = isset($data['no_spk']);
-        $this->contractNumber = $this->isApi ? $data['no_spk'] : $data['nomor'];
-        if (!$this->isApi) {
-            $this->dispatch('isNotApi');
-        }
-        // $this->dispatch('proceedCreateContractAgain', data: [
-        //     'ContractData' => $data,
-        //     'contractNumber' => $this->contractNumber,
-        //     'apiExist' => $this->isApi,
-        // ]);
-
+        $this->contractNumber = $contractNumber;
     }
+
     public function render()
     {
         return view('livewire.delivery.create');

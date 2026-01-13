@@ -144,14 +144,16 @@
 
             @if (!$showDetail)
             @if ($isApi)
-            <button type="button"
-                x-on:click="$dispatch('proceedCreateContract', {data:{{ json_encode($contractData) }}}), $dispatch('close-modal', 'confirm-contract'),$dispatch('close-modal', 'input-contract-number')"
+            <button type="button" x-on:click="
+                $dispatch('proceedCreateContract', {data:{{ json_encode($contractData) }}, isApi:true})
+                ,$dispatch('close-modal', 'confirm-contract')
+                ,$dispatch('close-modal', 'input-contract-number')"
                 class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
                 Ya, Lanjutkan
             </button>
             @else
             <button type="button"
-                x-on:click="$dispatch('proceedCreateContract', {data:{{ json_encode($contractData) }}})"
+                x-on:click="$dispatch('proceedCreateContract', {data:{{ json_encode($contractData) }}, isApi:false})"
                 class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
                 Ya, Lanjutkan
             </button>
@@ -164,24 +166,20 @@
 @push('scripts')
 <script type="module">
     Livewire.on("isNotApi", (payload = {}) => {
+        
         showConfirm(
             {
+                
                 type: "question",
                 title: "Konfirmasi",
                 text: "Kontrak belum terdaftar di e-Monev. Lanjutkan pengiriman barang?",
                 confirmButtonText: "Lanjutkan",
                 cancelButtonText: "Batal",
                 onConfirm: () => {
-                    console.log('ewe');
-                    
-                    // window.Livewire.dispatch('close-modal', 'input-contract-number');
-                    // window.Livewire.dispatch("proceedCreateContract", {
-                    //     data: {
-                    //         no_spk: nomorContract,
-                    //         tahun_anggaran: tahun,
-                    //         apiExist: false,
-                    //         }
-                    //     });
+                    window.Livewire.dispatch('close-modal', 'confirm-contract');
+                    window.Livewire.dispatch('close-modal', 'input-contract-number');
+                    window.Livewire.dispatch("proceedCreateContractAgain",{contractNumber:payload.contractNumber});
+                    window.Livewire.dispatch("open-modal", 'choose-warehouse');
                     }
             }
         )

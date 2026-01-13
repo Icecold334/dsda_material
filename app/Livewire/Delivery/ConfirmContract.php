@@ -18,6 +18,22 @@ class ConfirmContract extends Component
         $this->contractData = $data['contractData'];
         $this->isApi = $data['isApi'];
     }
+
+    #[On("proceedCreateContract")]
+    public function proceedCreateContract($data, $isApi)
+    {
+        // kalo ada prop no_spk berarti dari e-monev
+        $this->isApi = $isApi;
+        if (!$isApi) {
+            $this->dispatch('isNotApi', contractNumber: $data['nomor']);
+        } else {
+            $this->dispatch('proceedCreateContractAgain', contractNumber: $data['no_spk'] ?? $data['nomor']);
+            $this->dispatch('open-modal', 'choose-warehouse');
+        }
+
+
+    }
+
     private function changeTitleModal()
     {
         if ($this->showDetail) {

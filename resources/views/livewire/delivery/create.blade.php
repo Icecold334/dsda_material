@@ -1,6 +1,6 @@
-<div>
-    <div class="space-y-4">
-        <div class="{{ $contractNumber ? 'grid' :'hidden' }} grid grid-cols-2">
+<div class="space-y-4">
+    <div class="">
+        <div class="{{ $contractNumber && $warehouse ? 'grid' :'hidden' }} grid grid-cols-2">
             <div class="">
                 <div class="text-3xl font-semibold">Tambah Pengiriman</div>
             </div>
@@ -12,4 +12,8 @@
     </div>
     <livewire:delivery.search-contract />
     <livewire:delivery.confirm-contract />
+    <livewire:delivery.choose-warehouse />
+    @if ($contractNumber && $warehouse)
+    <livewire:delivery.create-table />
+    @endif
 </div>
