@@ -1,26 +1,27 @@
 <x-modal name="edit-item-{{ $item->id }}" focusable>
-    <form wire:submit.prevent="confirmUpdate" class="p-6" x-data="{
+    <form wire:submit.prevent="update" class="p-6" x-data="{
         confirmUpdate() {
-            SwalConfirm.delete({
-                eventName: 'confirmUpdateItem',
-                eventData: { itemId: '{{ $item->id }}' },
+            showConfirm({
                 title: 'Update Barang?',
                 text: 'Data barang akan diperbarui.',
-                confirmText: 'Ya, update!',
-                cancelText: 'Batal'
+                confirmButtonText: 'Ya, update!',
+                cancelButtonText: 'Batal',
+                onConfirm: () => {
+                    @this.update();
+                }
             });
         }
     }">
         <h2 class="text-lg font-medium text-gray-900">
-            Edit Barang
+            Edit Spesifikasi
         </h2>
 
         <div class="mt-6 space-y-4">
             <div>
-                <x-input-label for="name-{{ $item->id }}" value="Nama Barang" />
-                <x-text-input id="name-{{ $item->id }}" wire:model="name" type="text" class="mt-1 block w-full"
-                    placeholder="Masukkan nama barang" />
-                <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                <x-input-label for="spec-{{ $item->id }}" value="Spesifikasi" />
+                <x-text-input id="spec-{{ $item->id }}" wire:model="spec" type="text" class="mt-1 block w-full"
+                    placeholder="Masukkan spesifikasi" />
+                <x-input-error :messages="$errors->get('spec')" class="mt-2" />
             </div>
 
             <div>
@@ -34,34 +35,20 @@
             </div>
 
             <div>
-                <x-input-label for="item_category_id-{{ $item->id }}" value="Kategori" />
+                <x-input-label for="item_category_id-{{ $item->id }}" value="Barang" />
                 <livewire:components.select-input
                     wire:model="item_category_id"
                     :options="$categories->pluck('name', 'id')"
-                    placeholder="-- Pilih Kategori --"
+                    placeholder="-- Pilih Barang --"
                     :key="'item-category-select-' . $item->id . '-' . $sudin_id" />
                 <x-input-error :messages="$errors->get('item_category_id')" class="mt-2" />
-            </div>
-
-            <div>
-                <x-input-label for="spec-{{ $item->id }}" value="Spesifikasi" />
-                <x-text-input id="spec-{{ $item->id }}" wire:model="spec" type="text" class="mt-1 block w-full"
-                    placeholder="Masukkan spesifikasi" />
-                <x-input-error :messages="$errors->get('spec')" class="mt-2" />
-            </div>
-
-            <div>
-                <x-input-label for="unit-{{ $item->id }}" value="Satuan" />
-                <x-text-input id="unit-{{ $item->id }}" wire:model="unit" type="text" class="mt-1 block w-full"
-                    placeholder="Contoh: pcs, liter, meter" />
-                <x-input-error :messages="$errors->get('unit')" class="mt-2" />
             </div>
 
             <div>
                 <label class="flex items-center">
                     <input type="checkbox" wire:model="active"
                         class="rounded border-gray-300 text-primary-600 shadow-sm focus:border-primary-500 focus:ring-primary-500">
-                    <span class="ml-2 text-sm text-gray-700">Barang Aktif</span>
+                    <span class="ml-2 text-sm text-gray-700">Spesifikasi Aktif</span>
                 </label>
             </div>
         </div>

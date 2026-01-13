@@ -29,6 +29,7 @@ class Create extends Component
             'type' => 'driver',
         ]);
         $this->dispatch('close-modal', 'create-driver');
+        $this->dispatch('success-created', message: 'Driver berhasil ditambahkan');
         $this->dispatch('driver-created');
 
         $this->reset();

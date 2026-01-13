@@ -7,18 +7,18 @@
 
     <div class="grid grid-cols-2 ">
         <div class="">
-            <div class="text-3xl font-semibold"> Daftar Barang </div>
+            <div class="text-3xl font-semibold"> Daftar Spesifikasi </div>
         </div>
         <div class="text-right">
             <x-primary-button x-on:click="$dispatch('open-modal', 'create-item')">
-                Tambah Barang
+                Tambah Spesifikasi
             </x-primary-button>
         </div>
     </div>
 
     <div data-grid data-api="{{ route('item.json') }}" data-columns='[
-        { "name": "Nama", "id": "name","width": "25%" },
-        { "name": "Kategori", "id": "category","width": "20%"  },
+        { "name": "Spesifikasi", "id": "name","width": "25%" },
+        { "name": "Barang", "id": "category","width": "20%"  },
         { "name": "Sudin", "id": "sudin","width": "20%"  },
         { "name": "Satuan", "id": "unit","width": "10%"  },
         { "name": "Status", "id": "status","width": "10%"  },

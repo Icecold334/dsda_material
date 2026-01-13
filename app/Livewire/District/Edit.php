@@ -26,8 +26,7 @@ class Edit extends Component
         ];
     }
 
-    #[\Livewire\Attributes\On('confirmUpdateDistrict')]
-    public function update($districtId = null)
+    public function update()
     {
         $this->validate();
 
@@ -37,6 +36,7 @@ class Edit extends Component
         ]);
 
         $this->dispatch('close-modal', 'edit-district-' . $this->district->id);
+        $this->dispatch('success-updated', message: 'Kecamatan berhasil diperbarui');
         $this->dispatch('district-updated');
     }
 

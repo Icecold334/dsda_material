@@ -1,13 +1,14 @@
 <x-modal name="edit-district-{{ $district->id }}" focusable>
-    <form wire:submit.prevent="confirmUpdate" class="p-6" x-data="{
+    <form wire:submit.prevent="update" class="p-6" x-data="{
         confirmUpdate() {
-            SwalConfirm.delete({
-                eventName: 'confirmUpdateDistrict',
-                eventData: { districtId: '{{ $district->id }}' },
-                title: 'Update Distrik?',
-                text: 'Data Kecamatan akan diperbarui.',
-                confirmText: 'Ya, update!',
-                cancelText: 'Batal'
+            showConfirm({
+                title: 'Update Kecamatan?',
+                text: 'Data kecamatan akan diperbarui.',
+                confirmButtonText: 'Ya, update!',
+                cancelButtonText: 'Batal',
+                onConfirm: () => {
+                    @this.update();
+                }
             });
         }
     }">

@@ -7,6 +7,9 @@ use App\Models\Sudin;
 use App\Models\Warehouse;
 use App\Models\District;
 use App\Models\Subdistrict;
+use App\Models\Stock;
+use App\Models\Item;
+use App\Models\ItemCategory;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -26,6 +29,14 @@ class Create extends Component
     public $lebar = '';
     public $tinggi = '';
     public $notes = '';
+
+    // Item form
+    public $item_category_id = '';
+    public $item_id = '';
+    public $qty_request = '';
+
+    // Items collection
+    public $items = [];
 
     public function rules()
     {
@@ -50,11 +61,73 @@ class Create extends Component
         $this->warehouse_id = '';
         $this->district_id = '';
         $this->subdistrict_id = '';
+        $this->item_id = '';
+        $this->items = [];
     }
 
     public function updatedDistrictId($value)
     {
         $this->subdistrict_id = '';
+    }
+
+    public function updatedWarehouseId($value)
+    {
+        $this->item_category_id = '';
+        $this->item_id = '';
+    }
+
+    public function updatedItemCategoryId($value)
+    {
+        $this->item_id = '';
+    }
+
+    public function addItem()
+    {
+        $this->validate([
+            'item_id' => 'required|exists:items,id',
+            'qty_request' => 'required|numeric|min:0.01',
+        ]);
+
+        $item = Item::with('category.unit')->find($this->item_id);
+        $stock = Stock::where('warehouse_id', $this->warehouse_id)
+            ->where('item_id', $this->item_id)
+            ->first();
+
+        // Check if item already exists in the list
+        if (collect($this->items)->contains('item_id', $this->item_id)) {
+            session()->flash('error', 'Item sudah ada dalam daftar');
+            return;
+        }
+
+        // Check if qty_request exceeds available stock
+        $stockAvailable = $stock ? $stock->qty : 0;
+        if ($this->qty_request > $stockAvailable) {
+            session()->flash('error', 'Jumlah yang diminta melebihi stok tersedia (' . number_format($stockAvailable, 2) . ' ' . ($item->category->unit->name ?? '') . ')');
+            return;
+        }
+
+        $this->items[] = [
+            'item_id' => $this->item_id,
+            'item_category' => $item->category->name ?? '-',
+            'item_spec' => $item->spec,
+            'item_unit' => $item->category->unit->name ?? '-',
+            'qty_request' => $this->qty_request,
+            'stock_available' => $stock ? $stock->qty : 0,
+        ];
+
+        // Reset form
+        $this->item_category_id = '';
+        $this->item_id = '';
+        $this->qty_request = '';
+
+        session()->flash('success', 'Item berhasil ditambahkan');
+    }
+
+    public function removeItem($index)
+    {
+        unset($this->items[$index]);
+        $this->items = array_values($this->items);
+        session()->flash('success', 'Item berhasil dihapus');
     }
 
     public function getFileCountProperty()
@@ -71,6 +144,12 @@ class Create extends Component
     public function save()
     {
         $this->validate();
+
+        // Validate items
+        if (empty($this->items)) {
+            session()->flash('error', 'Minimal harus ada 1 item dalam permintaan');
+            return;
+        }
 
         $request = RequestModel::create([
             'nomor' => $this->nomor,
@@ -90,15 +169,55 @@ class Create extends Component
             'rab_id' => null,
         ]);
 
-        // Save documents
-        $this->dispatch('saveDocuments', modelId: $request->id);
+        // Save request items
+        foreach ($this->items as $item) {
+            $request->items()->create([
+                'item_id' => $item['item_id'],
+                'qty_request' => $item['qty_request'],
+            ]);
+        }
 
         session()->flash('success', 'Permintaan berhasil dibuat');
-        return redirect()->route('permintaan.nonRab.show', $request);
+        return redirect()->route('permintaan.nonRab.index');
     }
 
     public function render()
     {
+        // Get item categories that have stock in selected warehouse
+        $itemCategories = collect();
+        if ($this->warehouse_id && $this->sudin_id) {
+            $itemCategories = ItemCategory::whereHas('items', function ($query) {
+                $query->where('sudin_id', $this->sudin_id)
+                    ->where('active', true)
+                    ->whereHas('stocks', function ($q) {
+                        $q->where('warehouse_id', $this->warehouse_id)
+                            ->where('qty', '>', 0);
+                    });
+            })
+                ->orderBy('name')
+                ->get();
+        }
+
+        // Get available items from stock in selected warehouse and category
+        $availableItems = collect();
+        if ($this->warehouse_id && $this->sudin_id && $this->item_category_id) {
+            $availableItems = Item::where('sudin_id', $this->sudin_id)
+                ->where('item_category_id', $this->item_category_id)
+                ->where('active', true)
+                ->with([
+                    'category.unit',
+                    'stocks' => function ($query) {
+                        $query->where('warehouse_id', $this->warehouse_id);
+                    }
+                ])
+                ->whereHas('stocks', function ($query) {
+                    $query->where('warehouse_id', $this->warehouse_id)
+                        ->where('qty', '>', 0);
+                })
+                ->orderBy('spec')
+                ->get();
+        }
+
         return view('livewire.permintaan.non-rab.create', [
             'sudins' => Sudin::orderBy('name')->get(),
             'warehouses' => $this->sudin_id
@@ -110,6 +229,8 @@ class Create extends Component
             'subdistricts' => $this->district_id
                 ? Subdistrict::where('district_id', $this->district_id)->orderBy('name')->get()
                 : collect(),
+            'itemCategories' => $itemCategories,
+            'availableItems' => $availableItems,
         ]);
     }
 }

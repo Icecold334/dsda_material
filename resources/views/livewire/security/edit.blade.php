@@ -1,13 +1,14 @@
 <x-modal name="edit-security-{{ $security->id }}" focusable>
-    <form wire:submit.prevent="confirmUpdate" class="p-6" x-data="{
+    <form wire:submit.prevent="update" class="p-6" x-data="{
         confirmUpdate() {
-            SwalConfirm.delete({
-                eventName: 'confirmUpdateSecurity',
-                eventData: { securityId: '{{ $security->id }}' },
-                title: 'Update Security?',
-                text: 'Data security akan diperbarui.',
-                confirmText: 'Ya, update!',
-                cancelText: 'Batal'
+            showConfirm({
+                title: 'Update Satpam?',
+                text: 'Data satpam akan diperbarui.',
+                confirmButtonText: 'Ya, update!',
+                cancelButtonText: 'Batal',
+                onConfirm: () => {
+                    @this.update();
+                }
             });
         }
     }">

@@ -3,47 +3,46 @@
 namespace App\Livewire\ItemCategory;
 
 use App\Models\ItemCategory;
-use App\Models\Sudin;
 use Livewire\Component;
 
 class Edit extends Component
 {
     public ItemCategory $itemCategory;
     public $name = '';
-    public $sudin_id = '';
+    public $item_unit_id = '';
 
     public function mount()
     {
         $this->name = $this->itemCategory->name;
-        $this->sudin_id = $this->itemCategory->sudin_id;
+        $this->item_unit_id = $this->itemCategory->item_unit_id;
     }
 
     public function rules()
     {
         return [
             'name' => 'required|string|max:255',
-            'sudin_id' => 'required|exists:sudins,id',
+            'item_unit_id' => 'nullable|exists:item_units,id',
         ];
     }
 
-    #[\Livewire\Attributes\On('confirmUpdateItemCategory')]
-    public function update($itemCategoryId = null)
+    public function update()
     {
         $this->validate();
 
         $this->itemCategory->update([
             'name' => $this->name,
-            'sudin_id' => $this->sudin_id,
+            'item_unit_id' => $this->item_unit_id ?: null,
         ]);
 
         $this->dispatch('close-modal', 'edit-item-category-' . $this->itemCategory->id);
+        $this->dispatch('success-updated', message: 'Kategori barang berhasil diperbarui');
         $this->dispatch('item-category-updated');
     }
 
     public function render()
     {
         return view('livewire.item-category.edit', [
-            'sudins' => Sudin::orderBy('name')->get(),
+            'units' => \App\Models\ItemUnit::orderBy('name')->get(),
         ]);
     }
 }

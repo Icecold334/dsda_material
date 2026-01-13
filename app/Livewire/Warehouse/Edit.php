@@ -29,8 +29,7 @@ class Edit extends Component
         ];
     }
 
-    #[\Livewire\Attributes\On('confirmUpdateWarehouse')]
-    public function update($warehouseId = null)
+    public function update()
     {
         $this->validate();
 
@@ -41,6 +40,7 @@ class Edit extends Component
         ]);
 
         $this->dispatch('close-modal', 'edit-warehouse-' . $this->warehouse->id);
+        $this->dispatch('success-updated', message: 'Gudang berhasil diperbarui');
         $this->dispatch('warehouse-updated');
     }
 

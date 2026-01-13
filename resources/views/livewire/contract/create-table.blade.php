@@ -87,36 +87,36 @@
                 <tbody>
 
                     @forelse ($listBarang as $item)
-                    <tr class="even:bg-primary-100 odd:bg-primary-50 border-primary-200">
-                        <td class="px-6 py-4 font-medium text-primary-900 whitespace-nowrap">
-                            {{ $item['namaBarang'] }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $item['spesifikasiBarang'] }}
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            {{ $item['jumlahBarang'] }} <span class="font-medium">{{ $item['satuanBarang'] }}</span>
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            Rp {{ number_format($item['hargaSatuanBarang'], 2, ',', '.') }}
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            {{ $item['ppnBarang'] == 0 ? 'Sudah Termasuk PPN' : $item['ppnBarang'] . '%' }}
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            {{-- Tombol Hapus Badge --}}
-                            <button type="button" wire:click="removeItem({{ $loop->index }})"
-                                class="bg-danger-600 text-danger-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm"><i
-                                    class="fa-solid fa-trash"></i></button>
-                        </td>
+                        <tr class="even:bg-primary-100 odd:bg-primary-50 border-primary-200">
+                            <td class="px-6 py-4 font-medium text-primary-900 whitespace-nowrap">
+                                {{ $item['namaBarang'] }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ $item['spesifikasiBarang'] }}
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                {{ $item['jumlahBarang'] }} <span class="font-medium">{{ $item['satuanBarang'] }}</span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                Rp {{ number_format($item['hargaSatuanBarang'], 2, ',', '.') }}
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                {{ $item['ppnBarang'] == 0 ? 'Sudah Termasuk PPN' : $item['ppnBarang'] . '%' }}
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                {{-- Tombol Hapus Badge --}}
+                                <button type="button" wire:click="removeItem({{ $loop->index }})"
+                                    class="bg-danger-600 text-danger-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm"><i
+                                        class="fa-solid fa-trash"></i></button>
+                            </td>
 
-                    </tr>
+                        </tr>
                     @empty
-                    <tr class="bg-white border-b  border-primary-200">
-                        <td colspan="6" class="px-6 py-4 font-medium text-primary-900 whitespace-nowrap text-center">
-                            Belum ada barang yang ditambahkan.
-                        </td>
-                    </tr>
+                        <tr class="bg-white border-b  border-primary-200">
+                            <td colspan="6" class="px-6 py-4 font-medium text-primary-900 whitespace-nowrap text-center">
+                                Belum ada barang yang ditambahkan.
+                            </td>
+                        </tr>
                     @endforelse
                 </tbody>
             </table>

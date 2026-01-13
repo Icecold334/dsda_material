@@ -31,9 +31,8 @@ class Create extends Component
             'location' => $this->location,
         ]);
 
-        session()->flash('message', 'Gudang berhasil ditambahkan.');
-
         $this->dispatch('close-modal', 'create-warehouse');
+        $this->dispatch('success-created', message: 'Gudang berhasil ditambahkan');
         $this->dispatch('warehouse-created');
 
         $this->reset();

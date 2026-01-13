@@ -7,18 +7,18 @@
 
     <div class="grid grid-cols-2 ">
         <div class="">
-            <div class="text-3xl font-semibold"> Daftar Kategori Barang </div>
+            <div class="text-3xl font-semibold"> Daftar Barang </div>
         </div>
         <div class="text-right">
             <x-primary-button x-on:click="$dispatch('open-modal', 'create-item-category')">
-                Tambah Kategori
+                Tambah Barang
             </x-primary-button>
         </div>
     </div>
 
     <div data-grid data-api="{{ route('item-category.json') }}" data-columns='[
-        { "name": "Nama", "id": "name","width": "40%" },
-        { "name": "Sudin", "id": "sudin","width": "40%"  },
+        { "name": "Nama", "id": "name","width": "60%" },
+        { "name": "Satuan", "id": "unit","width": "20%" },
         { "name": "", "id": "action" ,"width": "20%"}
     ]' data-limit="10" wire:ignore
         x-data="{ reloadGrid() { this.$el.dispatchEvent(new CustomEvent('reload-grid')); } }"
