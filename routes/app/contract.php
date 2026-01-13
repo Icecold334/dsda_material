@@ -45,18 +45,18 @@ Route::prefix('contract')->name('contract.')->group(function () {
 
         $nomorContract = trim(request('nomor_kontrak'));
         $tahun = trim(request('tahun'));
+        // validasi
+        if (!$nomorContract || !$tahun) {
+            return back()->with('error', 'Nomor Kontrak dan tahun wajib diisi');
+        }
 
         $contractExist = Contract::where('nomor', $nomorContract)->get()->count();
 
-        if ($contractExist) {
-            return response()->json(['status' => 'error', 'data' => 'Kontrak sudah terdaftar!']);
-        }
+        // if ($contractExist) {
+        //     return response()->json(['status' => 'error', 'data' => 'Kontrak sudah terdaftar!']);
+        // }
 
 
-        // validasi
-        if (!$nomorContract || !$tahun) {
-            return back()->with('error', 'Nomor contract dan tahun wajib diisi');
-        }
 
         // hit API
         $response = Http::timeout(180)
