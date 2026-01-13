@@ -91,9 +91,22 @@
                         <div class="flex items-center justify-between">
                             <x-input-label for="warehouse_id" value="Gudang" />
                             <div class="mt-1 block w-full max-w-[500px]">
-                                <livewire:components.select-input wire:model="warehouse_id"
-                                    :options="$warehouses->pluck('name', 'id')" placeholder="-- Pilih Gudang --"
-                                    :key="'warehouse-select-' . ($rab?->id ?? 'empty')" />
+                                <div class="flex gap-2">
+                                    @if ($warehouse_id)
+                                        @php
+                                            $selectedWarehouse = $warehousesWithStock->firstWhere('id', $warehouse_id);
+                                        @endphp
+                                        <x-text-input type="text" class="w-full bg-gray-100"
+                                            value="{{ $selectedWarehouse['name'] ?? '-' }}" disabled />
+                                    @else
+                                        <x-text-input type="text" class="w-full bg-gray-100" placeholder="-- Pilih Gudang --"
+                                            disabled />
+                                    @endif
+                                    <button type="button" wire:click="openWarehouseModal"
+                                        class="px-4 py-2 bg-primary-600 text-white text-sm rounded-md hover:bg-primary-700 transition">
+                                        Pilih
+                                    </button>
+                                </div>
                                 <x-input-error :messages="$errors->get('warehouse_id')" class="mt-2" />
                             </div>
                         </div>
@@ -156,6 +169,92 @@
                         </div>
                     </div>
                 </x-card>
+
+                <!-- Daftar Barang dari RAB -->
+                <x-card title="Daftar Barang dari RAB">
+                    @if (session('error'))
+                        <div class="mb-4 p-4 text-sm text-red-800 rounded-lg bg-red-50" role="alert">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+                    @if (!$warehouse_id)
+                        <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50" role="alert">
+                            <strong>Perhatian!</strong> Silakan pilih gudang terlebih dahulu untuk melihat stok yang
+                            tersedia.
+                        </div>
+                    @endif
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-gray-500">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-4 py-3">No</th>
+                                    <th scope="col" class="px-4 py-3">Kode</th>
+                                    <th scope="col" class="px-4 py-3">Nama Barang</th>
+                                    <th scope="col" class="px-4 py-3">Kategori</th>
+                                    <th scope="col" class="px-4 py-3">Qty RAB</th>
+                                    <th scope="col" class="px-4 py-3">Stok Gudang</th>
+                                    <th scope="col" class="px-4 py-3">Max Qty</th>
+                                    <th scope="col" class="px-4 py-3">Qty Permintaan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($items as $index => $item)
+                                    @php
+                                        $stock = 0;
+                                        if ($warehouse_id) {
+                                            $stockRecord = \App\Models\Stock::where('warehouse_id', $warehouse_id)
+                                                ->where('item_id', $item['item_id'])
+                                                ->first();
+                                            $stock = $stockRecord ? $stockRecord->qty : 0;
+                                        }
+                                    @endphp
+                                    <tr class="bg-white border-b hover:bg-gray-50">
+                                        <td class="px-4 py-3">{{ $index + 1 }}</td>
+                                        <td class="px-4 py-3 font-medium">{{ $item['item_code'] }}</td>
+                                        <td class="px-4 py-3">{{ $item['item_name'] }}</td>
+                                        <td class="px-4 py-3">{{ $item['item_category'] }}</td>
+                                        <td class="px-4 py-3">
+                                            {{ number_format($item['qty_rab'], 2) }} {{ $item['item_unit'] }}
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <span
+                                                class="px-2 py-1 rounded text-xs {{ $stock > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                                {{ number_format($stock, 2) }} {{ $item['item_unit'] }}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            @if ($warehouse_id)
+                                                {{ number_format($item['max_qty'], 2) }} {{ $item['item_unit'] }}
+                                            @else
+                                                <span class="text-gray-400">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <div class="flex items-center gap-2">
+                                                <input type="number" wire:model.live="items.{{ $index }}.qty_request"
+                                                    step="0.01" min="0" max="{{ $item['max_qty'] }}"
+                                                    class="w-24 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm"
+                                                    {{ !$warehouse_id || $item['max_qty'] <= 0 ? 'disabled' : '' }} />
+                                                <span class="text-gray-600">{{ $item['item_unit'] }}</span>
+                                            </div>
+                                            @error('items.' . $index . '.qty_request')
+                                                <div class="text-xs text-red-600 mt-1">{{ $message }}</div>
+                                            @enderror
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="8" class="px-4 py-8 text-center text-gray-500">
+                                            Tidak ada barang dalam RAB
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </x-card>
             </div>
 
             <div class="mt-6 flex justify-end gap-3">
@@ -173,5 +272,8 @@
         <livewire:components.document-upload mode="create" modelType="App\Models\RequestModel"
             category="lampiran_permintaan" label="Upload Lampiran" :multiple="true" accept="image/*,.pdf,.doc,.docx"
             modalId="lampiran-modal" :key="'doc-upload-lampiran'" />
+
+        <!-- Modal Pilih Gudang -->
+        <livewire:permintaan.rab.warehouse-selection-modal :key="'warehouse-modal-' . ($rab?->id ?? 'empty')" />
     @endif
 </div>

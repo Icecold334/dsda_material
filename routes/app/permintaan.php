@@ -34,12 +34,18 @@ Route::prefix('permintaan')->name('permintaan.')->group(function () {
         })->name('json');
 
         Route::get('/{permintaan}/json', function (RequestModel $permintaan) {
-            $data = $permintaan->items->map(fn($r) => [
-                'kode' => $r->item->code,
-                'item' => $r->item->name,
-                'qty' => (int) $r->qty_approved . ' ' . $r->item->unit,
-                'action' => '<a href="' . route('rab.show', $permintaan->id) . '" class="bg-primary-600 text-white text-xs font-medium px-1.5 py-0.5 rounded" wire:navigate>Detail</a>',
-            ]);
+            $data = $permintaan->load(['items.item.category.unit'])->items->map(function ($requestItem, $index) {
+                return [
+                    'no' => $index + 1,
+                    'kode' => $requestItem->item->code ?? '-',
+                    'barang' => $requestItem->item->category->name ?? '-',
+                    'spec' => $requestItem->item->spec ?? '-',
+                    'qty_request' => number_format($requestItem->qty_request, 2) . ' ' . ($requestItem->item->category->unit->name ?? ''),
+                    'qty_approved' => $requestItem->qty_approved
+                        ? number_format($requestItem->qty_approved, 2) . ' ' . ($requestItem->item->category->unit->name ?? '')
+                        : '-',
+                ];
+            });
 
             return response()->json([
                 'status' => 'success',
