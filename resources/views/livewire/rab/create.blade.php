@@ -24,7 +24,7 @@
     </div>
 
     <form wire:submit="save">
-        <div class="grid grid-cols-1 gap-4">
+        <div class="grid grid-cols-2 gap-4">
             <x-card title="Informasi RAB">
                 <div class="space-y-4">
                     <div class="flex items-center justify-between">
@@ -127,7 +127,125 @@
                     </div>
                 </div>
             </x-card>
+            <x-card title="Tambah Barang">
+                <div class="space-y-4">
+                    @if ($errors->has('item_id') || $errors->has('qty'))
+                        <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50" role="alert">
+                            @error('item_id') {{ $message }} @enderror
+                            @error('qty') {{ $message }} @enderror
+                        </div>
+                    @endif
+
+                    @if (!$sudin_id)
+                        <div class="p-4 text-sm text-amber-800 rounded-lg bg-amber-50" role="alert">
+                            Pilih Sudin terlebih dahulu untuk menambahkan barang
+                        </div>
+                    @else
+                        <div class="flex items-center justify-between">
+                            <x-input-label for="item_category_id" value="Kategori Barang" />
+                            <div class="mt-1 block w-full max-w-[500px]">
+                                <livewire:components.select-input wire:model.live="item_category_id"
+                                    :options="$itemCategories->pluck('name', 'id')" placeholder="-- Pilih Kategori --"
+                                    :key="'category-select-' . $sudin_id" />
+                                <x-input-error :messages="$errors->get('item_category_id')" class="mt-2" />
+                            </div>
+                        </div>
+
+                        @if($item_category_id)
+                            <div class="flex items-center justify-between">
+                                <x-input-label for="item_id" value="Spesifikasi Barang" />
+                                <div class="mt-1 block w-full max-w-[500px]">
+                                    <livewire:components.select-input wire:model.live="item_id"
+                                        :options="$availableItems->pluck('spec', 'id')" 
+                                        placeholder="-- Pilih Barang --"
+                                        :key="'item-select-' . $item_category_id" />
+                                    <x-input-error :messages="$errors->get('item_id')" class="mt-2" />
+                                </div>
+                            </div>
+                        @endif
+
+                        @if($item_id)
+                            <div class="flex items-center justify-between">
+                                <x-input-label for="qty" value="Jumlah" />
+                                <div class="mt-1 block w-full max-w-[500px]">
+                                    <x-text-input id="qty" wire:model="qty" type="number" step="0.01" min="0.01"
+                                        class="w-full" placeholder="0.00" />
+                                    <x-input-error :messages="$errors->get('qty')" class="mt-2" />
+                                </div>
+                            </div>
+                        @endif
+
+                        <div class="flex justify-end">
+                            <x-primary-button 
+                                type="button" 
+                                wire:click="addItem">
+                                Tambah Item
+                            </x-primary-button>
+                        </div>
+                    @endif
+                </div>
+            </x-card>
         </div>
+        <x-card title="Daftar Barang">
+            @if (count($items) > 0)
+                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                    <table class="w-full text-sm text-left rtl:text-right text-black shadow-lg">
+                        <thead class="text-xs text-gray-700 uppercase bg-primary-200 text-center">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">No</th>
+                                <th scope="col" class="px-6 py-3">Kategori</th>
+                                <th scope="col" class="px-6 py-3">Spesifikasi</th>
+                                <th scope="col" class="px-6 py-3">Satuan</th>
+                                <th scope="col" class="px-6 py-3">Jumlah</th>
+                                <th scope="col" class="px-6 py-3">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($items as $index => $item)
+                                <tr class="bg-white border-b hover:bg-gray-50">
+                                    <td class="px-6 py-4 text-center">{{ $index + 1 }}</td>
+                                    <td class="px-6 py-4">{{ $item['item_category'] }}</td>
+                                    <td class="px-6 py-4">{{ $item['item_spec'] }}</td>
+                                    <td class="px-6 py-4 text-center">{{ $item['item_unit'] }}</td>
+                                    <td class="px-6 py-4 text-right">{{ number_format($item['qty'], 2) }}</td>
+                                    <td class="px-6 py-4 text-center">
+                                        <button type="button" wire:click="removeItem({{ $index }})"
+                                            class="text-red-600 hover:text-red-900">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                    <table class="w-full text-sm text-left rtl:text-right text-black shadow-lg">
+                        <thead class="text-xs text-gray-700 uppercase bg-primary-200 text-center">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">No</th>
+                                <th scope="col" class="px-6 py-3">Kategori</th>
+                                <th scope="col" class="px-6 py-3">Spesifikasi</th>
+                                <th scope="col" class="px-6 py-3">Satuan</th>
+                                <th scope="col" class="px-6 py-3">Jumlah</th>
+                                <th scope="col" class="px-6 py-3">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white border-b">
+                                <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                                    Belum ada barang ditambahkan
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </x-card>
 
         <div class="mt-6 flex justify-end gap-3">
             <a href="{{ route('rab.index') }}" wire:navigate
