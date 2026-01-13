@@ -1,13 +1,14 @@
 <x-modal name="edit-user-{{ $user->id }}" focusable>
-    <form wire:submit.prevent="confirmUpdate" class="p-6" x-data="{
+    <form wire:submit.prevent="update" class="p-6" x-data="{
         confirmUpdate() {
-            SwalConfirm.delete({
-                eventName: 'confirmUpdateUser',
-                eventData: { userId: '{{ $user->id }}' },
+            showConfirm({
                 title: 'Update Pengguna?',
                 text: 'Data pengguna akan diperbarui.',
-                confirmText: 'Ya, update!',
-                cancelText: 'Batal'
+                confirmButtonText: 'Ya, update!',
+                cancelButtonText: 'Batal',
+                onConfirm: () => {
+                    @this.update();
+                }
             });
         }
     }">

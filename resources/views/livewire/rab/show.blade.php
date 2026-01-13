@@ -3,13 +3,25 @@
         <div class="">
             <div class="text-3xl font-semibold"> Rencana Anggaran Biaya #{{ $rab->nomor }}</div>
         </div>
-        <div class="text-right">
-            <a href="{{ route('rab.index') }}" wire:navigate
-                class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  focus:outline-none">Kembali</a>
+        <div class="text-right flex gap-2 justify-end" x-data="{ fileCount: 0 }"
+            @file-count-updated.window="fileCount = $event.detail">
+            <x-secondary-button @click="$dispatch('open-modal', 'lampiran-modal')" type="button">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                </svg>
+                Lampiran
+                <span
+                    class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-indigo-600 rounded-full"
+                    x-show="fileCount > 0" x-text="fileCount">
+                </span>
+            </x-secondary-button>
+            <x-primary-button href="{{ route('rab.index') }}" wire:navigate>
+                Kembali
+            </x-primary-button>
         </div>
     </div>
-    <div class="grid grid-cols-2 gap-4">
-
+    <div>
         <x-card title="Detail RAB">
             <div class="">
                 <table class="table-auto w-full text-md space-y-2 ">
@@ -78,12 +90,6 @@
                 </table>
             </div>
         </x-card>
-
-        <x-card title="Dokumen RAB">
-            <livewire:components.document-upload mode="show" modelType="App\Models\Rab" :modelId="$rab->id"
-                category="lampiran_rab" label="Lampiran RAB" :key="'doc-show-' . $rab->id" />
-        </x-card>
-
     </div>
     <div>
         <x-card title="Daftar Barang">
@@ -97,4 +103,9 @@
 
         </x-card>
     </div>
+
+    <!-- Modal Lampiran -->
+    <livewire:components.document-upload mode="show" modelType="App\Models\Rab" :modelId="$rab->id"
+        category="lampiran_rab" label="Lampiran RAB" :multiple="true" accept="image/*,.pdf,.doc,.docx"
+        modalId="lampiran-modal" :key="'doc-show-lampiran-' . $rab->id" />
 </div>

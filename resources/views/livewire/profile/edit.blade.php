@@ -1,12 +1,14 @@
 <x-modal name="edit-profile" focusable>
-    <form wire:submit.prevent="confirmUpdate" class="p-6" x-data="{
+    <form wire:submit.prevent="update" class="p-6" x-data="{
         confirmUpdate() {
-            SwalConfirm.delete({
-                eventName: 'confirmUpdateProfile',
+            showConfirm({
                 title: 'Update Profil?',
                 text: 'Data profil Anda akan diperbarui.',
-                confirmText: 'Ya, update!',
-                cancelText: 'Batal'
+                confirmButtonText: 'Ya, update!',
+                cancelButtonText: 'Batal',
+                onConfirm: () => {
+                    @this.update();
+                }
             });
         }
     }">

@@ -47,8 +47,7 @@ class Edit extends Component
         ];
     }
 
-    #[\Livewire\Attributes\On('confirmUpdateUser')]
-    public function update($userId = null)
+    public function update()
     {
         $this->validate();
 
@@ -84,6 +83,7 @@ class Edit extends Component
         $this->user->update($data);
 
         $this->dispatch('close-modal', 'edit-user-' . $this->user->id);
+        $this->dispatch('success-updated', message: 'Pengguna berhasil diperbarui');
         $this->dispatch('user-updated');
     }
 

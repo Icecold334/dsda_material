@@ -13,10 +13,9 @@ window.showConfirm = function ({
     type = "warning",
     confirmButtonText = "Ya",
     cancelButtonText = "Batal",
-    onConfirm = null,     // 👈 FUNCTION
-    onCancel = null,      // 👈 OPTIONAL
+    onConfirm = null, // 👈 FUNCTION
+    onCancel = null, // 👈 OPTIONAL
 } = {}) {
-
     return Swal.fire({
         title,
         text,
@@ -25,7 +24,6 @@ window.showConfirm = function ({
         confirmButtonText,
         cancelButtonText,
     }).then((result) => {
-
         if (result.isConfirmed && typeof onConfirm === "function") {
             onConfirm(result);
         }
@@ -33,12 +31,11 @@ window.showConfirm = function ({
         if (result.isDismissed && typeof onCancel === "function") {
             onCancel(result);
         }
-
     });
 };
 window.showAlert = function ({
-    mode = "alert",        // alert | confirm
-    type = "success",      // success | error | info | warning
+    mode = "alert", // alert | confirm
+    type = "success", // success | error | info | warning
     title = "",
     text = "",
     timer = 2000,
@@ -48,7 +45,6 @@ window.showAlert = function ({
     confirmEvent = null,
     confirmData = {},
 } = {}) {
-
     const options = {
         title,
         text,
@@ -70,16 +66,40 @@ window.showAlert = function ({
     }
 
     return Swal.fire(options).then((result) => {
-        if (
-            mode === "confirm" &&
-            result.isConfirmed &&
-            confirmEvent
-        ) {
+        if (mode === "confirm" && result.isConfirmed && confirmEvent) {
             window.Livewire.dispatch(confirmEvent, confirmData);
         }
     });
 };
-function app(){
+
+// SwalConfirm helper object
+window.SwalConfirm = {
+    delete: function ({
+        eventName,
+        eventData = {},
+        title = "Hapus Data?",
+        text = "Data yang dihapus tidak dapat dikembalikan!",
+        confirmButtonText = "Ya, Hapus!",
+        cancelButtonText = "Batal",
+    } = {}) {
+        return Swal.fire({
+            title,
+            text,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText,
+            cancelButtonText,
+        }).then((result) => {
+            if (result.isConfirmed && eventName) {
+                window.Livewire.dispatch(eventName, eventData);
+            }
+        });
+    },
+};
+
+function app() {
     Livewire.on("confirm", (payload = {}) => {
         showConfirm(payload);
     });
@@ -93,18 +113,44 @@ function app(){
             allowEscapeKey: false,
             didOpen: () => {
                 Swal.showLoading();
-            }
-        
+            },
         });
     });
     Livewire.on("endLoading", (payload = {}) => {
         Swal.close();
     });
 
+    // Generic success notifications
+    Livewire.on("success-created", (data = {}) => {
+        Swal.fire({
+            icon: "success",
+            title: "Berhasil!",
+            text: data.message || "Data berhasil ditambahkan",
+            timer: 2000,
+            showConfirmButton: false,
+        });
+    });
+
+    Livewire.on("success-updated", (data = {}) => {
+        Swal.fire({
+            icon: "success",
+            title: "Berhasil!",
+            text: data.message || "Data berhasil diperbarui",
+            timer: 2000,
+            showConfirmButton: false,
+        });
+    });
+
+    Livewire.on("success-deleted", (data = {}) => {
+        Swal.fire({
+            icon: "success",
+            title: "Berhasil!",
+            text: data.message || "Data berhasil dihapus",
+            timer: 2000,
+            showConfirmButton: false,
+        });
+    });
 }
-
-
-
 
 function mapByColumns(rows, columns) {
     return rows.map((row) =>

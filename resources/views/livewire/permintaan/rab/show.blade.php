@@ -3,13 +3,25 @@
         <div class="">
             <div class="text-3xl font-semibold"> Detail Permintaan #{{ $permintaan->nomor }}</div>
         </div>
-        <div class="text-right">
-            <a href="{{ route('permintaan.rab.index') }}" wire:navigate
-                class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  focus:outline-none">Kembali</a>
+        <div class="text-right flex gap-2 justify-end" x-data="{ fileCount: 0 }"
+            @file-count-updated.window="fileCount = $event.detail">
+            <x-secondary-button @click="$dispatch('open-modal', 'lampiran-modal')" type="button">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                </svg>
+                Lampiran
+                <span
+                    class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-indigo-600 rounded-full"
+                    x-show="fileCount > 0" x-text="fileCount">
+                </span>
+            </x-secondary-button>
+            <x-primary-button href="{{ route('permintaan.rab.index') }}" wire:navigate>
+                Kembali
+            </x-primary-button>
         </div>
     </div>
-    <div class="grid grid-cols-2 gap-4">
-
+    <div>
         <x-card title="Detail Permintaan">
             <div class="">
                 <table class="table-auto w-full text-md space-y-2 ">
@@ -91,22 +103,24 @@
                 </table>
             </div>
         </x-card>
-
-        <x-card title="Dokumen Permintaan">
-            <livewire:components.document-upload mode="show" modelType="App\Models\RequestModel"
-                :modelId="$permintaan->id" category="lampiran_permintaan" label="Lampiran Permintaan" :key="'doc-show-' . $permintaan->id" />
-        </x-card>
     </div>
 
     <div>
         <x-card title="Daftar Barang">
             <div data-grid data-api="{{ route('permintaan.rab.show.json', $permintaan) }}" data-columns='[
-        { "name": "Kode Barang", "id": "kode" },
-        { "name": "Item", "id": "item" },
-        { "name": "Jumlah", "id": "qty", "width": "15%" },
-        { "name": "", "id": "action","width": "10%" , "sortable": false }
+        { "name": "No", "id": "no", "width": "8%" },
+        { "name": "Kode Barang", "id": "kode", "width": "12%" },
+        { "name": "Barang", "id": "barang", "width": "15%" },
+        { "name": "Spesifikasi", "id": "spec" },
+        { "name": "Jumlah Diminta", "id": "qty_request", "width": "15%" },
+        { "name": "Jumlah Disetujui", "id": "qty_approved", "width": "15%" }
     ]' wire:ignore>
             </div>
         </x-card>
     </div>
+
+    <!-- Modal Lampiran -->
+    <livewire:components.document-upload mode="show" modelType="App\Models\RequestModel" :modelId="$permintaan->id"
+        category="lampiran_permintaan" label="Lampiran Permintaan" :multiple="true" accept="image/*,.pdf,.doc,.docx"
+        modalId="lampiran-modal" :key="'doc-show-lampiran-' . $permintaan->id" />
 </div>

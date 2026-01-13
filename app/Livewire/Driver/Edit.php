@@ -26,8 +26,7 @@ class Edit extends Component
         ];
     }
 
-    #[\Livewire\Attributes\On('confirmUpdateDriver')]
-    public function update($driverId = null)
+    public function update()
     {
         $this->validate();
 
@@ -37,6 +36,7 @@ class Edit extends Component
         ]);
 
         $this->dispatch('close-modal', 'edit-driver-' . $this->driver->id);
+        $this->dispatch('success-updated', message: 'Driver berhasil diperbarui');
         $this->dispatch('driver-updated');
     }
 

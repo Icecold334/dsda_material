@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             PersonnelSeeder::class,
             RequestSeeder::class,
             WarehouseSeeder::class,
+            StockSeeder::class,
             DeliverySeeder::class,
         ]);
         User::factory()->create([

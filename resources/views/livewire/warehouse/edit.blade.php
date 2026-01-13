@@ -1,13 +1,14 @@
 <x-modal name="edit-warehouse-{{ $warehouse->id }}" focusable>
-    <form wire:submit.prevent="confirmUpdate" class="p-6" x-data="{
+    <form wire:submit.prevent="update" class="p-6" x-data="{
         confirmUpdate() {
-            SwalConfirm.delete({
-                eventName: 'confirmUpdateWarehouse',
-                eventData: { warehouseId: '{{ $warehouse->id }}' },
+            showConfirm({
                 title: 'Update Gudang?',
                 text: 'Data gudang akan diperbarui.',
-                confirmText: 'Ya, update!',
-                cancelText: 'Batal'
+                confirmButtonText: 'Ya, update!',
+                cancelButtonText: 'Batal',
+                onConfirm: () => {
+                    @this.update();
+                }
             });
         }
     }">

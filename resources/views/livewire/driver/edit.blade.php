@@ -1,13 +1,14 @@
 <x-modal name="edit-driver-{{ $driver->id }}" focusable>
-    <form wire:submit.prevent="confirmUpdate" class="p-6" x-data="{
+    <form wire:submit.prevent="update" class="p-6" x-data="{
         confirmUpdate() {
-            SwalConfirm.delete({
-                eventName: 'confirmUpdateDriver',
-                eventData: { driverId: '{{ $driver->id }}' },
+            showConfirm({
                 title: 'Update Driver?',
                 text: 'Data driver akan diperbarui.',
-                confirmText: 'Ya, update!',
-                cancelText: 'Batal'
+                confirmButtonText: 'Ya, update!',
+                cancelButtonText: 'Batal',
+                onConfirm: () => {
+                    @this.update();
+                }
             });
         }
     }">

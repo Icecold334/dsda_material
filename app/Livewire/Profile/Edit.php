@@ -23,8 +23,6 @@ class Edit extends Component
     public $ttd = '';
     public $existing_ttd = '';
 
-    protected $listeners = ['confirmUpdateProfile'];
-
     public function mount()
     {
         $user = auth()->user();
@@ -57,7 +55,6 @@ class Edit extends Component
         ];
     }
 
-    #[\Livewire\Attributes\On('confirmUpdateProfile')]
     public function update()
     {
         $this->validate();

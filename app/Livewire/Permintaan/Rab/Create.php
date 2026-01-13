@@ -4,7 +4,9 @@ namespace App\Livewire\Permintaan\Rab;
 
 use App\Models\Rab;
 use App\Models\RequestModel;
+use App\Models\RequestItem;
 use App\Models\Warehouse;
+use App\Models\Stock;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -14,6 +16,7 @@ class Create extends Component
 
     // Modal state
     public $showModal = true;
+    public $showWarehouseModal = false;
 
     // Search RAB
     public $rab_nomor = '';
@@ -35,6 +38,9 @@ class Create extends Component
     public $tanggal_permintaan = '';
     public $notes = '';
 
+    // Items
+    public $items = [];
+
     public function rules()
     {
         return [
@@ -43,6 +49,8 @@ class Create extends Component
             'warehouse_id' => 'required|exists:warehouses,id',
             'tanggal_permintaan' => 'required|date',
             'notes' => 'nullable|string',
+            'items.*.item_id' => 'required|exists:items,id',
+            'items.*.qty_request' => 'required|numeric|min:0',
         ];
     }
 
@@ -82,6 +90,9 @@ class Create extends Component
         $this->showModal = false;
         $this->dispatch('close-modal', 'input-rab-number');
 
+        // Initialize items dari RAB
+        $this->initializeItems();
+
         session()->flash('rab_found', 'RAB ditemukan! Data telah dimuat.');
     }
 
@@ -104,7 +115,147 @@ class Create extends Component
         $this->lebar = '';
         $this->tinggi = '';
         $this->warehouse_id = '';
+        $this->items = [];
         $this->showModal = true;
+    }
+
+    public function initializeItems()
+    {
+        if (!$this->rab)
+            return;
+
+        $this->items = [];
+        $rabItems = $this->rab->items()->with('item.category.unit')->get();
+
+        foreach ($rabItems as $rabItem) {
+            $this->items[] = [
+                'rab_item_id' => $rabItem->id,
+                'item_id' => $rabItem->item_id,
+                'item_code' => $rabItem->item->code ?? '-',
+                'item_name' => $rabItem->item->spec ?? '-',
+                'item_category' => $rabItem->item->category->name ?? '-',
+                'item_unit' => $rabItem->item->category->unit->name ?? '',
+                'qty_rab' => $rabItem->qty,
+                'qty_request' => 0,
+                'max_qty' => 0,
+            ];
+        }
+    }
+
+    public function openWarehouseModal()
+    {
+        $this->showWarehouseModal = true;
+
+        $this->dispatch('openWarehouseModal', data: [
+            'warehouses' => $this->getWarehousesWithStockInfo()->toArray(),
+            'items' => $this->items,
+        ]);
+    }
+
+    public function selectWarehouse($warehouseId)
+    {
+        $this->warehouse_id = $warehouseId;
+        $this->showWarehouseModal = false;
+
+        // Update max qty untuk setiap item berdasarkan stok gudang yang dipilih
+        $this->updateItemsMaxQty();
+    }
+
+    protected $listeners = ['warehouseSelected' => 'selectWarehouse'];
+
+    public function updateItemsMaxQty()
+    {
+        if (!$this->warehouse_id || empty($this->items))
+            return;
+
+        foreach ($this->items as $key => $item) {
+            $stock = Stock::where('warehouse_id', $this->warehouse_id)
+                ->where('item_id', $item['item_id'])
+                ->first();
+
+            $stockQty = $stock ? $stock->qty : 0;
+            $rabQty = $item['qty_rab'];
+
+            // Max qty adalah yang terkecil antara stok dan qty rab
+            $this->items[$key]['max_qty'] = min($stockQty, $rabQty);
+
+            // Reset qty_request jika melebihi max_qty
+            if ($this->items[$key]['qty_request'] > $this->items[$key]['max_qty']) {
+                $this->items[$key]['qty_request'] = $this->items[$key]['max_qty'];
+            }
+        }
+    }
+
+    public function updatedWarehouseId()
+    {
+        $this->updateItemsMaxQty();
+    }
+
+    public function getWarehousesWithStockInfo()
+    {
+        if (!$this->rab)
+            return collect();
+
+        $warehouses = Warehouse::where('sudin_id', $this->rab->sudin_id)
+            ->with([
+                'stocks' => function ($query) {
+                    if (!empty($this->items)) {
+                        $itemIds = collect($this->items)->pluck('item_id')->toArray();
+                        $query->whereIn('item_id', $itemIds);
+                    }
+                },
+                'stocks.item'
+            ])
+            ->get();
+
+        return $warehouses->map(function ($warehouse) {
+            $rabItemIds = collect($this->items)->pluck('item_id')->toArray();
+
+            // Hitung total item dari RAB
+            $totalRabItems = count($rabItemIds);
+
+            // Gunakan collection stocks yang sudah di-load
+            $warehouseStocks = $warehouse->stocks;
+
+            // Hitung item yang tersedia di gudang (qty > 0)
+            $availableItems = $warehouseStocks->filter(function ($stock) {
+                return $stock->qty > 0;
+            })->count();
+
+            // Hitung item yang memenuhi kebutuhan RAB
+            $fulfilledItems = 0;
+            foreach ($this->items as $item) {
+                $stock = $warehouseStocks->firstWhere('item_id', $item['item_id']);
+
+                if ($stock && $stock->qty >= $item['qty_rab']) {
+                    $fulfilledItems++;
+                }
+            }
+
+            // Status: bisa dipilih jika minimal ada 1 item dengan stok > 0
+            $canSelect = $availableItems > 0;
+
+            // Fully meets jika semua item RAB terpenuhi
+            $fullyMeets = $fulfilledItems === $totalRabItems;
+
+            return [
+                'id' => $warehouse->id,
+                'name' => $warehouse->name,
+                'address' => $warehouse->address ?? '-',
+                'total_rab_items' => $totalRabItems,
+                'available_items' => $availableItems,
+                'fulfilled_items' => $fulfilledItems,
+                'can_select' => $canSelect,
+                'fully_meets' => $fullyMeets,
+                'stocks' => $warehouseStocks->map(function ($stock) {
+                    return [
+                        'id' => $stock->id,
+                        'item_id' => $stock->item_id,
+                        'qty' => $stock->qty,
+                    ];
+                })->toArray(),
+            ];
+        });
     }
 
     public function save()
@@ -115,6 +266,14 @@ class Create extends Component
         }
 
         $this->validate();
+
+        // Validasi minimal ada 1 item yang diminta
+        $hasItems = collect($this->items)->filter(fn($item) => $item['qty_request'] > 0)->isNotEmpty();
+
+        if (!$hasItems) {
+            session()->flash('error', 'Minimal harus ada 1 barang yang diminta');
+            return;
+        }
 
         $request = RequestModel::create([
             'nomor' => $this->nomor,
@@ -134,6 +293,17 @@ class Create extends Component
             'rab_id' => $this->rab->id,
         ]);
 
+        // Save items
+        foreach ($this->items as $item) {
+            if ($item['qty_request'] > 0) {
+                RequestItem::create([
+                    'request_id' => $request->id,
+                    'item_id' => $item['item_id'],
+                    'qty_request' => $item['qty_request'],
+                ]);
+            }
+        }
+
         // Save documents
         $this->dispatch('saveDocuments', modelId: $request->id);
 
@@ -144,9 +314,7 @@ class Create extends Component
     public function render()
     {
         return view('livewire.permintaan.rab.create', [
-            'warehouses' => $this->rab
-                ? Warehouse::where('sudin_id', $this->rab->sudin_id)->orderBy('name')->get()
-                : collect(),
+            'warehousesWithStock' => $this->getWarehousesWithStockInfo(),
         ]);
     }
 }

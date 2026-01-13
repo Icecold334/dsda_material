@@ -33,8 +33,9 @@ class Index extends Component
         $warehouse = Warehouse::find($warehouseId);
         if ($warehouse) {
             $warehouse->delete();
-            $this->dispatch('refresh-grid');
+            $this->dispatch('success-deleted', message: 'Gudang berhasil dihapus');
             $this->dispatch('warehouse-deleted');
+            $this->dispatch('refresh-grid');
         }
     }
 

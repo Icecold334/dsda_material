@@ -9,7 +9,7 @@ use Livewire\Component;
 
 class Index extends Component
 {
-    #[Title('Daftar Barang')]
+    #[Title('Daftar Spesifikasi')]
 
     public $editItemId = null;
 
@@ -33,8 +33,9 @@ class Index extends Component
         $item = Item::find($itemId);
         if ($item) {
             $item->delete();
-            $this->dispatch('refresh-grid');
+            $this->dispatch('success-deleted', message: 'Barang berhasil dihapus');
             $this->dispatch('item-deleted');
+            $this->dispatch('refresh-grid');
         }
     }
 
