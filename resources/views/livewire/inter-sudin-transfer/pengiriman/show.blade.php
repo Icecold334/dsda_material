@@ -28,7 +28,7 @@
                         <td>{{ $transfer->sudinPengirim?->name ?? '-' }}</td>
                     </tr>
                     <tr>
-                        <td class="font-semibold">Sudin Diminta (Anda)</td>
+                        <td class="font-semibold">Sudin Penerima (Anda)</td>
                         <td>{{ $transfer->sudinPenerima?->name ?? '-' }}</td>
                     </tr>
                     <tr>

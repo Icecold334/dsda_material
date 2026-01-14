@@ -177,6 +177,9 @@ class Create extends Component
             ]);
         }
 
+        // Save documents
+        $this->dispatch('saveDocuments', modelId: $request->id);
+
         session()->flash('success', 'Permintaan berhasil dibuat');
         return redirect()->route('permintaan.nonRab.index');
     }
