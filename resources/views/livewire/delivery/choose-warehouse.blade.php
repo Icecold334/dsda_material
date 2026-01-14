@@ -1,43 +1,52 @@
 <div>
-    <x-modal name="choose-warehouse">
+    <x-modal name="choose-warehouse" :dismissable="false">
         <div class="p-6 space-y-6">
 
             {{-- Header --}}
-            <div>
-                <h2 class="text-3xl font-semibold text-gray-900">
-                    Pilih Gudang Pengiriman
-                </h2>
+            <div class="flex items-center gap-2">
+                <div class="text-lg text-primary-700">
+                    <button type="button"
+                        x-on:click="($dispatch('close-modal','choose-warehouse'),$dispatch('open-modal','input-contract-number'))"><i
+                            class="fa-solid fa-circle-chevron-left"></i></button>
+                </div>
+                <div>
+                    <div class="font-semibold text-2xl">Pilih Gudang</div>
+                    <div class="text-sm text-gray-500">Silakan pilih salah satu gudang</div>
+                </div>
             </div>
 
+            <div class="flex flex-row overflow-x-auto max-w-full gap-2 py-4 px-1">
+                @foreach ($warehouses as $warehouse)
+                <x-card id="warehouse{{ $warehouse->id }}"
+                    class="select-none min-w-96 min-h-64 py-6 transition duration-200 hover:bg-primary-200 active:bg-primary-300 hover:cursor-pointer hover:scale-[1.02] ">
+                    <div class="text-2xl font-medium">{{ $warehouse->name }}</div>
+                    <div class="font-normal">{{ fake()->paragraph }}</div>
+                </x-card>
+                @push('scripts')
+                <script type="module">
+                    document.getElementById("warehouse{{ $warehouse->id }}").addEventListener("click", async () => {
+                        var wareHouseId = "{{ $warehouse->id }}"
+                        var wareHouseName = "{{ $warehouse->name }}"
+                        showConfirm(
+                            {
+                                
+                                type: "question",
+                                title: "Pilih " + wareHouseName + "?",
+                                text: "Apakah Anda yakin ingin memilih gudang ini sebagai lokasi pengiriman?",
+                                confirmButtonText: "Lanjutkan",
+                                cancelButtonText: "Batal",
+                                onConfirm: (e) => {
+                                    window.Livewire.dispatch('proceedWarehouse', {warehouse:wareHouseId});
+                                    window.Livewire.dispatch("close-modal", 'choose-warehouse');
+                                    }
+                            }
+                        )
+                    });
+                </script>
+                @endpush
+                @endforeach
+            </div>
 
-
-
-            {{-- Footer --}}
-            {{-- <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
-                <button type="button"
-                    class="text-gray-700 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5"
-                    x-on:click="$dispatch('close-modal', 'confirm-contract')">
-                    {{ $showDetail ? "Tutup":"Tidak" }}
-                </button>
-
-                @if (!$showDetail)
-                @if ($isApi)
-                <button type="button" x-on:click="
-                $dispatch('proceedCreateContract', {data:{{ json_encode($contractData) }}, isApi:true})
-                ,$dispatch('close-modal', 'confirm-contract')
-                ,$dispatch('close-modal', 'input-contract-number')"
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                    Ya, Lanjutkan
-                </button>
-                @else
-                <button type="button"
-                    x-on:click="$dispatch('proceedCreateContract', {data:{{ json_encode($contractData) }}, isApi:false})"
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                    Ya, Lanjutkan
-                </button>
-                @endif
-                @endif
-            </div> --}}
 
         </div>
     </x-modal>

@@ -14,7 +14,7 @@
         </div>
 
         {{-- Body --}}
-        @if ($contractData)
+        @if ($contract)
         @if ($isApi)
         <div class="grid grid-cols-2">
             <div class="overflow-x-auto">
@@ -118,12 +118,12 @@
                     <tbody class="divide-y divide-gray-200">
                         <tr>
                             <td class="font-semibold w-1/3 bg-gray-50 px-4 py-2">Nomor Kontrak</td>
-                            <td class="px-4 py-2">{{ $contractData['nomor'] ?? '-' }}</td>
+                            <td class="px-4 py-2">{{ $contract->nomor ?? '-' }}</td>
                         </tr>
                         <tr>
                             <td class="font-semibold w-1/3 bg-gray-50 px-4 py-2">Tahun Anggaran</td>
                             <td class="px-4 py-2">{{
-                                \Carbon\Carbon::parse($contractData['tanggal_mulai'])->translatedFormat('Y') ?? '-' }}
+                                \Carbon\Carbon::parse($contract->tanggal_mulai)->translatedFormat('Y') ?? '-' }}
                             </td>
                         </tr>
                     </tbody>
@@ -178,7 +178,7 @@
                 onConfirm: () => {
                     window.Livewire.dispatch('close-modal', 'confirm-contract');
                     window.Livewire.dispatch('close-modal', 'input-contract-number');
-                    window.Livewire.dispatch("proceedCreateContractAgain",{contractNumber:payload.contractNumber});
+                    window.Livewire.dispatch("proceedCreateContractAgain",{contract:payload.id});
                     window.Livewire.dispatch("open-modal", 'choose-warehouse');
                     }
             }

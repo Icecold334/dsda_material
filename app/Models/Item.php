@@ -44,6 +44,10 @@ class Item extends Model
     {
         return $this->hasMany(Stock::class);
     }
+    public function contractItems()
+    {
+        return $this->hasMany(ContractItem::class);
+    }
 
     public function stockTransactions()
     {

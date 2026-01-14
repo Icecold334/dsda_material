@@ -71,6 +71,7 @@
                     showConfirmButton: false,
                     })
                 }else{
+                    
                     if (data.data.is_api) {
                         const paramsApi = new URLSearchParams({
                             nomor_kontrak: nomorContract,
@@ -85,21 +86,12 @@
 
                         const dataApi = await resApi.json();
                         window.Livewire.dispatch('confirmContract', {
-                                    data: {
-                                        contractNumber: nomorContract,
-                                        year: tahun,
-                                        contractData: dataApi.data,
-                                        isApi: data.data.is_api
-                                        }
+                                    contract: data.data.id,
+                                    data: dataApi.data,
                                     });
                     }else{
                         window.Livewire.dispatch('confirmContract', {
-                                    data: {
-                                        contractNumber: nomorContract,
-                                        year: tahun,
-                                        contractData: data.data,
-                                        isApi: data.data.is_api
-                                        }
+                                    contract: data.data.id
                                     });
                     }
                     

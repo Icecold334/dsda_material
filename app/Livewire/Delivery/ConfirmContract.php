@@ -2,21 +2,23 @@
 
 namespace App\Livewire\Delivery;
 
+use App\Models\Contract;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
 class ConfirmContract extends Component
 {
 
-    public $contractData = [], $showDetail = false, $titleModal = '', $isApi = false;
+    public $contractData = [], $showDetail = false, $titleModal = '', $isApi = false, $contract;
 
     #[On('confirmContract')]
-    public function confirmContract($data)
+    public function confirmContract(Contract $contract, $data = [])
     {
         $this->showDetail = false;
         $this->changeTitleModal();
-        $this->contractData = $data['contractData'];
-        $this->isApi = $data['isApi'];
+        $this->contractData = $data;
+        $this->contract = $contract;
+        $this->isApi = $contract->is_api;
     }
 
     #[On("proceedCreateContract")]
@@ -25,9 +27,9 @@ class ConfirmContract extends Component
         // kalo ada prop no_spk berarti dari e-monev
         $this->isApi = $isApi;
         if (!$isApi) {
-            $this->dispatch('isNotApi', contractNumber: $data['nomor']);
+            $this->dispatch('isNotApi', contract: $this->contract->id);
         } else {
-            $this->dispatch('proceedCreateContractAgain', contractNumber: $data['no_spk'] ?? $data['nomor']);
+            $this->dispatch('proceedCreateContractAgain', contract: $this->contract->id);
             $this->dispatch('open-modal', 'choose-warehouse');
         }
 
