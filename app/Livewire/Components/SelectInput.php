@@ -15,6 +15,7 @@ class SelectInput extends Component
     public $disabled = false;
     public $freetext = false;
     public $open = false;
+    public $processedOptions = [];
 
     public function mount($options = [], $placeholder = '-- Pilih --', $disabled = false, $freetext = false)
     {
@@ -22,11 +23,33 @@ class SelectInput extends Component
         $this->placeholder = $placeholder;
         $this->disabled = $disabled;
         $this->freetext = $freetext;
+        $this->processedOptions = $this->processOptions($this->rawOptions);
+    }
+
+    public function updating($property, $value)
+    {
+        // Ketika parent component update options via parameter
+        if ($property === 'rawOptions') {
+            $this->processedOptions = $this->processOptions($value);
+        }
     }
 
     public function getOptionsProperty()
     {
-        return $this->processOptions($this->rawOptions);
+        return $this->processedOptions;
+    }
+
+    public function updatedRawOptions($value)
+    {
+        $this->processedOptions = $this->processOptions($this->rawOptions);
+
+        // Reset value jika tidak ada di options baru (kecuali mode freetext)
+        if (!$this->freetext && $this->value) {
+            $valueExists = collect($this->processedOptions)->contains('value', $this->value);
+            if (!$valueExists) {
+                $this->value = '';
+            }
+        }
     }
 
     public function selectOption($optionValue, $optionLabel = null)
