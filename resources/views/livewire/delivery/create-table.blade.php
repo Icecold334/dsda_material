@@ -1,38 +1,41 @@
 <div class="space-y-4">
     <x-card title="Tambah Barang" class="space-y-4">
-        <form wire:submit.prevent="save">
-            <div class="grid md:grid-cols-2 w-full md:gap-4">
-                <table>
-                    <tr>
-                        <td class="font-semibold bg-gray-50 px-4 py-2">Nama Barang</td>
-                        <td class="px-4 py-2">
-                            <livewire:components.select-input wire:model.live="itemCategory"
-                                :options="$itemCategories->pluck('name', 'id')" placeholder="Pilih Barang" />
-                        </td>
-                    </tr>
-                    @if ($itemCategory)
-                    <tr>
-                        <td class="font-semibold bg-gray-50 px-4 py-2">Spesifikasi</td>
-                        <td class="px-4 py-2">
-                            <livewire:components.select-input wire:model.live="item"
-                                :options="$items->pluck('spec', 'id')" placeholder="Pilih Spesifikasi" />
-                        </td>
-                    </tr>
-                    @endif
+        <form wire:submit.prevent="save" class="space-y-4">
+            <div class="flex items-center gap-4">
+                <div class="w-1/3 font-semibold bg-gray-50 px-4 py-2 rounded">
+                    Nama Barang
+                </div>
+                <div class="w-2/3">
+                    <livewire:components.select-input wire:model.live="itemCategory"
+                        :options="$itemCategories->pluck('name', 'id')" placeholder="Pilih Barang" />
+                </div>
+                <div class="w-1/3 font-semibold bg-gray-50 px-4 py-2 rounded">
+                    Spesifikasi
+                </div>
+                <div class="w-2/3">
+                    <livewire:components.select-input wire:model.live="item" :disabled="!$itemCategory"
+                        wire:key="item-select-{{ $itemCategory }}" :options="$items->pluck('spec', 'id')"
+                        placeholder="Pilih Spesifikasi" />
+                </div>
+                <div class="w-1/3 font-semibold bg-gray-50 px-4 py-2 rounded">
+                    Jumlah
+                </div>
+                <div class="w-2/3">
+                    <div class="flex">
+                        <input type="number"
+                            class="rounded-none rounded-s-lg bg-gray-50 border border-gray-300 text-gray-900 block flex-1 text-sm p-2.5"
+                            placeholder="Jumlah Pengiriman" required>
 
-                </table>
-                <table>
-                    <tr>
-                        <td class="font-semibold bg-gray-50 px-4 py-2">Jumlah</td>
-                        <td class="px-4 py-2"><input type="text" wire:model="jumlahBarang"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                                placeholder="Jumlah Barang" /></td>
-                    </tr>
-                </table>
-            </div>
-            <div class="text-right ">
-                <button type="submit"
-                    class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  focus:outline-none">Tambah</button>
+                        <div
+                            class="text-center rounded-none rounded-e-lg bg-gray-200 font-semibold Satuan border border-gray-300 text-gray-900 block w-20 text-sm p-2.5">
+                            {{ $unit }}
+                        </div>
+                    </div>
+                </div>
+                <div class="w-1/12">
+                    <button type="submit"
+                        class="text-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2  focus:outline-none">Tambah</button>
+                </div>
             </div>
         </form>
     </x-card>
