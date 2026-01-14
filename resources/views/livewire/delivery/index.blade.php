@@ -3,6 +3,11 @@
         <div class="">
             <div class="text-3xl font-semibold"> Daftar Pengiriman Barang </div>
         </div>
+        <div class="text-right">
+            <a href="{{ route('delivery.create') }}" wire:navigate
+                class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  focus:outline-none">Tambah
+                Pengirman</a>
+        </div>
     </div>
     <div data-grid data-api="{{ route('delivery.json') }}" data-columns='[
         { "name": "Nomor Pengiriman", "id": "nomor","width": "50%" },

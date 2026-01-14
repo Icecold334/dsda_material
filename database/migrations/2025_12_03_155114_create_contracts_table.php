@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->string('nomor')->nullable();     // nomor contract
             $table->date('tanggal_mulai')->nullable();
             $table->date('tanggal_selesai')->nullable();
+            $table->boolean('is_api')->default(false);
 
             // $table->decimal('nilai_kontrak', 18, 2)->default(0);
             $table->string('status')->default('approved');  // draft / approved

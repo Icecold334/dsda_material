@@ -2,29 +2,26 @@
     <div class="p-6 space-y-4">
         <div class="flex items-center gap-2">
             <div class="text-lg text-primary-700">
-                <a href="{{ route('contract.index') }}" wire:navigate><i
+                <a href="{{ route('delivery.index') }}" wire:navigate><i
                         class="fa-solid fa-circle-chevron-left"></i></a>
             </div>
             <div class="font-semibold text-2xl">Masukkan Nomor Kontrak</div>
         </div>
 
-        {{-- <form method="GET" action="{{ route('contract.emonev') }}"> --}}
-            <div class="flex">
-                <input type="text" id="nomorContract"
-                    class="rounded-none rounded-s-lg bg-gray-50 border border-gray-300 text-gray-900 block flex-1 text-sm p-2.5"
-                    placeholder="Masukkan Nomor Kontrak" required>
+        <div class="flex">
+            <input type="text" id="nomorContract"
+                class="rounded-none rounded-s-lg bg-gray-50 border border-gray-300 text-gray-900 block flex-1 text-sm p-2.5"
+                placeholder="Masukkan Nomor Kontrak" required>
 
-                <input type="text" id="contractYear"
-                    class="rounded-none bg-gray-50 border border-gray-300 text-gray-900 block w-20 text-sm p-2.5"
-                    placeholder="Tahun" required>
+            <input type="text" id="contractYear"
+                class="rounded-none bg-gray-50 border border-gray-300 text-gray-900 block w-20 text-sm p-2.5"
+                placeholder="Tahun" required>
 
-                <button type="button" id="btnCariContract" class=" inline-flex items-center px-3 text-sm text-white bg-primary-600 hover:bg-primary-800
+            <button type="button" id="btnCariContract" class=" inline-flex items-center px-3 text-sm text-white bg-primary-600 hover:bg-primary-800
                         rounded-e-md transition">
-                    Cari
-                </button>
-            </div>
-            {{--
-        </form> --}}
+                Cari
+            </button>
+        </div>
     </div>
 </x-modal>
 @push('scripts')
@@ -50,17 +47,18 @@
             try {
                 window.Livewire.dispatch('loading');
                 const params = new URLSearchParams({
-                    nomor_kontrak: nomorContract,
-                    tahun: tahun,
+                    contractNumber: nomorContract,
+                    year: tahun,
                 });
 
-                const res = await fetch(`/contract/api/emonev?${params.toString()}`, {
+                const res = await fetch(`{{ route('delivery.getContract') }}?${params.toString()}`, {
                     headers: {
                         "Accept": "application/json",
                     },
                 });
 
                 const data = await res.json();
+                
                 
                 if (!res.ok) {
                     throw new Error(data.message || "Terjadi kesalahan");
@@ -73,14 +71,30 @@
                     showConfirmButton: false,
                     })
                 }else{
-                    window.Livewire.dispatch('confirmContract', {
-                                data: {
-                                    nomor_kontrak: nomorContract,
-                                    tahun: tahun,
-                                    apiExist: true,
-                                    dataContract: data.data,
-                                    }
-                    });
+                    
+                    if (data.data.is_api) {
+                        const paramsApi = new URLSearchParams({
+                            nomor_kontrak: nomorContract,
+                            tahun: tahun,
+                        });
+
+                        const resApi = await fetch(`/contract/api/emonev?${paramsApi.toString()}`, {
+                            headers: {
+                                "Accept": "application/json",
+                            },
+                        });
+
+                        const dataApi = await resApi.json();
+                        window.Livewire.dispatch('confirmContract', {
+                                    contract: data.data.id,
+                                    data: dataApi.data,
+                                    });
+                    }else{
+                        window.Livewire.dispatch('confirmContract', {
+                                    contract: data.data.id
+                                    });
+                    }
+                    
                 }
                 // window.Livewire.dispatch('close-modal', 'input-contract-number');
             } catch (err) {

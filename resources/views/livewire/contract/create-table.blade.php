@@ -5,9 +5,10 @@
                 <table>
                     <tr>
                         <td class="font-semibold bg-gray-50 px-4 py-2">Nama Barang</td>
-                        <td class="px-4 py-2"><input type="text" wire:model="namaBarang"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                                placeholder="Nama Barang" /></td>
+                        <td class="px-4 py-2">
+                            <livewire:components.select-input wire:model="namaBarang" :freetext="true"
+                                :options="$barangs->pluck('name', 'id')" placeholder="Nama Barang" />
+                        </td>
                     </tr>
                     <tr>
                         <td class="font-semibold bg-gray-50 px-4 py-2">Spesifikasi</td>
@@ -29,16 +30,18 @@
                     <tr>
                         <td class="font-semibold bg-gray-50 px-4 py-2">Satuan</td>
                         <td class="px-4 py-2">
-                            <input type="text" wire:model="satuanBarang"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                                placeholder="Satuan Barang" />
+                            <livewire:components.select-input wire:model="satuanBarang" :freetext="true"
+                                :options="$units->pluck('name', 'id')" placeholder="Satuan Barang" />
                         </td>
                     </tr>
                     <tr>
                         <td class="font-semibold bg-gray-50 px-4 py-2">Harga Satuan</td>
-                        <td class="px-4 py-2"><input type="text" wire:model='hargaSatuanBarang'
+                        <td class="px-4 py-2">
+                            <x-text-input wire:model="hargaSatuanBarang" currency placeholder="Harga Satuan Barang"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " />
+                            {{-- <input type="text" wire:model='hargaSatuanBarang'
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                                placeholder="Harga Satuan Barang" />
+                                placeholder="Harga Satuan Barang" /> --}}
                         </td>
                     </tr>
                     <tr>

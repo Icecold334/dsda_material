@@ -9,10 +9,20 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Contract extends Model
 {
-    use HasUuids, SoftDeletes, HasStatus;
+    use HasUuids, SoftDeletes;
 
     protected $guarded = [];
 
+    public function getStatusColorAttribute()
+    {
+        return $this->is_api ? 'success' : 'warning';
+    }
+
+    public function getStatusTextAttribute()
+    {
+        return $this->is_api ? 'Terdaftar' : 'Tidak terdaftar';
+
+    }
 
     public function sudin()
     {

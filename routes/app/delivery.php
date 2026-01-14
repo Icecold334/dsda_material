@@ -1,9 +1,12 @@
 <?php
 
 
+use App\Models\Contract;
 use App\Models\Delivery;
 use App\Livewire\Delivery\Show;
 use App\Livewire\Delivery\Index;
+use App\Livewire\Delivery\Create;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 
 
@@ -40,7 +43,17 @@ Route::prefix('delivery')->name('delivery.')->group(function () {
             'data' => $data,
         ]);
     })->name('show.json');
+    Route::get('/getContract', function (Request $request) {
+        $contractNumber = request()->contractNumber;
+        $year = request()->year;
+        $contract = Contract::where('nomor', $contractNumber)->first();
 
+        if (!$contract) {
+            return response()->json(['status' => 'error', 'data' => 'Kontrak tidak ditemukan!']);
+        }
+        return response()->json(['status' => 'success', 'data' => $contract]);
+    })->name('getContract');
+    Route::get('/create', Create::class)->name('create');
     Route::get('/{delivery}', Show::class)->name('show');
 
 });
