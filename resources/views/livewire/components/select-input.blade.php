@@ -2,12 +2,16 @@
      x-data="{ 
          open: @entangle('open'),
          search: '',
+         value: @entangle('value'),
          options: {{ json_encode($this->options) }},
          get filteredOptions() {
              if (!this.search) return this.options;
              return this.options.filter(opt => 
                  opt.label.toLowerCase().includes(this.search.toLowerCase())
              );
+         },
+         get displayValue() {
+             return this.value || '';
          }
      }" 
      @click.away="open = false; $wire.closeDropdown()">
@@ -15,9 +19,11 @@
     @if($freetext)
         <!-- Mode Freetext: Search Input -->
         <div class="relative">
-            <input type="text" x-model="search" 
-                @focus="open = true"
-                @keydown.enter.prevent="$wire.selectOption('', search); open = false; search = ''"
+            <input type="text" 
+                :value="open ? search : displayValue"
+                @input="search = $event.target.value"
+                @focus="search = displayValue; open = true"
+                @keydown.enter.prevent="if(search) { $wire.selectOption('', search); open = false; search = '' }"
                 @keydown.escape="open = false; search = ''" 
                 placeholder="{{ $placeholder }}" 
                 {{ $disabled ? 'disabled' : '' }}
@@ -73,9 +79,9 @@
 
             <!-- Options -->
             <template x-for="option in filteredOptions" :key="option.value">
-                <div @click="$wire.selectOption(option.value, option.label); open = false; search = ''"
+                <div @click="$wire.selectOption(option.value, option.label); open = false; @if($freetext) value = option.label; @endif search = ''"
                     :class="{
-                        'bg-indigo-100': @if($freetext) false @else '{{ $value }}' == option.value @endif,
+                        'bg-indigo-100': @if($freetext) value == option.label @else '{{ $value }}' == option.value @endif,
                         'hover:bg-indigo-50': true
                     }"
                     class="px-3 py-2 cursor-pointer">
