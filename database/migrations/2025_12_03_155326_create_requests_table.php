@@ -32,7 +32,7 @@ return new class extends Migration {
             $table->uuid('security_id')->nullable();
 
             $table->date('tanggal_permintaan')->nullable();
-            $table->string('status')->default('draft'); // draft / waiting / approved / rejected
+            $table->string('status')->default('draft'); // draft / pending / approved / rejected
             $table->text('notes')->nullable();
 
             // FK
