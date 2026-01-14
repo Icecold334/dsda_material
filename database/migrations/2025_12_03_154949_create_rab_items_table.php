@@ -17,8 +17,8 @@ return new class extends Migration {
             $table->uuid('item_id');
 
             $table->decimal('qty', 18, 2);
-            $table->decimal('price', 18, 2);
-            $table->decimal('subtotal', 18, 2);
+            $table->decimal('price', 18, 2)->nullable();
+            $table->decimal('subtotal', 18, 2)->nullable();
 
             $table->foreign('rab_id')->references('id')->on('rabs')->cascadeOnDelete();
             $table->foreign('item_id')->references('id')->on('items');

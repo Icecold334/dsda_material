@@ -33,8 +33,9 @@ class Index extends Component
         $district = District::find($districtId);
         if ($district) {
             $district->delete();
-            $this->dispatch('refresh-grid');
+            $this->dispatch('success-deleted', message: 'Kecamatan berhasil dihapus');
             $this->dispatch('district-deleted');
+            $this->dispatch('refresh-grid');
         }
     }
 

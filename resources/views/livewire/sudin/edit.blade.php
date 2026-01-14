@@ -1,13 +1,14 @@
 <x-modal name="edit-sudin-{{ $sudin->id }}" focusable>
-    <form wire:submit.prevent="confirmUpdate" class="p-6" x-data="{
+    <form wire:submit.prevent="update" class="p-6" x-data="{
         confirmUpdate() {
-            SwalConfirm.delete({
-                eventName: 'confirmUpdateSudin',
-                eventData: { sudinId: '{{ $sudin->id }}' },
+            showConfirm({
                 title: 'Update Sudin?',
-                text: 'Data sudin akan diperbarui.',
-                confirmText: 'Ya, update!',
-                cancelText: 'Batal'
+                text: 'Data Sudin akan diperbarui.',
+                confirmButtonText: 'Ya, update!',
+                cancelButtonText: 'Batal',
+                onConfirm: () => {
+                    @this.update();
+                }
             });
         }
     }">

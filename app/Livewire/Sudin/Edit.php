@@ -28,8 +28,7 @@ class Edit extends Component
         ];
     }
 
-    #[\Livewire\Attributes\On('confirmUpdateSudin')]
-    public function update($sudinId = null)
+    public function update()
     {
         $this->validate();
 
@@ -40,6 +39,7 @@ class Edit extends Component
         ]);
 
         $this->dispatch('close-modal', 'edit-sudin-' . $this->sudin->id);
+        $this->dispatch('success-updated', message: 'Sudin berhasil diperbarui');
         $this->dispatch('sudin-updated');
     }
 

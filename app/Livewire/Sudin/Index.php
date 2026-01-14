@@ -33,8 +33,9 @@ class Index extends Component
         $sudin = Sudin::find($sudinId);
         if ($sudin) {
             $sudin->delete();
-            $this->dispatch('refresh-grid');
+            $this->dispatch('success-deleted', message: 'Sudin berhasil dihapus');
             $this->dispatch('sudin-deleted');
+            $this->dispatch('refresh-grid');
         }
     }
 

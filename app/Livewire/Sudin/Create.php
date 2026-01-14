@@ -30,9 +30,8 @@ class Create extends Component
             'address' => $this->address,
         ]);
 
-        session()->flash('message', 'Sudin berhasil ditambahkan.');
-
         $this->dispatch('close-modal', 'create-sudin');
+        $this->dispatch('success-created', message: 'Sudin berhasil ditambahkan');
         $this->dispatch('sudin-created');
 
         $this->reset();

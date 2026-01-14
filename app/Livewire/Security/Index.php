@@ -33,10 +33,9 @@ class Index extends Component
         $security = Personnel::where('type', 'security')->find($securityId);
         if ($security) {
             $security->delete();
-            $this->dispatch('refresh-grid');
-
-            // Dispatch success message ke SweetAlert
+            $this->dispatch('success-deleted', message: 'Security berhasil dihapus');
             $this->dispatch('security-deleted');
+            $this->dispatch('refresh-grid');
         }
     }
 

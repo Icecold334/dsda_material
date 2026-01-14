@@ -28,9 +28,8 @@ class Create extends Component
             'sudin_id' => $this->district->sudin_id,
         ]);
 
-        session()->flash('message', 'Subdistrict berhasil ditambahkan.');
-
         $this->dispatch('close-modal', 'create-subdistrict-' . $this->district->id);
+        $this->dispatch('success-created', message: 'Kelurahan berhasil ditambahkan');
         $this->dispatch('subdistrict-created');
 
         $this->reset('name');

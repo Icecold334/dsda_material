@@ -29,9 +29,8 @@ class Create extends Component
             'type' => 'security',
         ]);
 
-        session()->flash('message', 'Security berhasil ditambahkan.');
-
         $this->dispatch('close-modal', 'create-security');
+        $this->dispatch('success-created', message: 'Security berhasil ditambahkan');
         $this->dispatch('security-created');
 
         $this->reset();

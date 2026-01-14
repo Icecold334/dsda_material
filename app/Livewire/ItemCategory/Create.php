@@ -3,19 +3,18 @@
 namespace App\Livewire\ItemCategory;
 
 use App\Models\ItemCategory;
-use App\Models\Sudin;
 use Livewire\Component;
 
 class Create extends Component
 {
     public $name = '';
-    public $sudin_id = '';
+    public $item_unit_id = '';
 
     public function rules()
     {
         return [
             'name' => 'required|string|max:255',
-            'sudin_id' => 'required|exists:sudins,id',
+            'item_unit_id' => 'nullable|exists:item_units,id',
         ];
     }
 
@@ -25,12 +24,11 @@ class Create extends Component
 
         ItemCategory::create([
             'name' => $this->name,
-            'sudin_id' => $this->sudin_id,
+            'item_unit_id' => $this->item_unit_id ?: null,
         ]);
 
-        session()->flash('message', 'Kategori barang berhasil ditambahkan.');
-
         $this->dispatch('close-modal', 'create-item-category');
+        $this->dispatch('success-created', message: 'Kategori barang berhasil ditambahkan');
         $this->dispatch('item-category-created');
 
         $this->reset();
@@ -39,7 +37,7 @@ class Create extends Component
     public function render()
     {
         return view('livewire.item-category.create', [
-            'sudins' => Sudin::orderBy('name')->get(),
+            'units' => \App\Models\ItemUnit::orderBy('name')->get(),
         ]);
     }
 }

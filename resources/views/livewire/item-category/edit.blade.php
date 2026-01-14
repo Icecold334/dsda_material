@@ -1,33 +1,34 @@
 <x-modal name="edit-item-category-{{ $itemCategory->id }}" focusable>
-    <form wire:submit.prevent="confirmUpdate" class="p-6" x-data="{
+    <form wire:submit.prevent="update" class="p-6" x-data="{
         confirmUpdate() {
-            SwalConfirm.delete({
-                eventName: 'confirmUpdateItemCategory',
-                eventData: { itemCategoryId: '{{ $itemCategory->id }}' },
+            showConfirm({
                 title: 'Update Kategori?',
                 text: 'Data kategori akan diperbarui.',
-                confirmText: 'Ya, update!',
-                cancelText: 'Batal'
+                confirmButtonText: 'Ya, update!',
+                cancelButtonText: 'Batal',
+                onConfirm: () => {
+                    @this.update();
+                }
             });
         }
     }">
         <h2 class="text-lg font-medium text-gray-900">
-            Edit Kategori Barang
+            Edit Barang
         </h2>
 
         <div class="mt-6 space-y-4">
             <div>
-                <x-input-label for="name-{{ $itemCategory->id }}" value="Nama Kategori" />
+                <x-input-label for="name-{{ $itemCategory->id }}" value="Nama Barang" />
                 <x-text-input id="name-{{ $itemCategory->id }}" wire:model="name" type="text" class="mt-1 block w-full"
                     placeholder="Masukkan nama kategori" />
                 <x-input-error :messages="$errors->get('name')" class="mt-2" />
             </div>
 
             <div>
-                <x-input-label for="sudin_id-{{ $itemCategory->id }}" value="Sudin" />
-                <livewire:components.select-input wire:model="sudin_id" :options="$sudins->pluck('name', 'id')"
-                    placeholder="-- Pilih Sudin --" :key="'sudin-select-' . $itemCategory->id" />
-                <x-input-error :messages="$errors->get('sudin_id')" class="mt-2" />
+                <x-input-label for="item_unit_id-{{ $itemCategory->id }}" value="Satuan" />
+                <livewire:components.select-input wire:model="item_unit_id" :options="$units->pluck('name', 'id')"
+                    placeholder="-- Pilih Satuan --" :key="'unit-select-' . $itemCategory->id" />
+                <x-input-error :messages="$errors->get('item_unit_id')" class="mt-2" />
             </div>
         </div>
 

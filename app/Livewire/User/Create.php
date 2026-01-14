@@ -62,9 +62,8 @@ class Create extends Component
             'ttd' => $ttdPath,
         ]);
 
-        session()->flash('message', 'Pengguna berhasil ditambahkan.');
-
         $this->dispatch('close-modal', 'create-user');
+        $this->dispatch('success-created', message: 'Pengguna berhasil ditambahkan');
         $this->dispatch('user-created');
 
         $this->reset();

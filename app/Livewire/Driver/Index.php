@@ -33,10 +33,9 @@ class Index extends Component
         $driver = Personnel::where('type', 'driver')->find($driverId);
         if ($driver) {
             $driver->delete();
-            $this->dispatch('refresh-grid');
-
-            // Dispatch success message ke SweetAlert
+            $this->dispatch('success-deleted', message: 'Driver berhasil dihapus');
             $this->dispatch('driver-deleted');
+            $this->dispatch('refresh-grid');
         }
     }
 

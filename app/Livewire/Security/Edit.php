@@ -26,8 +26,7 @@ class Edit extends Component
         ];
     }
 
-    #[\Livewire\Attributes\On('confirmUpdateSecurity')]
-    public function update($securityId = null)
+    public function update()
     {
         $this->validate();
 
@@ -37,6 +36,7 @@ class Edit extends Component
         ]);
 
         $this->dispatch('close-modal', 'edit-security-' . $this->security->id);
+        $this->dispatch('success-updated', message: 'Security berhasil diperbarui');
         $this->dispatch('security-updated');
     }
 

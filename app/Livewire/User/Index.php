@@ -33,8 +33,9 @@ class Index extends Component
         $user = User::find($userId);
         if ($user) {
             $user->delete();
-            $this->dispatch('refresh-grid');
+            $this->dispatch('success-deleted', message: 'Pengguna berhasil dihapus');
             $this->dispatch('user-deleted');
+            $this->dispatch('refresh-grid');
         }
     }
 

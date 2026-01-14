@@ -6,6 +6,10 @@ use App\Models\Rab;
 use App\Models\Sudin;
 use App\Models\District;
 use App\Models\Subdistrict;
+use App\Models\Warehouse;
+use App\Models\Stock;
+use App\Models\Item;
+use App\Models\ItemCategory;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -26,6 +30,14 @@ class Create extends Component
     public $lebar = '';
     public $tinggi = '';
 
+    // Item form
+    public $item_category_id = '';
+    public $item_id = '';
+    public $qty = '';
+
+    // Items collection
+    public $items = [];
+
     public function mount()
     {
         $this->tahun = now()->year;
@@ -40,9 +52,9 @@ class Create extends Component
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
             'sudin_id' => 'required|exists:sudins,id',
-            'district_id' => 'nullable|exists:districts,id',
-            'subdistrict_id' => 'nullable|exists:subdistricts,id',
-            'address' => 'nullable|string',
+            'district_id' => 'required|exists:districts,id',
+            'subdistrict_id' => 'required|exists:subdistricts,id',
+            'address' => 'required|string',
             'panjang' => 'nullable|string|max:255',
             'lebar' => 'nullable|string|max:255',
             'tinggi' => 'nullable|string|max:255',
@@ -53,6 +65,8 @@ class Create extends Component
     {
         $this->district_id = '';
         $this->subdistrict_id = '';
+        $this->item_id = '';
+        $this->items = [];
     }
 
     public function updatedDistrictId($value)
@@ -60,9 +74,64 @@ class Create extends Component
         $this->subdistrict_id = '';
     }
 
+    public function updatedItemCategoryId($value)
+    {
+        $this->item_id = '';
+    }
+
+    public function addItem()
+    {
+        $this->validate([
+            'item_id' => 'required|exists:items,id',
+            'qty' => 'required|numeric|min:0.01',
+        ], [
+            'item_id.required' => 'Pilih barang terlebih dahulu',
+            'item_id.exists' => 'Barang tidak valid',
+            'qty.required' => 'Jumlah harus diisi',
+            'qty.numeric' => 'Jumlah harus berupa angka',
+            'qty.min' => 'Jumlah minimal 0.01',
+        ]);
+
+        $item = Item::with('category.unit')->find($this->item_id);
+
+        // Check if item already exists in the list
+        if (collect($this->items)->contains('item_id', $this->item_id)) {
+            $this->addError('item_id', 'Item sudah ada dalam daftar');
+            return;
+        }
+
+        $this->items[] = [
+            'item_id' => $this->item_id,
+            'item_category' => $item->category->name ?? '-',
+            'item_spec' => $item->spec,
+            'item_unit' => $item->category->unit->name ?? '-',
+            'qty' => $this->qty,
+        ];
+
+        // Reset form
+        $this->item_category_id = '';
+        $this->item_id = '';
+        $this->qty = '';
+
+        // Reset validation errors
+        $this->resetValidation(['item_id', 'qty']);
+    }
+
+    public function removeItem($index)
+    {
+        unset($this->items[$index]);
+        $this->items = array_values($this->items);
+    }
+
     public function save()
     {
         $this->validate();
+
+        // Validate items
+        if (empty($this->items)) {
+            session()->flash('error', 'Minimal harus ada 1 item dalam RAB');
+            return;
+        }
 
         $rab = Rab::create([
             'nomor' => $this->nomor,
@@ -82,6 +151,16 @@ class Create extends Component
             'status' => 'draft',
         ]);
 
+        // Save RAB items
+        foreach ($this->items as $item) {
+            $rab->items()->create([
+                'item_id' => $item['item_id'],
+                'qty' => $item['qty'],
+                'price' => null,
+                'subtotal' => null,
+            ]);
+        }
+
         // Save documents
         $this->dispatch('saveDocuments', modelId: $rab->id);
 
@@ -91,6 +170,28 @@ class Create extends Component
 
     public function render()
     {
+        // Get item categories from selected sudin
+        $itemCategories = collect();
+        if ($this->sudin_id) {
+            $itemCategories = ItemCategory::whereHas('items', function ($query) {
+                $query->where('sudin_id', $this->sudin_id)
+                    ->where('active', true);
+            })
+                ->orderBy('name')
+                ->get();
+        }
+
+        // Get available items from sudin and category
+        $availableItems = collect();
+        if ($this->sudin_id && $this->item_category_id) {
+            $availableItems = Item::where('sudin_id', $this->sudin_id)
+                ->where('item_category_id', $this->item_category_id)
+                ->where('active', true)
+                ->with('category.unit')
+                ->orderBy('spec')
+                ->get();
+        }
+
         return view('livewire.rab.create', [
             'sudins' => Sudin::orderBy('name')->get(),
             'districts' => $this->sudin_id
@@ -99,6 +200,8 @@ class Create extends Component
             'subdistricts' => $this->district_id
                 ? Subdistrict::where('district_id', $this->district_id)->orderBy('name')->get()
                 : collect(),
+            'itemCategories' => $itemCategories,
+            'availableItems' => $availableItems,
         ]);
     }
 }

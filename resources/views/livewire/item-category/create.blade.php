@@ -1,22 +1,22 @@
 <x-modal name="create-item-category" focusable>
     <form wire:submit="save" class="p-6">
         <h2 class="text-lg font-medium text-gray-900">
-            Tambah Kategori Barang
+            Tambah Barang
         </h2>
 
         <div class="mt-6 space-y-4">
             <div>
-                <x-input-label for="name" value="Nama Kategori" />
+                <x-input-label for="name" value="Nama Barang" />
                 <x-text-input id="name" wire:model="name" type="text" class="mt-1 block w-full"
                     placeholder="Masukkan nama kategori" />
                 <x-input-error :messages="$errors->get('name')" class="mt-2" />
             </div>
 
             <div>
-                <x-input-label for="sudin_id" value="Sudin" />
-                <livewire:components.select-input wire:model="sudin_id" :options="$sudins->pluck('name', 'id')"
-                    placeholder="-- Pilih Sudin --" :key="'sudin-select'" />
-                <x-input-error :messages="$errors->get('sudin_id')" class="mt-2" />
+                <x-input-label for="item_unit_id" value="Satuan" />
+                <livewire:components.select-input wire:model="item_unit_id" :options="$units->pluck('name', 'id')"
+                    placeholder="-- Pilih Satuan --" :key="'unit-select'" />
+                <x-input-error :messages="$errors->get('item_unit_id')" class="mt-2" />
             </div>
         </div>
 
