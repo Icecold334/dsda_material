@@ -28,23 +28,23 @@ class CreateTable extends Component
         $this->listBarang = [
             [
                 'namaBarang' => 'Contoh Barang 1',
-                'spesifikasiBarang' => 'Spesifikasi Barang 1',
+                'spesifikasiBarang' => 'Spesifikasi 1 Barang 1',
                 'satuanBarang' => 'Unit',
                 'jumlahBarang' => 10,
                 'hargaSatuanBarang' => 50000,
                 'ppnBarang' => 11,
             ],
             [
-                'namaBarang' => 'Contoh Barang 2',
-                'spesifikasiBarang' => 'Spesifikasi Barang 2',
+                'namaBarang' => 'Contoh Barang 1',
+                'spesifikasiBarang' => 'Spesifikasi 2 Barang 1',
                 'satuanBarang' => 'Pcs',
                 'jumlahBarang' => 5,
                 'hargaSatuanBarang' => 75000,
                 'ppnBarang' => 0,
             ],
             [
-                'namaBarang' => 'Contoh Barang 3',
-                'spesifikasiBarang' => 'Spesifikasi Barang 3',
+                'namaBarang' => 'Contoh Barang 2',
+                'spesifikasiBarang' => 'Spesifikasi 1 Barang 2',
                 'satuanBarang' => 'Box',
                 'jumlahBarang' => 20,
                 'hargaSatuanBarang' => 20000,
