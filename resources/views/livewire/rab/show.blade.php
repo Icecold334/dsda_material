@@ -64,6 +64,10 @@
                         <td>{{ $rab->sudin?->name ?? '-' }}</td>
                     </tr>
                     <tr>
+                        <td class="font-semibold">Tipe Barang</td>
+                        <td>{{ $rab->itemType?->name ?? '-' }}</td>
+                    </tr>
+                    <tr>
                         <td class="font-semibold">Kecamatan</td>
                         <td>{{ $rab->district?->name ?? '-' }}</td>
                     </tr>

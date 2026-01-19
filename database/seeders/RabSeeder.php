@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Rab;
 use App\Models\Sudin;
 use App\Models\District;
+use App\Models\ItemType;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
@@ -51,6 +52,7 @@ class RabSeeder extends Seeder
                     'sudin_id' => $sudin->id,
                     'nomor' => 'RAB-' . date('Y') . '-' . strtoupper(Str::random(5)),
                     'tahun' => now()->year,
+                    'item_type_id' => ItemType::where('active', true)->inRandomOrder()->first()?->id,
                     'total' => rand(50_000_000, 500_000_000),
                     'status' => $statuses[array_rand($statuses)],
                     'name' => 'Proyek ' . fake()->words(3, true) . ' ' . $i,

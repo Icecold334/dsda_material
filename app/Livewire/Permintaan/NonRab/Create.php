@@ -31,6 +31,7 @@ class Create extends Component
     public $notes = '';
 
     // Item form
+    public $item_type_id = '';
     public $item_category_id = '';
     public $item_id = '';
     public $qty_request = '';
@@ -71,6 +72,13 @@ class Create extends Component
     }
 
     public function updatedWarehouseId($value)
+    {
+        $this->item_type_id = '';
+        $this->item_category_id = '';
+        $this->item_id = '';
+    }
+
+    public function updatedItemTypeId($value)
     {
         $this->item_category_id = '';
         $this->item_id = '';
@@ -156,6 +164,7 @@ class Create extends Component
             'name' => $this->name,
             'sudin_id' => $this->sudin_id,
             'warehouse_id' => $this->warehouse_id,
+            'item_type_id' => $this->item_type_id,
             'district_id' => $this->district_id,
             'subdistrict_id' => $this->subdistrict_id,
             'tanggal_permintaan' => $this->tanggal_permintaan,
@@ -186,17 +195,34 @@ class Create extends Component
 
     public function render()
     {
-        // Get item categories that have stock in selected warehouse
-        $itemCategories = collect();
+        // Get item types
+        $itemTypes = collect();
         if ($this->warehouse_id && $this->sudin_id) {
-            $itemCategories = ItemCategory::whereHas('items', function ($query) {
-                $query->where('sudin_id', $this->sudin_id)
-                    ->where('active', true)
-                    ->whereHas('stocks', function ($q) {
-                        $q->where('warehouse_id', $this->warehouse_id)
-                            ->where('qty', '>', 0);
-                    });
-            })
+            $itemTypes = \App\Models\ItemType::where('active', true)
+                ->whereHas('itemCategories.items', function ($query) {
+                    $query->where('sudin_id', $this->sudin_id)
+                        ->where('active', true)
+                        ->whereHas('stocks', function ($q) {
+                            $q->where('warehouse_id', $this->warehouse_id)
+                                ->where('qty', '>', 0);
+                        });
+                })
+                ->orderBy('name')
+                ->get();
+        }
+
+        // Get item categories that have stock in selected warehouse and item type
+        $itemCategories = collect();
+        if ($this->warehouse_id && $this->sudin_id && $this->item_type_id) {
+            $itemCategories = ItemCategory::where('item_type_id', $this->item_type_id)
+                ->whereHas('items', function ($query) {
+                    $query->where('sudin_id', $this->sudin_id)
+                        ->where('active', true)
+                        ->whereHas('stocks', function ($q) {
+                            $q->where('warehouse_id', $this->warehouse_id)
+                                ->where('qty', '>', 0);
+                        });
+                })
                 ->orderBy('name')
                 ->get();
         }
@@ -232,6 +258,7 @@ class Create extends Component
             'subdistricts' => $this->district_id
                 ? Subdistrict::where('district_id', $this->district_id)->orderBy('name')->get()
                 : collect(),
+            'itemTypes' => $itemTypes,
             'itemCategories' => $itemCategories,
             'availableItems' => $availableItems,
         ]);

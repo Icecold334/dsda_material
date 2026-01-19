@@ -1,9 +1,18 @@
 <div class="relative" 
      x-data="{ 
-         open: @entangle('open'),
+         open: @entangle('open').live,
          search: '',
-         value: @entangle('value'),
-         options: {{ json_encode($this->options) }},
+         value: @entangle('value').live,
+         options: [],
+         init() {
+             this.options = @js($this->options);
+             this.$watch('value', () => {
+                 // Reset search when value changes from outside
+                 if (!this.open) {
+                     this.search = '';
+                 }
+             });
+         },
          get filteredOptions() {
              if (!this.search) return this.options;
              return this.options.filter(opt => 

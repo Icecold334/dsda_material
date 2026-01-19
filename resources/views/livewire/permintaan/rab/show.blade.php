@@ -56,6 +56,10 @@
                         <td>{{ $permintaan->warehouse?->name ?? '-' }}</td>
                     </tr>
                     <tr>
+                        <td class="font-semibold">Tipe Barang</td>
+                        <td>{{ $permintaan->itemType?->name ?? '-' }}</td>
+                    </tr>
+                    <tr>
                         <td class="font-semibold">Nomor RAB</td>
                         <td>
                             @if($permintaan->rab_id)

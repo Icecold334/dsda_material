@@ -142,11 +142,26 @@
                         </div>
                     @else
                         <div class="flex items-center justify-between">
-                            <x-input-label for="item_category_id" value="Kategori Barang" />
+                            <x-input-label for="item_type_id" value="Tipe Barang" />
                             <div class="mt-1 block w-full max-w-[500px]">
-                                <livewire:components.select-input wire:model.live="item_category_id"
-                                    :options="$itemCategories->pluck('name', 'id')" placeholder="-- Pilih Kategori --"
-                                    :key="'category-select-' . $sudin_id" />
+                                <livewire:components.select-input wire:model.live="item_type_id"
+                                    :options="$itemTypes->pluck('name', 'id')" placeholder="-- Pilih Tipe Barang --"
+                                    :disabled="count($items) > 0"
+                                    :key="'type-select-' . $sudin_id . '-' . count($items)" />
+                                <x-input-error :messages="$errors->get('item_type_id')" class="mt-2" />
+                                @if(count($items) > 0)
+                                    <p class="mt-1 text-xs text-gray-500">Tipe barang tidak dapat diubah setelah ada item ditambahkan</p>
+                                @endif
+                            </div>
+                        </div>
+
+                        @if($item_type_id)
+                            <div class="flex items-center justify-between">
+                                <x-input-label for="item_category_id" value="Kategori Barang" />
+                                <div class="mt-1 block w-full max-w-[500px]">
+                                    <livewire:components.select-input wire:model.live="item_category_id"
+                                        :options="$itemCategories->pluck('name', 'id')" placeholder="-- Pilih Kategori --"
+                                        :key="'category-select-' . $sudin_id . '-' . $item_type_id" />
                                 <x-input-error :messages="$errors->get('item_category_id')" class="mt-2" />
                             </div>
                         </div>
@@ -173,6 +188,7 @@
                                     <x-input-error :messages="$errors->get('qty')" class="mt-2" />
                                 </div>
                             </div>
+                        @endif
                         @endif
 
                         <div class="flex justify-end">

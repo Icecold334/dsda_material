@@ -280,6 +280,7 @@ class Create extends Component
             'name' => $this->name,
             'sudin_id' => $this->sudin_id,
             'warehouse_id' => $this->warehouse_id,
+            'item_type_id' => $this->rab->item_type_id, // ambil dari RAB
             'district_id' => $this->district_id,
             'subdistrict_id' => $this->subdistrict_id,
             'tanggal_permintaan' => $this->tanggal_permintaan,

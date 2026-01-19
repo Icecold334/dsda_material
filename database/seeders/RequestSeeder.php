@@ -11,6 +11,7 @@ use App\Models\Unit;
 use App\Models\User;
 use App\Models\Personnel;
 use App\Models\Item;
+use App\Models\ItemType;
 use App\Models\Rab;
 use App\Models\Warehouse;
 use App\Models\District;
@@ -45,6 +46,7 @@ class RequestSeeder extends Seeder
                 'rab_id' => fake()->boolean ? $rab->id : null,
                 'sudin_id' => $sudin->id,
                 'warehouse_id' => $warehouse?->id,
+                'item_type_id' => ItemType::where('active', true)->inRandomOrder()->first()?->id,
                 'district_id' => $district?->id,
                 'subdistrict_id' => $subdistrict?->id,
                 'address' => fake()->address,

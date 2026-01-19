@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('name');
             $table->uuid('sudin_id');               // data milik Sudin apa
             $table->uuid('warehouse_id')->nullable();
+            $table->uuid('item_type_id')->nullable();  // tipe barang
             $table->uuid('district_id')->nullable();
             $table->uuid('subdistrict_id')->nullable();
             $table->text('address');
@@ -38,6 +39,7 @@ return new class extends Migration {
             // FK
             $table->foreign('sudin_id')->references('id')->on('sudins');
             $table->foreign('warehouse_id')->references('id')->on('warehouses');
+            $table->foreign('item_type_id')->references('id')->on('item_types');
             $table->foreign('district_id')->references('id')->on('districts');
             $table->foreign('subdistrict_id')->references('id')->on('subdistricts');
             $table->foreign('unit_id')->references('id')->on('units');

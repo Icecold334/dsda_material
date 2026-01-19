@@ -17,6 +17,7 @@ return new class extends Migration {
             // $table->uuid('aktivitas_sub_kegiatan_id');  // hasil dari 4-level program/kegiatan/sub/AK
 
             $table->string('nomor')->nullable();   // nomor RAB
+            $table->uuid('item_type_id')->nullable();  // tipe barang
             $table->year('tahun');                // tahun anggaran
             $table->decimal('total', 18, 2)->default(0);
             $table->string('status')->default('draft'); // draft / approved / rejected
@@ -38,6 +39,7 @@ return new class extends Migration {
             $table->foreign('district_id')->references('id')->on('districts');
             $table->foreign('subdistrict_id')->references('id')->on('subdistricts');
             $table->foreign('sudin_id')->references('id')->on('sudins')->cascadeOnDelete();
+            $table->foreign('item_type_id')->references('id')->on('item_types');
             $table->foreign('user_id')->references('id')->on('users');
         });
     }

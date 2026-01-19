@@ -36,4 +36,9 @@ class ItemCategory extends Model
     {
         return $this->hasMany(Item::class);
     }
+
+    public function itemType()
+    {
+        return $this->belongsTo(ItemType::class);
+    }
 }
