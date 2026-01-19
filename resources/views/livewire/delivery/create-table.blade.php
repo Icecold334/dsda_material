@@ -20,9 +20,9 @@
                 <div class="w-1/3 font-semibold bg-gray-50 px-4 py-2 rounded">
                     Jumlah
                     @if ($maxQty > 0)
-                    <div class="text-xs font-bold text-gray-500">
-                        Max: {{ $maxQty }} {{ $unit }}
-                    </div>
+                        <div class="text-xs font-bold text-gray-500">
+                            Max: {{ $maxQty }} {{ $unit }}
+                        </div>
                     @endif
                 </div>
 
@@ -40,7 +40,7 @@
                 </div>
                 <div class="w-1/12">
                     <button type="submit" @disabled($disablAdd)
-                        class="{{ $disablAdd ? '':'cursor-not-allowed'}} text-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2  focus:outline-none">Tambah</button>
+                        class="{{ !$disablAdd ? 'bg-primary-700 hover:bg-primary-800' : 'bg-gray-400 cursor-not-allowed' }} text-center text-white focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 focus:outline-none">Tambah</button>
                 </div>
             </div>
         </form>
@@ -65,37 +65,31 @@
                 </thead>
                 <tbody>
 
-                    @forelse ($listBarang as $item)
-                    <tr class="even:bg-primary-100 odd:bg-primary-50 border-primary-200">
-                        <td class="px-6 py-4 font-medium text-primary-900 whitespace-nowrap">
-                            {{ $item['namaBarang'] }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $item['spesifikasiBarang'] }}
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            {{ $item['jumlahBarang'] }} <span class="font-medium">{{ $item['satuanBarang'] }}</span>
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            Rp {{ number_format($item['hargaSatuanBarang'], 2, ',', '.') }}
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            {{ $item['ppnBarang'] == 0 ? 'Sudah Termasuk PPN' : $item['ppnBarang'] . '%' }}
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            {{-- Tombol Hapus Badge --}}
-                            <button type="button" wire:click="removeItem({{ $loop->index }})"
-                                class="bg-danger-600 text-danger-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm"><i
-                                    class="fa-solid fa-trash"></i></button>
-                        </td>
+                    @forelse ($listBarang as $barang)
+                        <tr class="even:bg-primary-100 odd:bg-primary-50 border-primary-200">
+                            <td class="px-6 py-4 font-medium text-primary-900 whitespace-nowrap">
+                                {{ $barang['namaBarang'] }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ $barang['spesifikasiBarang'] }}
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                {{ $barang['qty'] }} <span class="font-medium">{{ $barang['unit'] }}</span>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                {{-- Tombol Hapus Badge --}}
+                                <button type="button" wire:click="removeItem({{ $loop->index }})"
+                                    class="bg-danger-600 text-danger-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm"><i
+                                        class="fa-solid fa-trash"></i></button>
+                            </td>
 
-                    </tr>
+                        </tr>
                     @empty
-                    <tr class="bg-white border-b  border-primary-200">
-                        <td colspan="6" class="px-6 py-4 font-medium text-primary-900 whitespace-nowrap text-center">
-                            Belum ada barang yang ditambahkan.
-                        </td>
-                    </tr>
+                        <tr class="bg-white border-b  border-primary-200">
+                            <td colspan="4" class="px-6 py-4 font-medium text-primary-900 whitespace-nowrap text-center">
+                                Belum ada barang yang ditambahkan.
+                            </td>
+                        </tr>
                     @endforelse
                 </tbody>
             </table>

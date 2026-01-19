@@ -68,6 +68,81 @@ class CreateTable extends Component
         $this->checkAdd();
     }
 
+    public function updatedQty()
+    {
+        $this->checkAdd();
+    }
+
+    public function save()
+    {
+        // Validasi
+        if (!$this->item || !$this->qty || $this->qty <= 0) {
+            $this->dispatch('showAlert', [
+                'type' => 'warning',
+                'title' => 'Gagal!',
+                'text' => 'Pilih item dan masukkan jumlah yang valid',
+            ]);
+            return;
+        }
+
+        if ($this->qty > $this->maxQty) {
+            $this->dispatch('showAlert', [
+                'type' => 'warning',
+                'title' => 'Gagal!',
+                'text' => 'Jumlah melebihi maksimal yang tersedia',
+            ]);
+            return;
+        }
+
+        // Ambil data item
+        $itemData = Item::with('category.unit')->find($this->item);
+
+        // Cek apakah item sudah ada di list
+        $existingIndex = collect($this->listBarang)->search(function ($barang) {
+            return $barang['item_id'] == $this->item;
+        });
+
+        if ($existingIndex !== false) {
+            // Update qty jika sudah ada
+            $this->listBarang[$existingIndex]['qty'] += $this->qty;
+        } else {
+            // Tambah item baru
+            $this->listBarang[] = [
+                'item_id' => $this->item,
+                'namaBarang' => $itemData->category->name,
+                'spesifikasiBarang' => $itemData->spec,
+                'qty' => $this->qty,
+                'unit' => $itemData->category->unit->name,
+            ];
+        }
+
+        // Reset form
+        $this->reset(['item', 'qty', 'maxQty']);
+        $this->items = collect();
+        $this->itemCategory = null;
+        $this->unit = 'Satuan';
+
+        $this->dispatch('showAlert', [
+            'type' => 'success',
+            'title' => 'Berhasil!',
+            'text' => 'Barang berhasil ditambahkan',
+        ]);
+    }
+
+    public function removeItem($index)
+    {
+        if (isset($this->listBarang[$index])) {
+            unset($this->listBarang[$index]);
+            $this->listBarang = array_values($this->listBarang);
+
+            $this->dispatch('showAlert', [
+                'type' => 'success',
+                'title' => 'Berhasil!',
+                'text' => 'Barang berhasil dihapus',
+            ]);
+        }
+    }
+
 
 
     #[On('fillCreateTable')]
@@ -86,7 +161,7 @@ class CreateTable extends Component
 
     private function checkAdd()
     {
-        $this->disablAdd = !($this->qty <= $this->maxQty && $this->maxQty > 0);
+        $this->disablAdd = !($this->item && $this->qty > 0 && $this->qty <= $this->maxQty && $this->maxQty > 0);
     }
 
     public function render()
