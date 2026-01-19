@@ -31,6 +31,7 @@ class Create extends Component
     public $tinggi = '';
 
     // Item form
+    public $item_type_id = '';
     public $item_category_id = '';
     public $item_id = '';
     public $qty = '';
@@ -63,6 +64,7 @@ class Create extends Component
 
     public function updatedSudinId($value)
     {
+        $this->item_type_id = '';
         $this->district_id = '';
         $this->subdistrict_id = '';
         $this->item_id = '';
@@ -72,6 +74,12 @@ class Create extends Component
     public function updatedDistrictId($value)
     {
         $this->subdistrict_id = '';
+    }
+
+    public function updatedItemTypeId($value)
+    {
+        $this->item_category_id = '';
+        $this->item_id = '';
     }
 
     public function updatedItemCategoryId($value)
@@ -137,6 +145,7 @@ class Create extends Component
             'nomor' => $this->nomor,
             'name' => $this->name,
             'tahun' => $this->tahun,
+            'item_type_id' => $this->item_type_id,
             'tanggal_mulai' => $this->tanggal_mulai,
             'tanggal_selesai' => $this->tanggal_selesai,
             'sudin_id' => $this->sudin_id,
@@ -170,13 +179,26 @@ class Create extends Component
 
     public function render()
     {
-        // Get item categories from selected sudin
-        $itemCategories = collect();
+        // Get item types
+        $itemTypes = collect();
         if ($this->sudin_id) {
-            $itemCategories = ItemCategory::whereHas('items', function ($query) {
-                $query->where('sudin_id', $this->sudin_id)
-                    ->where('active', true);
-            })
+            $itemTypes = \App\Models\ItemType::where('active', true)
+                ->whereHas('itemCategories.items', function ($query) {
+                    $query->where('sudin_id', $this->sudin_id)
+                        ->where('active', true);
+                })
+                ->orderBy('name')
+                ->get();
+        }
+
+        // Get item categories from selected sudin and item type
+        $itemCategories = collect();
+        if ($this->sudin_id && $this->item_type_id) {
+            $itemCategories = ItemCategory::where('item_type_id', $this->item_type_id)
+                ->whereHas('items', function ($query) {
+                    $query->where('sudin_id', $this->sudin_id)
+                        ->where('active', true);
+                })
                 ->orderBy('name')
                 ->get();
         }
@@ -200,6 +222,7 @@ class Create extends Component
             'subdistricts' => $this->district_id
                 ? Subdistrict::where('district_id', $this->district_id)->orderBy('name')->get()
                 : collect(),
+            'itemTypes' => $itemTypes,
             'itemCategories' => $itemCategories,
             'availableItems' => $availableItems,
         ]);

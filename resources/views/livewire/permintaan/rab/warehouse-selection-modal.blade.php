@@ -30,42 +30,43 @@
                     <div class="mb-3 border-t border-gray-100 pt-3">
                         <div class="space-y-2 max-h-40 overflow-y-auto">
                             @foreach ($items as $item)
-                                                    @php
-                                                        $stockItem = collect($warehouse['stocks'] ?? [])->firstWhere('item_id', $item['item_id']);
-                                                        $stockQty = $stockItem ? ($stockItem['qty'] ?? 0) : 0;
-                                                        $qtyRab = $item['qty_rab'];
+                                @php
+                                    $stockItem = collect($warehouse['stocks'] ?? [])->firstWhere('item_id', $item['item_id']);
+                                    $stockQty = $stockItem ? ($stockItem['qty'] ?? 0) : 0;
+                                    $qtyRab = $item['qty_rab'];
 
-                                                        // Tentukan status
-                                                        if ($stockQty <= 0) {
-                                                            $status = 'Kosong';
-                                                            $statusClass = 'text-red-600';
-                                                        } elseif ($stockQty >= $qtyRab) {
-                                                            $status = 'Memenuhi';
-                                                            $statusClass = 'text-green-600';
-                                                        } else {
-                                                            $status = 'Kurang';
-                                                        }
-                                                    @endphp
+                                    // Tentukan status
+                                    if ($stockQty <= 0) {
+                                        $status = 'Kosong';
+                                        $statusClass = 'text-red-600';
+                                    } elseif ($stockQty >= $qtyRab) {
+                                        $status = 'Memenuhi';
+                                        $statusClass = 'text-green-600';
+                                    } else {
+                                        $status = 'Kurang';
+                                        $statusClass = 'text-yellow-600';
+                                    }
+                                @endphp
                                 <div
-                                                        class="flex items-start justify-between text-xs p-2 border border-gray-100 rounded bg-white">
-                                                        <div class="flex-1 pr-2">
-                                                            <div class="flex items-center gap-2 mb-0.5">
-                                                                <span class="font-semibold text-gray-700">{{ $item['item_code'] }}</span>
-                                                                <span class="text-gray-400">•</span>
-                                                                <span class="text-gray-600">{{ $item['item_category'] }}</span>
-                                                            </div>
-                                                            <div class="text-gray-500 text-[11px]">{{ $item['item_name'] }}</div>
-                                                        </div>
-                                                        <div class="text-right whitespace-nowrap ml-2">
-                                                            <div class="font-semibold text-gray-900 mb-0.5">
-                                                                {{ number_format($stockQty, 0) }}/{{ number_format($qtyRab, 0) }}
-                                                                {{ $item['item_unit'] }}
-                                                            </div>
-                                                            <div class="text-[11px] font-medium {{ $statusClass }}">
-                                                                {{ $status }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                    class="flex items-start justify-between text-xs p-2 border border-gray-100 rounded bg-white">
+                                    <div class="flex-1 pr-2">
+                                        <div class="flex items-center gap-2 mb-0.5">
+                                            <span class="font-semibold text-gray-700">{{ $item['item_code'] }}</span>
+                                            <span class="text-gray-400">•</span>
+                                            <span class="text-gray-600">{{ $item['item_category'] }}</span>
+                                        </div>
+                                        <div class="text-gray-500 text-[11px]">{{ $item['item_name'] }}</div>
+                                    </div>
+                                    <div class="text-right whitespace-nowrap ml-2">
+                                        <div class="font-semibold text-gray-900 mb-0.5">
+                                            {{ number_format($stockQty, 0) }}/{{ number_format($qtyRab, 0) }}
+                                            {{ $item['item_unit'] }}
+                                        </div>
+                                        <div class="text-[11px] font-medium {{ $statusClass }}">
+                                            {{ $status }}
+                                        </div>
+                                    </div>
+                                </div>
                             @endforeach
                         </div>
                     </div>

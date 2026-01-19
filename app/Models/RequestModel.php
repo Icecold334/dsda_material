@@ -49,6 +49,16 @@ class RequestModel extends Model
         return $this->belongsTo(Warehouse::class);
     }
 
+    public function itemType()
+    {
+        return $this->belongsTo(ItemType::class);
+    }
+
+    public function rab()
+    {
+        return $this->belongsTo(Rab::class);
+    }
+
     public function district()
     {
         return $this->belongsTo(District::class);

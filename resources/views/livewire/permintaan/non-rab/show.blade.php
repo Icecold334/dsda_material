@@ -56,6 +56,10 @@
                         <td>{{ $permintaan->warehouse?->name ?? '-' }}</td>
                     </tr>
                     <tr>
+                        <td class="font-semibold">Tipe Barang</td>
+                        <td>{{ $permintaan->itemType?->name ?? '-' }}</td>
+                    </tr>
+                    <tr>
                         <td class="font-semibold">Kecamatan</td>
                         <td>{{ $permintaan->district?->name ?? '-' }}</td>
                     </tr>

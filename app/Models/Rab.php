@@ -39,6 +39,11 @@ class Rab extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function itemType()
+    {
+        return $this->belongsTo(ItemType::class);
+    }
+
     // public function aktivitasSubKegiatan()
     // {
     //     return $this->belongsTo(AktivitasSubKegiatan::class, 'aktivitas_sub_kegiatan_id');
