@@ -11,7 +11,7 @@ use App\Models\ItemCategory;
 
 class CreateTable extends Component
 {
-    public $listBarang = [], $itemCategories = [], $items, $warehouse, $contract, $itemCategory, $item, $unit = 'Satuan';
+    public $listBarang = [], $itemCategories = [], $items, $warehouse, $contract, $itemCategory, $item, $unit = 'Satuan', $maxQty = 0, $qty, $disablAdd;
 
     public function mount()
     {
@@ -21,6 +21,7 @@ class CreateTable extends Component
             return $contract->where('id', $this->contract->id);
         })->get();
         $this->items = collect(); // ✅ PENTING
+        $this->checkAdd();
     }
 
     public function updatedItemCategory()
@@ -30,7 +31,12 @@ class CreateTable extends Component
         $this->items = Item::where('item_category_id', $this->itemCategory)
             ->whereHas('contractItems.contract', fn($q) => $q->whereId($this->contract->id))
             ->get();
-
+        $this->checkAdd();
+    }
+    public function updatedItem()
+    {
+        $this->maxQty = 19;
+        $this->checkAdd();
     }
 
 
@@ -38,6 +44,11 @@ class CreateTable extends Component
     #[On('fillCreateTable')]
     private function filled(Warehouse $warehouse = null, Contract $contract = null)
     {
+    }
+
+    private function checkAdd()
+    {
+        $this->disablAdd = !($this->qty <= $this->maxQty && $this->maxQty > 0);
     }
 
     public function render()

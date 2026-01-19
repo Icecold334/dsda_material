@@ -19,12 +19,18 @@
                 </div>
                 <div class="w-1/3 font-semibold bg-gray-50 px-4 py-2 rounded">
                     Jumlah
+                    @if ($maxQty > 0)
+                    <div class="text-xs font-bold text-gray-500">
+                        Max: {{ $maxQty }} {{ $unit }}
+                    </div>
+                    @endif
                 </div>
+
                 <div class="w-2/3">
                     <div class="flex">
-                        <input type="number"
+                        <input type="number" wire:model.live.debounce.500ms='qty'
                             class="rounded-none rounded-s-lg bg-gray-50 border border-gray-300 text-gray-900 block flex-1 text-sm p-2.5"
-                            placeholder="Jumlah Pengiriman" required>
+                            @disabled(!$item) placeholder="Jumlah Pengiriman" max="{{ $maxQty }}" required>
 
                         <div
                             class="text-center rounded-none rounded-e-lg bg-gray-200 font-semibold Satuan border border-gray-300 text-gray-900 block w-20 text-sm p-2.5">
@@ -33,8 +39,8 @@
                     </div>
                 </div>
                 <div class="w-1/12">
-                    <button type="submit"
-                        class="text-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2  focus:outline-none">Tambah</button>
+                    <button type="submit" @disabled($disablAdd)
+                        class="{{ $disablAdd ? '':'cursor-not-allowed'}} text-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2  focus:outline-none">Tambah</button>
                 </div>
             </div>
         </form>
