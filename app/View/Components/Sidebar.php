@@ -44,8 +44,9 @@ class Sidebar extends Component
                         ['title' => 'Sudin', 'href' => route('sudin.index')],
                         ['title' => 'Kecamatan', 'href' => route('district.index')],
                         ['title' => 'Gudang', 'href' => route('warehouse.index')],
-                        ['title' => 'Kategori Barang', 'href' => route('item-category.index')],
-                        ['title' => 'Barang', 'href' => route('item.index')],
+                        ['title' => 'Tipe Barang', 'href' => route('item-type.index')],
+                        ['title' => 'Barang', 'href' => route('item-category.index')],
+                        ['title' => 'Spesifikasi Barang', 'href' => route('item.index')],
                         ['title' => 'Pengguna', 'href' => route('user.index')],
                     ]" />
             </ul>

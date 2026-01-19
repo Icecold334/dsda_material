@@ -6,25 +6,25 @@ use Illuminate\Support\Facades\Schema;
 use App\Support\Database\HasUuidPrimary;
 
 return new class extends Migration {
+    /**
+     * Run the migrations.
+     */
     use HasUuidPrimary;
-
     public function up(): void
     {
-        Schema::create('item_categories', function (Blueprint $table) {
+        Schema::create('item_types', function (Blueprint $table) {
             $this->uuid($table);
-
-            $table->uuid('item_unit_id');
-            $table->uuid('item_type_id');
             $table->string('name');
             $table->string('slug')->unique();
-
-            $table->foreign('item_unit_id')->references('id')->on('item_units')->cascadeOnDelete();
-            $table->foreign('item_type_id')->references('id')->on('item_types')->cascadeOnDelete();
+            $table->boolean('active')->default(true);
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        Schema::dropIfExists('item_categories');
+        Schema::dropIfExists('item_types');
     }
 };

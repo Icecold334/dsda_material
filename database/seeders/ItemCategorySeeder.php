@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ItemType;
 use App\Models\ItemUnit;
 use Illuminate\Support\Str;
 use App\Models\ItemCategory;
@@ -17,9 +18,11 @@ class ItemCategorySeeder extends Seeder
     {
         for ($i = 0; $i < 50; $i++) {
             $unit = ItemUnit::all()->random();
+            $type = ItemType::where('active', true)->inRandomOrder()->first();
             $name = fake()->sentence(3);
-            if (!$unit) {
-                // skip kalau satuan belum ada
+
+            if (!$unit || !$type) {
+                // skip kalau satuan atau tipe belum ada
                 continue;
             }
 
@@ -30,6 +33,7 @@ class ItemCategorySeeder extends Seeder
                 [
                     'name' => $name,
                     'item_unit_id' => $unit->id,
+                    'item_type_id' => $type->id,
                 ]
             );
         }

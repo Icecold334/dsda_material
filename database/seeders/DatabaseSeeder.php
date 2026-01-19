@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             SubdistrictSeeder::class,
             VendorSeeder::class,
             ItemUnitSeeder::class,
+            ItemTypeSeeder::class,
             ItemCategorySeeder::class,
             ItemSeeder::class,
             ContractSeeder::class,
