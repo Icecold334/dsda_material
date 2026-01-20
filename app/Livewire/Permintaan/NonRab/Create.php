@@ -173,7 +173,7 @@ class Create extends Component
             'panjang' => $this->panjang,
             'lebar' => $this->lebar,
             'tinggi' => $this->tinggi,
-            'user_id' => User::first()->id,
+            'user_id' => auth()->user()->id,
             'notes' => $this->notes,
             'status' => 'draft',
             'rab_id' => null,

@@ -11,6 +11,8 @@ class ApprovalPanel extends Component
     public string $module;
     public string $approvableType;
     public string|int $approvableId;
+    public bool $showRejectForm = false;
+    public string $rejectReason = '';
 
     public bool $extraReady = true; // default: level ini cuma klik approve
     public string $extraError = '';
@@ -32,6 +34,7 @@ class ApprovalPanel extends Component
 
     public function onExtraCheckResult(bool $ready, string $message = '')
     {
+
         $this->extraReady = $ready;
         $this->extraError = $message;
     }
@@ -60,6 +63,31 @@ class ApprovalPanel extends Component
         $this->dispatch('approvalApproved'); // parent bisa nangkap buat update status bisnis dll
         session()->flash('success', 'Approval berhasil');
     }
+
+    public function reject(ApprovalService $approvalService)
+    {
+        $model = $this->getModel();
+        $user = auth()->user();
+
+        if (!$user) {
+            $this->addError('reject', 'Silakan login');
+            return;
+        }
+
+        if (trim($this->rejectReason) === '') {
+            $this->addError('reject', 'Alasan penolakan wajib diisi');
+            return;
+        }
+
+        $approvalService->reject($model, $user, $this->rejectReason);
+
+        $this->showRejectForm = false;
+        $this->rejectReason = '';
+
+        $this->dispatch('approvalRejected');
+        session()->flash('success', 'Permintaan ditolak');
+    }
+
 
     public function render(ApprovalService $approvalService)
     {

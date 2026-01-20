@@ -1,6 +1,5 @@
 <div class="p-4 border rounded-lg">
-    <div class="mb-2 font-semibold">Approval</div>
-
+    @if ( true)
     @if (session('success'))
     <div class="mb-3 p-2 rounded bg-green-100 text-green-800">
         {{ session('success') }}
@@ -13,24 +12,55 @@
     </div>
     @enderror
 
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2 mt-2">
         <button type="button" wire:click="approve" @disabled(! $canApprove || ! $extraReady)
             class="px-3 py-2 rounded bg-blue-600 text-white disabled:opacity-50">
             Approve
         </button>
 
-        @if(! $extraReady)
-        <span class="text-sm text-red-600">
-            {{ $extraError ?: 'Syarat level ini belum lengkap' }}
-        </span>
-        @endif
+        <button type="button" wire:click="$toggle('showRejectForm')" @disabled(! $canApprove)
+            class="px-3 py-2 rounded bg-red-600 text-white disabled:opacity-50">
+            Tolak
+        </button>
     </div>
 
+
     <div class="mt-3 text-sm text-gray-600">
-        @if($isFinal)
+        @if(!$extraReady)
+        {{ $extraError }}
+        @endif
+        {{-- @if($isFinal)
         Status approval: final
         @else
         Status approval: sedang berjalan
-        @endif
+        @endif --}}
     </div>
+
+    @if($showRejectForm)
+    <div class="mt-3 p-3 border rounded bg-gray-50">
+        <label class="block text-sm font-semibold mb-1">
+            Alasan Penolakan
+        </label>
+
+        <textarea wire:model.defer="rejectReason" class="w-full border rounded p-2" rows="3"></textarea>
+
+        @error('reject')
+        <div class="text-sm text-red-600 mt-1">
+            {{ $message }}
+        </div>
+        @enderror
+
+        <div class="flex gap-2 mt-2">
+            <button type="button" wire:click="reject" class="px-3 py-1 rounded bg-red-600 text-white">
+                Konfirmasi Tolak
+            </button>
+
+            <button type="button" wire:click="$set('showRejectForm', false)" class="px-3 py-1 rounded bg-gray-300">
+                Batal
+            </button>
+        </div>
+    </div>
+    @endif
+
+    @endif
 </div>
