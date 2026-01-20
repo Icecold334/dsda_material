@@ -23,33 +23,36 @@ class Sidebar extends Component
     {
         return <<<'BLADE'
 <div>
-   <ul class="space-y-2 font-medium">
-                <livewire:side-item title="Dashboard" href="/" />
-                <livewire:side-item title="Kontrak" href="{{ route('contract.index') }}" />
-                <livewire:side-item title="RAB" href="{{ route('rab.index') }}" />
-                <livewire:side-item title="Stok" href="{{ route('stock.index') }}" />
+    <ul class="space-y-2 font-medium">
+        <livewire:side-item title="Dashboard" href="/" :key="'dashboard-' . request()->path()" />
+        <livewire:side-item title="Kontrak" href="{{ route('contract.index') }}" :key="'kontrak-' . request()->path()" />
+        <livewire:side-item title="RAB" href="{{ route('rab.index') }}" :key="'rab-' . request()->path()" />
+        <livewire:side-item title="Stok" href="{{ route('stock.index') }}" :key="'stok-' . request()->path()" />
+        <livewire:side-item title="Pengiriman Barang" href="{{ route('delivery.index') }}"
+            :key="'pengiriman-' . request()->path()" />
 
-                <livewire:side-item title="Pengiriman Barang" href="{{ route('delivery.index') }}" />
-                <livewire:side-item title="Transfer Antar Sudin" icon="users" :collapsable="true" :items="[
-                                            ['title' => 'Permintaan', 'href' => route('transfer.permintaan.index')],
-                                            ['title' => 'Pengiriman', 'href' => route('transfer.pengiriman.index')],
-                                        ]" />
-                            <livewire:side-item title="Permintaan Barang" icon="users" :collapsable="true" :items="[
-                                            ['title' => 'Menggunakan RAB', 'href' => route('permintaan.rab.index')],
-                                                ['title' => 'Tanpa RAB', 'href' => route('permintaan.nonRab.index')],
-                                            ]" />
-                <livewire:side-item title="Master Data" icon="users" :collapsable="true" :items="[
-                        ['title' => 'Driver', 'href' => route('driver.index')],
-                        ['title' => 'Security', 'href' => route('security.index')],
-                        ['title' => 'Sudin', 'href' => route('sudin.index')],
-                        ['title' => 'Kecamatan', 'href' => route('district.index')],
-                        ['title' => 'Gudang', 'href' => route('warehouse.index')],
-                        ['title' => 'Tipe Barang', 'href' => route('item-type.index')],
-                        ['title' => 'Barang', 'href' => route('item-category.index')],
-                        ['title' => 'Spesifikasi Barang', 'href' => route('item.index')],
-                        ['title' => 'Pengguna', 'href' => route('user.index')],
-                    ]" />
-            </ul>
+        <livewire:side-item title="Transfer Antar Sudin" icon="users" :collapsable="true" :items="[
+            ['title' => 'Permintaan', 'href' => route('transfer.permintaan.index')],
+            ['title' => 'Pengiriman', 'href' => route('transfer.pengiriman.index')],
+        ]" :key="'transfer-' . request()->path()" />
+
+        <livewire:side-item title="Permintaan Barang" icon="users" :collapsable="true" :items="[
+            ['title' => 'Menggunakan RAB', 'href' => route('permintaan.rab.index')],
+            ['title' => 'Tanpa RAB', 'href' => route('permintaan.nonRab.index')],
+        ]" :key="'permintaan-' . request()->path()" />
+
+        <livewire:side-item title="Master Data" icon="users" :collapsable="true" :items="[
+            ['title' => 'Driver', 'href' => route('driver.index')],
+            ['title' => 'Security', 'href' => route('security.index')],
+            ['title' => 'Sudin', 'href' => route('sudin.index')],
+            ['title' => 'Kecamatan', 'href' => route('district.index')],
+            ['title' => 'Gudang', 'href' => route('warehouse.index')],
+            ['title' => 'Tipe Barang', 'href' => route('item-type.index')],
+            ['title' => 'Barang', 'href' => route('item-category.index')],
+            ['title' => 'Spesifikasi Barang', 'href' => route('item.index')],
+            ['title' => 'Pengguna', 'href' => route('user.index')],
+        ]" :key="'master-' . request()->path()" />
+    </ul>
 </div>
 BLADE;
     }

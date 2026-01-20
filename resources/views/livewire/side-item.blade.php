@@ -1,8 +1,9 @@
 <li>
     {{-- COLLAPSABLE MENU --}}
     @if ($collapsable)
-        <button type="button" class="flex items-center w-full p-2 text-white rounded-lg group hover:bg-gray-100 hover:text-primary-600 transition duration-150
-                       {{ $active ? 'bg-gray-100 hover:text-primary-600 font-semibold text-primary-600' : '' }}"
+        <button type="button"
+            class="flex items-center w-full p-2 rounded-lg group transition duration-150
+                    {{ $this->active ? 'bg-gray-100 text-primary-600 font-semibold' : 'text-white hover:bg-gray-100 hover:text-primary-600' }}"
             data-collapse-toggle="collapse-{{ Str::slug($title) }}">
 
 
@@ -17,9 +18,15 @@
 
         <ul id="collapse-{{ Str::slug($title) }}" class="hidden py-2 space-y-1 bg-white rounded-lg mt-2">
             @foreach ($items as $item)
+                @php
+                    $itemPath = ltrim(parse_url($item['href'], PHP_URL_PATH), '/');
+                    $isChildActive = $itemPath && (Request::is($itemPath) || Request::is($itemPath . '/*'));
+                @endphp
                 <li>
-                    <a href="{{ $item['href'] }}" wire:navigate
-                        class="flex items-center py-2 mx-2 px-4  text-primary-600 rounded-lg hover:bg-primary-600  hover:text-white transition duration-200">
+                    <a href="{{ $item['href'] }}" wire:navigate class="flex items-center py-2 mx-2 px-4 rounded-lg transition duration-200
+                                            {{ $isChildActive
+                    ? 'bg-primary-600 text-white font-semibold'
+                    : 'text-primary-600 hover:bg-primary-600 hover:text-white' }}">
                         {{ $item['title'] }}
                     </a>
                 </li>
@@ -30,7 +37,7 @@
     @else
         <a href="{{ $href }}" wire:navigate
             class="flex items-center p-2 rounded-lg transition duration-150
-                    {{ $active ? 'bg-gray-100 hover:text-primary-600 text-primary-600 font-semibold' : 'text-white hover:bg-gray-100 hover:text-primary-600' }}">
+                                            {{ $this->active ? 'bg-gray-100 hover:text-primary-600 text-primary-600 font-semibold' : 'text-white hover:bg-gray-100 hover:text-primary-600' }}">
 
 
 

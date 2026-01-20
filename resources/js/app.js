@@ -7,6 +7,80 @@ import { idID } from "gridjs/l10n";
 import Swal from "sweetalert2";
 window.Swal = Swal;
 
+// ==================== SIDEBAR TOGGLE ====================
+function initSidebar() {
+    const toggleBtn = document.getElementById('sidebar-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const backdrop = document.getElementById('sidebar-backdrop');
+
+    if (!toggleBtn || !sidebar) return;
+
+    function isMobile() {
+        return window.innerWidth < 768;
+    }
+
+    function openSidebar() {
+        sidebar.classList.remove('sidebar-closed');
+        localStorage.setItem('sidebarOpen', 'true');
+        // Show backdrop on mobile
+        if (isMobile() && backdrop) {
+            backdrop.classList.remove('hidden');
+        }
+    }
+
+    function closeSidebar() {
+        sidebar.classList.add('sidebar-closed');
+        localStorage.setItem('sidebarOpen', 'false');
+        // Hide backdrop
+        if (backdrop) {
+            backdrop.classList.add('hidden');
+        }
+    }
+
+    // Global function for backdrop click (called from onclick in HTML)
+    window.closeSidebarMobile = closeSidebar;
+
+    // Apply saved state (only on desktop, start closed on mobile)
+    if (isMobile()) {
+        closeSidebar();
+    } else {
+        const sidebarOpen = localStorage.getItem('sidebarOpen') === 'true';
+        if (sidebarOpen) {
+            openSidebar();
+        } else {
+            closeSidebar();
+        }
+    }
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+        if (isMobile()) {
+            // On mobile, always hide backdrop if sidebar is closed
+            if (sidebar.classList.contains('sidebar-closed') && backdrop) {
+                backdrop.classList.add('hidden');
+            }
+        } else {
+            // On desktop, hide backdrop always
+            if (backdrop) {
+                backdrop.classList.add('hidden');
+            }
+        }
+    });
+
+    // Toggle button click handler (only attach once)
+    if (!toggleBtn.dataset.initialized) {
+        toggleBtn.addEventListener('click', function () {
+            const isClosed = sidebar.classList.contains('sidebar-closed');
+            if (isClosed) {
+                openSidebar();
+            } else {
+                closeSidebar();
+            }
+        });
+        toggleBtn.dataset.initialized = 'true';
+    }
+}
+
 window.showConfirm = function ({
     title = "Yakin?",
     text = "",
@@ -194,17 +268,17 @@ function initGrid(wrapper) {
         },
         server: api
             ? {
-                  url: api,
-                  handle: (res) => {
-                      if (res.status === 404) return { data: [] };
-                      if (res.ok) return res.json();
-                      throw new Error("Grid server error");
-                  },
-                  then: (json) => {
-                      const rows = json.data ?? json;
-                      return mapByColumns(rows, columns);
-                  },
-              }
+                url: api,
+                handle: (res) => {
+                    if (res.status === 404) return { data: [] };
+                    if (res.ok) return res.json();
+                    throw new Error("Grid server error");
+                },
+                then: (json) => {
+                    const rows = json.data ?? json;
+                    return mapByColumns(rows, columns);
+                },
+            }
             : undefined,
     }).render(wrapper);
 
@@ -223,11 +297,13 @@ function scanAndInitGrid() {
 document.addEventListener("DOMContentLoaded", () => {
     scanAndInitGrid();
     initFlowbite();
+    initSidebar();
     app();
 });
 
 document.addEventListener("livewire:navigated", () => {
     scanAndInitGrid();
     initFlowbite();
+    initSidebar();
     app();
 });

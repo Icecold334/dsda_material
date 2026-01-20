@@ -20,19 +20,19 @@
     @livewireStyles
 </head>
 
-<body>
+<body class="overflow-x-hidden">
 
     {{-- TOP NAV --}}
     <nav class="fixed top-0 z-50 w-full bg-primary-300 shadow-md ">
         <div class="px-4 py-3 flex items-center justify-between">
-            {{-- Sidebar toggle (mobile) --}}
-            <div class="left">
-                <button data-drawer-target="sidebar" data-drawer-toggle="sidebar" aria-controls="sidebar"
+            {{-- Sidebar toggle --}}
+            <div class="left flex items-center">
+                <button id="sidebar-toggle"
                     class="p-2 text-primary-600 rounded-lg  me-5 hover:bg-primary-600 hover:text-white focus:ring-2 focus:ring-gray-200 transition duration-200">
                     <i class="fa-solid fa-bars"></i>
                 </button>
 
-                <span class="text-xl font-semibold text-primary-800">
+                <span class="text-xl font-semibold text-primary-800 hidden sm:inline">
                     DSDA Material
                 </span>
             </div>
@@ -45,21 +45,18 @@
                 </div>
 
                 <!-- Dropdown menu -->
-                <div id="userDropdown"
-                    class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44  ">
+                <div id="userDropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44">
                     <div class="px-4 py-3 text-sm text-gray-900 ">
                         <div>{{ auth()->user()->name ?? 'User' }}</div>
                         <div class="font-medium truncate">{{ auth()->user()->email ?? 'user@example.com' }}</div>
                     </div>
                     <ul class="py-2 text-sm text-gray-700 " aria-labelledby="avatarButton">
                         <li>
-                            <a href="/profile"
-                                class="block px-4 py-2 hover:bg-gray-100 :bg-gray-600 :text-white">Profile</a>
+                            <a href="/profile" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
                         </li>
                     </ul>
                     <div class="py-1">
-                        <a href="#"
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 :bg-gray-600  :text-white">Sign
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign
                             out</a>
                     </div>
                 </div>
@@ -68,25 +65,31 @@
         </div>
     </nav>
 
-    {{-- SIDEBAR --}}
-    <aside id="sidebar"
-        class="fixed top-0 left-0 z-40 w-64 h-screen pt-16 transition-transform duration-300 bg-gradient-to-br from-primary-600 to-primary-500 -translate-x-full">
+    {{-- SIDEBAR BACKDROP (mobile only) --}}
+    <div id="sidebar-backdrop" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden" onclick="closeSidebarMobile()">
+    </div>
+
+    {{-- WRAPPER FOR SIDEBAR AND MAIN CONTENT --}}
+    <div class="flex pt-14">
+        {{-- SIDEBAR --}}
+        {{-- Mobile: fixed overlay, Desktop: sticky sidebar that pushes content --}}
+        <aside id="sidebar" class="w-64 h-[calc(100vh-3.5rem)] shrink-0 transition-all duration-300 bg-gradient-to-br from-primary-600 to-primary-500 overflow-hidden sidebar-closed
+                   fixed md:sticky top-14 left-0 z-40 md:z-auto self-start">
+            <div class="h-full px-4 py-4 overflow-y-auto w-64">
+                <x-sidebar />
+            </div>
+        </aside>
+
+        {{-- MAIN CONTENT --}}
+        <main id="main-content"
+            class="flex-1 w-full p-4 transition-all duration-300 bg-gradient-to-br from-primary-100 to-primary-200 min-h-[calc(100vh-3.5rem)]">
+            <div class="pt-2 sm:pt-4">
+                {{ $slot }}
+            </div>
+        </main>
+    </div>
 
 
-        <div class="h-full px-4 py-4 overflow-y-auto">
-
-            <x-sidebar />
-
-        </div>
-    </aside>
-
-    {{-- MAIN CONTENT --}}
-    <main id="main-content"
-        class="p-4 pt-20 transition-all duration-300 bg-gradient-to-br from-primary-100 to-primary-200 min-h-screen">
-
-
-        {{ $slot }}
-    </main>
     @livewireScripts
     @stack('scripts')
 </body>

@@ -1,14 +1,35 @@
+@import "flowbite/src/themes/default";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import "flowbite/src/themes/default";
 @plugin "flowbite/plugin";
 @source "../node_modules/flowbite";
+
 .dataTable-wrapper .dataTable-sorter span {
-    color: #111827 !important; /* gray-900 */
+    color: #111827 !important;
+    /* gray-900 */
 }
 
 .dataTable-wrapper td {
     color: #111827 !important;
+}
+
+/* Sidebar collapsed state - Mobile: slide out, Desktop: width collapse */
+@media (max-width: 767px) {
+    #sidebar {
+        transform: translateX(0);
+    }
+
+    #sidebar.sidebar-closed {
+        transform: translateX(-100%);
+    }
+}
+
+@media (min-width: 768px) {
+    .sidebar-closed {
+        width: 0 !important;
+        padding: 0 !important;
+    }
 }
