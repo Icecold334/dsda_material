@@ -4,10 +4,9 @@
             <div class="text-3xl font-semibold">Profil Saya</div>
         </div>
         <div class="text-right">
-            <button type="button" x-on:click="$dispatch('open-modal', 'edit-profile')"
-                class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none">
+            <x-button type="button" x-on:click="$dispatch('open-modal', 'edit-profile')">
                 Edit Profil
-            </button>
+            </x-button>
         </div>
     </div>
 
@@ -60,12 +59,12 @@
                     <div>
                         <h4 class="font-semibold">Password</h4>
                         <p class="text-sm text-gray-600">Terakhir diubah:
-                            {{ auth()->user()->updated_at->diffForHumans() }}</p>
+                            {{ auth()->user()->updated_at->diffForHumans() }}
+                        </p>
                     </div>
-                    <button type="button" x-on:click="$dispatch('open-modal', 'edit-profile')"
-                        class="text-primary-700 hover:text-primary-800 font-medium text-sm">
+                    <x-button type="button" x-on:click="$dispatch('open-modal', 'edit-profile')">
                         Ubah Password
-                    </button>
+                    </x-button>
                 </div>
             </div>
         </x-card>

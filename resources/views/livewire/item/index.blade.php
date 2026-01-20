@@ -10,9 +10,9 @@
             <div class="text-3xl font-semibold"> Daftar Spesifikasi </div>
         </div>
         <div class="text-right">
-            <x-primary-button x-on:click="$dispatch('open-modal', 'create-item')">
+            <x-button x-on:click="$dispatch('open-modal', 'create-item')">
                 Tambah Spesifikasi
-            </x-primary-button>
+                </x-button>
         </div>
     </div>
 

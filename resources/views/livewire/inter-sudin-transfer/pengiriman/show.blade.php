@@ -4,9 +4,9 @@
             <div class="text-3xl font-semibold">Detail Transfer Pengiriman</div>
         </div>
         <div class="text-right flex gap-2 justify-end">
-            <x-primary-button href="{{ route('transfer.pengiriman.index') }}" wire:navigate>
+            <x-button variant="secondary" href="{{ route('transfer.pengiriman.index') }}" wire:navigate>
                 Kembali
-            </x-primary-button>
+            </x-button>
         </div>
     </div>
     <div>

@@ -14,6 +14,8 @@ return new class extends Migration {
             $this->uuid($table);
             $table->string('nomor')->nullable();     // nomor permintaan
 
+            $table->uuid('contract_id');
+            $table->uuid('warehouse_id');
             $table->uuid('sudin_id');
             $table->uuid('unit_id')->nullable();
             $table->uuid('user_id');             // pembuat dokumen
@@ -27,6 +29,8 @@ return new class extends Migration {
             $table->text('notes')->nullable();
 
             // FK
+            $table->foreign('contract_id')->references('id')->on('contracts');
+            $table->foreign('warehouse_id')->references('id')->on('warehouses');
             $table->foreign('sudin_id')->references('id')->on('sudins');
             $table->foreign('unit_id')->references('id')->on('units');
             $table->foreign('user_id')->references('id')->on('users');

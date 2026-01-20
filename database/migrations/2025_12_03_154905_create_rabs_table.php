@@ -36,7 +36,7 @@ return new class extends Migration {
 
 
             // fk
-            $table->foreign('district_id')->references('id')->on('districts');
+            $table->foreign('district_id')->references('id')->on('divisions');  // kecamatan sekarang di divisions
             $table->foreign('subdistrict_id')->references('id')->on('subdistricts');
             $table->foreign('sudin_id')->references('id')->on('sudins')->cascadeOnDelete();
             $table->foreign('item_type_id')->references('id')->on('item_types');

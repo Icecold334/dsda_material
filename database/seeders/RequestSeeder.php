@@ -14,7 +14,7 @@ use App\Models\Item;
 use App\Models\ItemType;
 use App\Models\Rab;
 use App\Models\Warehouse;
-use App\Models\District;
+use App\Models\Division;
 use App\Models\Subdistrict;
 
 class RequestSeeder extends Seeder
@@ -28,7 +28,7 @@ class RequestSeeder extends Seeder
         $driver = Personnel::where('type', 'driver')->first();
         $security = Personnel::where('type', 'security')->first();
         $warehouse = Warehouse::first();
-        $district = District::first();
+        $district = Division::districts()->first();  // Kecamatan dari divisions
         $subdistrict = Subdistrict::first();
         $items = Item::all();
 

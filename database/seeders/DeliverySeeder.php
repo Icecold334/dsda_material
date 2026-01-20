@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use App\Models\Delivery;
 use App\Models\DeliveryItem;
+use App\Models\Contract;
 use App\Models\Sudin;
 use App\Models\Unit;
 use App\Models\User;
@@ -17,6 +18,7 @@ class DeliverySeeder extends Seeder
 {
     public function run(): void
     {
+        $contracts = Contract::pluck('id');
         $sudins = Sudin::pluck('id');
         $units = Unit::pluck('id');
         $users = User::pluck('id');
@@ -25,7 +27,7 @@ class DeliverySeeder extends Seeder
         $items = Item::pluck('id');
         $warehouses = Warehouse::pluck('id');
 
-        if ($sudins->isEmpty() || $users->isEmpty() || $items->isEmpty()) {
+        if ($contracts->isEmpty() || $sudins->isEmpty() || $users->isEmpty() || $items->isEmpty() || $warehouses->isEmpty()) {
             $this->command->warn('Seeder Delivery dilewati karena data master belum lengkap.');
             return;
         }
@@ -36,7 +38,8 @@ class DeliverySeeder extends Seeder
              *  CREATE DELIVERY
              *  ========================= */
             $delivery = Delivery::create([
-                'warehouse_id' => $warehouses->random() ?? null,
+                'contract_id' => $contracts->random(),
+                'warehouse_id' => $warehouses->random(),
                 'nomor' => 'DEL-' . now()->format('Ymd') . '-' . str_pad($i, 4, '0', STR_PAD_LEFT),
                 'sudin_id' => $sudins->random(),
                 'user_id' => $users->random(),

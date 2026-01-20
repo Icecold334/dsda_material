@@ -10,9 +10,9 @@
             <div class="text-3xl font-semibold"> Daftar Driver </div>
         </div>
         <div class="text-right">
-            <x-primary-button x-on:click="$dispatch('open-modal', 'create-driver')">
+            <x-button x-on:click="$dispatch('open-modal', 'create-driver')">
                 Tambah Driver
-            </x-primary-button>
+            </x-button>
         </div>
     </div>
 

@@ -17,9 +17,9 @@
                       x-text="fileCount">
                 </span>
             </x-secondary-button>
-            <x-primary-button href="{{ route('permintaan.nonRab.index') }}" wire:navigate>
+            <x-button variant="secondary" href="{{ route('permintaan.nonRab.index') }}" wire:navigate>
                 Kembali
-            </x-primary-button>
+            </x-button>
         </div>
     </div>
 
@@ -218,13 +218,13 @@
                         @endif
 
                         <div class="flex justify-end">
-                            <x-primary-button type="button" wire:click="addItem">
+                            <x-button  wire:click="addItem">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                 </svg>
                                 Tambah Item
-                            </x-primary-button>
+                            </x-button>
                         </div>
                     @endif
                 </div>
@@ -260,10 +260,9 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-center">
-                                        <button type="button" wire:click="removeItem({{ $index }})"
-                                            class="bg-danger-600 text-danger-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm">
+                                        <x-button variant="danger" type="button" wire:click="removeItem({{ $index }})">
                                             <i class="fa-solid fa-trash"></i>
-                                        </button>
+                                        </x-button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -300,9 +299,9 @@
                 class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
                 Batal
             </a>
-            <x-primary-button type="submit">
+            <x-button type="submit">
                 Simpan Permintaan
-            </x-primary-button>
+            </x-button>
         </div>
     </form>
     <!-- Modal Lampiran -->
