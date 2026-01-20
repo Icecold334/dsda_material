@@ -98,8 +98,8 @@ class ApprovalService
      */
     public function isFinal(Model $model): bool
     {
-        return !RequestApproval::where('approvable_type', get_class($model))
-            ->where('approvable_id', $model->id)
+        return !RequestApproval::where('document_type', get_class($model))
+            ->where('document_id', $model->id)
             ->where('status', 'pending')
             ->exists();
     }

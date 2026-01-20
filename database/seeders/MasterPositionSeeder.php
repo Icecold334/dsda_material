@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Position;
+use Illuminate\Support\Str;
 
 class MasterPositionSeeder extends Seeder
 {
@@ -24,7 +25,7 @@ class MasterPositionSeeder extends Seeder
         ];
 
         foreach ($list as $name) {
-            Position::create(['name' => $name]);
+            Position::create(['name' => $name, 'slug' => Str::slug($name)]);
         }
     }
 }
