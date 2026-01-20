@@ -19,6 +19,8 @@ class Show extends Component
 
     }
 
+
+
     public function render()
     {
         return view('livewire.permintaan.non-rab.show');

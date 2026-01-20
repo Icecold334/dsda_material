@@ -18,7 +18,7 @@
             </x-secondary-button>
             <x-button variant="secondary" href="{{ route('permintaan.rab.index') }}" wire:navigate>
                 Kembali
-                </x-button>
+            </x-button>
         </div>
     </div>
     <div>
@@ -106,6 +106,12 @@
                     </tr>
                 </table>
             </div>
+        </x-card>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+        <x-card title="Informasi Pengiriman">
+            <livewire:components.delivery-info :permintaan="$permintaan" :key="'delivery-info-' . $permintaan->id" />
         </x-card>
     </div>
 
