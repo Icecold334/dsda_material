@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\District;
+use App\Models\Division;
 use App\Models\Sudin;
 use Illuminate\Database\Seeder;
 
@@ -15,43 +15,31 @@ class DistrictSeeder extends Seeder
             return;
         }
 
-        $kelurahanNames = [
+        $kecamatanNames = [
             'Cempaka Putih',
-            'Cempaka Putih Barat',
-            'Cempaka Putih Timur',
             'Menteng',
-            'Menteng Dalam',
-            'Gondangdia',
-            'Kebon Sirih',
-            'Pegangsaan',
             'Tanah Abang',
-            'Bendungan Hilir',
-            'Karet Tengsin',
-            'Petamburan',
-            'Gelora',
-            'Kebon Melati',
-            'Kebon Kacang',
-            'Kampung Bali',
             'Senen',
-            'Kramat',
-            'Kenari',
-            'Paseban',
-            'Bungur',
+            'Johar Baru',
+            'Kemayoran',
+            'Sawah Besar',
+            'Gambir',
         ];
 
-        Sudin::all()->each(function ($sudin) use ($kelurahanNames) {
-            // Buat 5-8 kelurahan per Sudin
-            $count = rand(5, 8);
-            $selected = collect($kelurahanNames)->random($count);
+        Sudin::all()->each(function ($sudin) use ($kecamatanNames) {
+            // Buat 3-5 kecamatan per Sudin
+            $count = rand(3, 5);
+            $selected = collect($kecamatanNames)->random($count);
 
             foreach ($selected as $index => $name) {
-                District::create([
+                Division::create([
                     'sudin_id' => $sudin->id,
                     'name' => $name,
+                    'type' => 'district',  // kecamatan
                 ]);
             }
         });
 
-        $this->command->info('Districts (Kelurahan) seeded successfully!');
+        $this->command->info('Districts (Kecamatan) seeded to divisions table successfully!');
     }
 }

@@ -69,13 +69,13 @@
                                                 </p>
                                             </div>
                                         </div>
-                                        <button type="button" wire:click="removeFile({{ $index }})"
-                                            class="ml-4 flex-shrink-0 text-red-600 hover:text-red-800">
+                                        <x-button variant="danger" wire:click="removeFile({{ $index }})"
+                                            class="ml-4 flex-shrink-0 ">
                                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M6 18L18 6M6 6l12 12" />
                                             </svg>
-                                        </button>
+                                        </x-button>
                                     </li>
                                 @endforeach
                             </ul>

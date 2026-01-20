@@ -116,15 +116,20 @@ class DocumentUpload extends Component
         $folderName = $this->getFolderName();
 
         foreach ($this->files as $file) {
-            $fileName = $file->getClientOriginalName();
-            $filePath = $file->store($folderName, 'public');
+            $originalFileName = $file->getClientOriginalName();
+            // Generate random filename while preserving extension
+            $extension = $file->getClientOriginalExtension();
+            $randomFileName = \Illuminate\Support\Str::uuid() . '.' . $extension;
+
+            // Store file with random name
+            $filePath = $file->storeAs($folderName, $randomFileName, 'public');
 
             Document::create([
                 'documentable_type' => $this->modelType,
                 'documentable_id' => $modelId,
                 'category' => $this->category,
                 'file_path' => $filePath,
-                'file_name' => $fileName,
+                'file_name' => $originalFileName,
                 'mime_type' => $file->getMimeType(),
                 'size_kb' => round($file->getSize() / 1024, 2),
                 'user_id' => auth()->id(),

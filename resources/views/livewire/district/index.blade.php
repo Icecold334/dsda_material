@@ -10,10 +10,9 @@
             <div class="text-3xl font-semibold"> Daftar Kecamatan </div>
         </div>
         <div class="text-right">
-            <button type="button" x-on:click="$dispatch('open-modal', 'create-district')"
-                class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none">
+            <x-button type="button" x-on:click="$dispatch('open-modal', 'create-district')">
                 Tambah Kecamatan
-            </button>
+            </x-button>
         </div>
     </div>
 

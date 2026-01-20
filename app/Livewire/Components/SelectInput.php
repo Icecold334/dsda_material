@@ -16,6 +16,10 @@ class SelectInput extends Component
     public $freetext = false;
     public $open = false;
     public $processedOptions = [];
+    public $cacheKey = '';
+
+    // Static cache storage untuk session
+    protected static $optionsCache = [];
 
     public function mount($options = [], $placeholder = '-- Pilih --', $disabled = false, $freetext = false)
     {
@@ -23,7 +27,8 @@ class SelectInput extends Component
         $this->placeholder = $placeholder;
         $this->disabled = $disabled;
         $this->freetext = $freetext;
-        $this->processedOptions = $this->processOptions($this->rawOptions);
+        $this->cacheKey = $this->generateCacheKey($options);
+        $this->processedOptions = $this->getOrCacheOptions($this->rawOptions);
     }
 
     public function updating($property, $value)
@@ -41,13 +46,19 @@ class SelectInput extends Component
 
     public function updatedRawOptions($value)
     {
-        $this->processedOptions = $this->processOptions($this->rawOptions);
+        $newCacheKey = $this->generateCacheKey($this->rawOptions);
 
-        // Reset value jika tidak ada di options baru (kecuali mode freetext)
-        if (!$this->freetext && $this->value) {
-            $valueExists = collect($this->processedOptions)->contains('value', $this->value);
-            if (!$valueExists) {
-                $this->value = '';
+        // Hanya process jika cache key berbeda (data baru)
+        if ($newCacheKey !== $this->cacheKey) {
+            $this->cacheKey = $newCacheKey;
+            $this->processedOptions = $this->getOrCacheOptions($this->rawOptions);
+
+            // Reset value jika tidak ada di options baru (kecuali mode freetext)
+            if (!$this->freetext && $this->value) {
+                $valueExists = collect($this->processedOptions)->contains('value', $this->value);
+                if (!$valueExists) {
+                    $this->value = '';
+                }
             }
         }
     }
@@ -61,18 +72,6 @@ class SelectInput extends Component
             // Mode normal: simpan value
             $this->value = $optionValue;
         }
-        $this->open = false;
-    }
-
-    public function toggleDropdown()
-    {
-        if (!$this->disabled) {
-            $this->open = !$this->open;
-        }
-    }
-
-    public function closeDropdown()
-    {
         $this->open = false;
     }
 
@@ -99,6 +98,41 @@ class SelectInput extends Component
             'value' => (string) $value,
             'label' => (string) $label
         ])->values()->toArray();
+    }
+
+    /**
+     * Generate cache key dari options
+     */
+    private function generateCacheKey($options)
+    {
+        if (empty($options)) {
+            return 'empty';
+        }
+
+        // Convert to array untuk consistency
+        $optionsArray = $options instanceof \Illuminate\Support\Collection
+            ? $options->toArray()
+            : (array) $options;
+
+        // Generate hash dari options untuk cache key
+        return md5(serialize($optionsArray));
+    }
+
+    /**
+     * Get options dari cache atau process dan cache
+     */
+    private function getOrCacheOptions($options)
+    {
+        // Jika ada di cache, gunakan cache
+        if (isset(self::$optionsCache[$this->cacheKey])) {
+            return self::$optionsCache[$this->cacheKey];
+        }
+
+        // Process options baru dan simpan ke cache
+        $processed = $this->processOptions($options);
+        self::$optionsCache[$this->cacheKey] = $processed;
+
+        return $processed;
     }
 
     public function render()

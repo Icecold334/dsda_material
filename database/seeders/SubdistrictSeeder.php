@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\District;
+use App\Models\Division;
 use App\Models\Subdistrict;
 use Illuminate\Database\Seeder;
 
@@ -10,36 +10,49 @@ class SubdistrictSeeder extends Seeder
 {
     public function run(): void
     {
-        if (District::count() === 0) {
-            $this->command->warn('District kosong, skip SubdistrictSeeder');
+        // Cari divisions dengan type 'district' (kecamatan)
+        $districts = Division::where('type', 'district')->get();
+
+        if ($districts->count() === 0) {
+            $this->command->warn('Division (district) kosong, skip SubdistrictSeeder');
             return;
         }
 
-        $kecamatanNames = [
-            'Cempaka Putih',
-            'Menteng',
-            'Tanah Abang',
-            'Senen',
-            'Johar Baru',
-            'Kemayoran',
-            'Sawah Besar',
-            'Gambir',
+        $kelurahanNames = [
+            'Cempaka Putih Barat',
+            'Cempaka Putih Timur',
+            'Rawasari',
+            'Menteng Dalam',
+            'Gondangdia',
+            'Kebon Sirih',
+            'Pegangsaan',
+            'Bendungan Hilir',
+            'Karet Tengsin',
+            'Petamburan',
+            'Gelora',
+            'Kebon Melati',
+            'Kebon Kacang',
+            'Kampung Bali',
+            'Kramat',
+            'Kenari',
+            'Paseban',
+            'Bungur',
         ];
 
-        District::all()->each(function ($district) use ($kecamatanNames) {
-            // Buat 2-4 kecamatan per Kelurahan
-            $count = rand(2, 4);
-            $selected = collect($kecamatanNames)->random(min($count, count($kecamatanNames)));
+        $districts->each(function ($district) use ($kelurahanNames) {
+            // Buat 3-6 kelurahan per Kecamatan
+            $count = rand(3, 6);
+            $selected = collect($kelurahanNames)->random(min($count, count($kelurahanNames)));
 
             foreach ($selected as $index => $name) {
                 Subdistrict::create([
                     'sudin_id' => $district->sudin_id,
-                    'district_id' => $district->id,
-                    'name' => $name . ' ' . ($index + 1),
+                    'division_id' => $district->id,  // kecamatan ada di divisions
+                    'name' => $name,
                 ]);
             }
         });
 
-        $this->command->info('Subdistricts (Kecamatan) seeded successfully!');
+        $this->command->info('Subdistricts (Kelurahan) seeded successfully!');
     }
 }

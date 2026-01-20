@@ -10,9 +10,9 @@
             <div class="text-3xl font-semibold"> Daftar Gudang </div>
         </div>
         <div class="text-right">
-            <x-primary-button x-on:click="$dispatch('open-modal', 'create-warehouse')">
+            <x-button x-on:click="$dispatch('open-modal', 'create-warehouse')">
                 Tambah Gudang
-            </x-primary-button>
+                </x-button>
         </div>
     </div>
 

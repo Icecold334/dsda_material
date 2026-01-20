@@ -10,6 +10,11 @@ return new class extends Migration {
 
     public function up(): void
     {
+        // Table districts sudah tidak digunakan
+        // Kecamatan sekarang disimpan di tabel divisions dengan type='district'
+        // Migrasi ini di-comment untuk jaga-jaga jika ada data yang perlu dimigrate
+
+        /*
         Schema::create('districts', function (Blueprint $table) {
             $this->uuid($table);
 
@@ -18,10 +23,11 @@ return new class extends Migration {
 
             $table->foreign('sudin_id')->references('id')->on('sudins')->cascadeOnDelete();
         });
+        */
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('districts');
+        // Schema::dropIfExists('districts');
     }
 };

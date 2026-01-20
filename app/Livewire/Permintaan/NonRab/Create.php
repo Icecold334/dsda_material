@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Models\Stock;
 use App\Models\Sudin;
 use Livewire\Component;
-use App\Models\District;
+use App\Models\Division;
 use App\Models\Warehouse;
 use App\Models\Subdistrict;
 use App\Models\ItemCategory;
@@ -47,7 +47,7 @@ class Create extends Component
             'name' => 'required|string|max:255',
             'sudin_id' => 'required|exists:sudins,id',
             'warehouse_id' => 'required|exists:warehouses,id',
-            'district_id' => 'required|exists:districts,id',
+            'district_id' => 'required|exists:divisions,id',
             'subdistrict_id' => 'required|exists:subdistricts,id',
             'tanggal_permintaan' => 'required|date',
             'address' => 'required|string',
@@ -254,10 +254,10 @@ class Create extends Component
                 ? Warehouse::where('sudin_id', $this->sudin_id)->orderBy('name')->get()
                 : collect(),
             'districts' => $this->sudin_id
-                ? District::where('sudin_id', $this->sudin_id)->orderBy('name')->get()
+                ? Division::districts()->where('sudin_id', $this->sudin_id)->orderBy('name')->get()
                 : collect(),
             'subdistricts' => $this->district_id
-                ? Subdistrict::where('district_id', $this->district_id)->orderBy('name')->get()
+                ? Subdistrict::where('division_id', $this->district_id)->orderBy('name')->get()
                 : collect(),
             'itemTypes' => $itemTypes,
             'itemCategories' => $itemCategories,

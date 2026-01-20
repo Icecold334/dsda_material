@@ -15,7 +15,7 @@ class Create extends Component
     public function mount()
     {
         // $this->dispatch('open-modal', 'input-contract-number');
-        // $this->dispatch('open-modal', 'choose-warehouse');
+        $this->dispatch('open-modal', 'choose-warehouse');
         $this->warehouse = Warehouse::first();
         $this->contract = Contract::first();
         // $this->contractNumber = '20397/PN01.02';

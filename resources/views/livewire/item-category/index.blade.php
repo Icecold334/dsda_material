@@ -10,9 +10,9 @@
             <div class="text-3xl font-semibold"> Daftar Barang </div>
         </div>
         <div class="text-right">
-            <x-primary-button x-on:click="$dispatch('open-modal', 'create-item-category')">
+            <x-button x-on:click="$dispatch('open-modal', 'create-item-category')">
                 Tambah Barang
-            </x-primary-button>
+                </x-button>
         </div>
     </div>
 

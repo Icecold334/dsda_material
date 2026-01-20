@@ -2,7 +2,7 @@
 
 use App\Livewire\District\Index;
 use App\Livewire\District\Show;
-use App\Models\District;
+use App\Models\Division;
 use App\Models\Subdistrict;
 use Illuminate\Support\Facades\Route;
 
@@ -11,7 +11,7 @@ Route::prefix('district')->name('district.')->group(function () {
     Route::get('/', Index::class)->name('index');
 
     Route::get('/json', function () {
-        $data = District::with('sudin')->get()->map(fn($d) => [
+        $data = Division::districts()->with('sudin')->get()->map(fn($d) => [
             'name' => $d->name,
             'sudin' => $d->sudin?->name ?? '-',
             'action' => '
@@ -29,7 +29,7 @@ Route::prefix('district')->name('district.')->group(function () {
         ]);
     })->name('json');
 
-    Route::get('/{district}/json', function (District $district) {
+    Route::get('/{district}/json', function (Division $district) {
         $data = $district->subdistricts->map(fn($s) => [
             'name' => $s->name,
             'action' => '

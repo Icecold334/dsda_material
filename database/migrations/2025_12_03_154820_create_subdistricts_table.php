@@ -14,11 +14,13 @@ return new class extends Migration {
             $this->uuid($table);
 
             $table->uuid('sudin_id');
-            $table->uuid('district_id');
+            $table->uuid('division_id');  // kecamatan ada di divisions dengan type='district'
+            // $table->uuid('district_id');  // old structure - kept for reference
             $table->string('name');
 
             $table->foreign('sudin_id')->references('id')->on('sudins')->cascadeOnDelete();
-            $table->foreign('district_id')->references('id')->on('districts')->cascadeOnDelete();
+            $table->foreign('division_id')->references('id')->on('divisions')->cascadeOnDelete();
+            // $table->foreign('district_id')->references('id')->on('districts')->cascadeOnDelete();  // old FK
         });
     }
 
