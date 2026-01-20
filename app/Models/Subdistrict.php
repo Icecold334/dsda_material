@@ -17,10 +17,17 @@ class Subdistrict extends Model
         return $this->belongsTo(Sudin::class);
     }
 
+    public function division()
+    {
+        return $this->belongsTo(Division::class);
+    }
+
+    // Alias untuk backward compatibility - kecamatan sekarang di divisions
     public function district()
     {
-        return $this->belongsTo(District::class);
+        return $this->division();
     }
+
     public function requests()
     {
         return $this->hasMany(RequestModel::class);

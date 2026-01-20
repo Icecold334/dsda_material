@@ -2,13 +2,13 @@
 
 namespace App\Livewire\District;
 
-use App\Models\District;
+use App\Models\Division;
 use App\Models\Sudin;
 use Livewire\Component;
 
 class Edit extends Component
 {
-    public District $district;
+    public Division $district;  // tetap pakai nama $district untuk backward compatibility
     public $name = '';
     public $sudin_id = '';
 

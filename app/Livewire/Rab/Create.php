@@ -4,7 +4,7 @@ namespace App\Livewire\Rab;
 
 use App\Models\Rab;
 use App\Models\Sudin;
-use App\Models\District;
+use App\Models\Division;
 use App\Models\Subdistrict;
 use App\Models\Warehouse;
 use App\Models\Stock;
@@ -53,7 +53,7 @@ class Create extends Component
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
             'sudin_id' => 'required|exists:sudins,id',
-            'district_id' => 'required|exists:districts,id',
+            'district_id' => 'required|exists:divisions,id',
             'subdistrict_id' => 'required|exists:subdistricts,id',
             'address' => 'required|string',
             'panjang' => 'nullable|string|max:255',
@@ -217,10 +217,10 @@ class Create extends Component
         return view('livewire.rab.create', [
             'sudins' => Sudin::orderBy('name')->get(),
             'districts' => $this->sudin_id
-                ? District::where('sudin_id', $this->sudin_id)->orderBy('name')->get()
+                ? Division::districts()->where('sudin_id', $this->sudin_id)->orderBy('name')->get()
                 : collect(),
             'subdistricts' => $this->district_id
-                ? Subdistrict::where('district_id', $this->district_id)->orderBy('name')->get()
+                ? Subdistrict::where('division_id', $this->district_id)->orderBy('name')->get()
                 : collect(),
             'itemTypes' => $itemTypes,
             'itemCategories' => $itemCategories,
