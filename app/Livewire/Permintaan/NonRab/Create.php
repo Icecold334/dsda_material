@@ -2,16 +2,17 @@
 
 namespace App\Livewire\Permintaan\NonRab;
 
-use App\Models\RequestModel;
-use App\Models\Sudin;
-use App\Models\Warehouse;
-use App\Models\District;
-use App\Models\Subdistrict;
-use App\Models\Stock;
 use App\Models\Item;
-use App\Models\ItemCategory;
-use Livewire\Attributes\Title;
+use App\Models\User;
+use App\Models\Stock;
+use App\Models\Sudin;
 use Livewire\Component;
+use App\Models\District;
+use App\Models\Warehouse;
+use App\Models\Subdistrict;
+use App\Models\ItemCategory;
+use App\Models\RequestModel;
+use Livewire\Attributes\Title;
 
 class Create extends Component
 {
@@ -172,7 +173,7 @@ class Create extends Component
             'panjang' => $this->panjang,
             'lebar' => $this->lebar,
             'tinggi' => $this->tinggi,
-            'user_id' => auth()->id(),
+            'user_id' => User::first()->id,
             'notes' => $this->notes,
             'status' => 'draft',
             'rab_id' => null,
