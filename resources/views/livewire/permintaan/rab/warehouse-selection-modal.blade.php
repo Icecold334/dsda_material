@@ -2,11 +2,11 @@
     <div class="p-6">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-semibold text-gray-900">Pilih Gudang</h2>
-            <button type="button" wire:click="closeWarehouseModal" class="text-gray-400 hover:text-gray-600">
+            <x-button variant="secondary" type="button" wire:click="closeWarehouseModal">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
-            </button>
+            </x-button>
         </div>
 
         <div class="space-y-2 max-h-[70vh] overflow-y-auto pr-2">
@@ -72,15 +72,13 @@
                     </div>
 
                     @if ($canSelect)
-                        <button type="button" wire:click="selectWarehouse('{{ $warehouse['id'] }}')"
-                            class="w-full px-3 py-2 bg-gray-800 text-white text-sm rounded hover:bg-gray-900 transition">
+                        <x-button type="button" wire:click="selectWarehouse('{{ $warehouse['id'] }}')">
                             Pilih Gudang Ini
-                        </button>
+                        </x-button>
                     @else
-                        <button type="button" disabled
-                            class="w-full px-3 py-2 bg-gray-200 text-gray-400 text-sm rounded cursor-not-allowed">
+                        <x-button variant="secondary" type="button" disabled>
                             Stok Kosong - Tidak Dapat Dipilih
-                        </button>
+                        </x-button>
                     @endif
                 </div>
             @empty

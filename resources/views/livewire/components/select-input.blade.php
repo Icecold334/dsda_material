@@ -4,14 +4,83 @@
          search: '',
          value: @entangle('value').live,
          options: [],
+         cacheKey: @js($this->cacheKey),
+         optionsCache: {},
          init() {
-             this.options = @js($this->options);
+             // Load cache dari localStorage dengan TTL check
+             try {
+                 const cached = localStorage.getItem('select-input-cache');
+                 if (cached) {
+                     const parsedCache = JSON.parse(cached);
+                     const now = Date.now();
+                     const TTL = 5 * 60 * 1000; // 5 menit dalam milliseconds
+                     
+                     // Clean expired cache
+                     Object.keys(parsedCache).forEach(key => {
+                         if (!parsedCache[key].timestamp || (now - parsedCache[key].timestamp) > TTL) {
+                             delete parsedCache[key];
+                         }
+                     });
+                     
+                     this.optionsCache = parsedCache;
+                     // Update localStorage dengan cache yang sudah di-clean
+                     localStorage.setItem('select-input-cache', JSON.stringify(this.optionsCache));
+                 }
+             } catch (e) {
+                 console.error('Failed to load cache:', e);
+             }
+             
+             // Check cache dulu sebelum load dari server
+             if (this.optionsCache[this.cacheKey]) {
+                 this.options = this.optionsCache[this.cacheKey].data;
+             } else {
+                 this.options = @js($this->options);
+                 this.cacheOptions();
+             }
+             
              this.$watch('value', () => {
                  // Reset search when value changes from outside
                  if (!this.open) {
                      this.search = '';
                  }
              });
+         },
+         cacheOptions() {
+             if (this.cacheKey && this.options.length > 0) {
+                 this.optionsCache[this.cacheKey] = {
+                     data: this.options,
+                     timestamp: Date.now()
+                 };
+                 try {
+                     localStorage.setItem('select-input-cache', JSON.stringify(this.optionsCache));
+                 } catch (e) {
+                     console.error('Failed to save cache:', e);
+                 }
+             }
+         },
+         updateOptions(newOptions, newCacheKey) {
+             // Hanya update jika cache key berbeda
+             if (newCacheKey !== this.cacheKey) {
+                 this.cacheKey = newCacheKey;
+                 
+                 // Check cache dulu (dengan TTL check)
+                 if (this.optionsCache[newCacheKey]) {
+                     const now = Date.now();
+                     const TTL = 5 * 60 * 1000; // 5 menit
+                     
+                     if ((now - this.optionsCache[newCacheKey].timestamp) <= TTL) {
+                         this.options = this.optionsCache[newCacheKey].data;
+                     } else {
+                         // Cache expired, load fresh data
+                         delete this.optionsCache[newCacheKey];
+                         this.options = newOptions;
+                         this.cacheOptions();
+                     }
+                 } else {
+                     this.options = newOptions;
+                     this.cacheOptions();
+                 }
+             }
          },
          get filteredOptions() {
              if (!this.search) return this.options;
@@ -23,7 +92,10 @@
              return this.value || '';
          }
      }" 
-     @click.away="open = false; $wire.closeDropdown()">
+     @click.away="open = false"
+     x-init="$watch('$wire.cacheKey', (newCacheKey) => {
+         updateOptions(@js($this->options), newCacheKey);
+     })">
     
     @if($freetext)
         <!-- Mode Freetext: Search Input -->
@@ -32,7 +104,7 @@
                 :value="open ? search : displayValue"
                 @input="search = $event.target.value"
                 @focus="search = displayValue; open = true"
-                @keydown.enter.prevent="if(search) { $wire.selectOption('', search); open = false; search = '' }"
+                @keydown.enter.prevent="if(search) { $wire.selectOption('', search); search = '' }"
                 @keydown.escape="open = false; search = ''" 
                 placeholder="{{ $placeholder }}" 
                 {{ $disabled ? 'disabled' : '' }}

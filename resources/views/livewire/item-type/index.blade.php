@@ -10,9 +10,9 @@
             <div class="text-3xl font-semibold"> Daftar Tipe Barang </div>
         </div>
         <div class="text-right">
-            <x-primary-button x-on:click="$dispatch('open-modal', 'create-item-type')">
+            <x-button x-on:click="$dispatch('open-modal', 'create-item-type')">
                 Tambah Tipe Barang
-            </x-primary-button>
+                </x-button>
         </div>
     </div>
 

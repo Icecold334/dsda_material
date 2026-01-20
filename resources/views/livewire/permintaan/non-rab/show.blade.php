@@ -16,9 +16,9 @@
                     x-show="fileCount > 0" x-text="fileCount">
                 </span>
             </x-secondary-button>
-            <x-primary-button href="{{ route('permintaan.nonRab.index') }}" wire:navigate>
+            <x-button variant="secondary" href="{{ route('permintaan.nonRab.index') }}" wire:navigate>
                 Kembali
-            </x-primary-button>
+                </x-button>
         </div>
     </div>
     <div>

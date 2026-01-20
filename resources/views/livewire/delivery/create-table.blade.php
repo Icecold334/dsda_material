@@ -78,9 +78,8 @@
                             </td>
                             <td class="px-6 py-4 text-center">
                                 {{-- Tombol Hapus Badge --}}
-                                <button type="button" wire:click="removeItem({{ $loop->index }})"
-                                    class="bg-danger-600 text-danger-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm"><i
-                                        class="fa-solid fa-trash"></i></button>
+                                <x-button variant="danger" type="button" wire:click="removeItem({{ $loop->index }})"><i
+                                        class="fa-solid fa-trash"></i></x-button>
                             </td>
 
                         </tr>

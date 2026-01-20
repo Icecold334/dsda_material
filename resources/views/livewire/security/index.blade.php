@@ -10,9 +10,9 @@
             <div class="text-3xl font-semibold"> Daftar Security </div>
         </div>
         <div class="text-right">
-            <x-primary-button x-on:click="$dispatch('open-modal', 'create-security')">
+            <x-button x-on:click="$dispatch('open-modal', 'create-security')">
                 Tambah Security
-            </x-primary-button>
+                </x-button>
         </div>
     </div>
 
