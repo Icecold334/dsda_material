@@ -97,7 +97,7 @@ class AdjustmentModal extends Component
             $stock->update(['qty' => $afterQty]);
 
             // Create transaction
-            StockTransaction::create([
+            $transaction = StockTransaction::create([
                 'sudin_id' => $this->warehouse->sudin_id,
                 'warehouse_id' => $this->warehouseId,
                 'item_id' => $this->itemId,
@@ -108,11 +108,15 @@ class AdjustmentModal extends Component
                 'user_id' => auth()->id(),
             ]);
 
+            // Save documents
+            $this->dispatch('saveDocuments', modelId: $transaction->id);
+
             DB::commit();
 
             session()->flash('message', 'Penyesuaian stok berhasil disimpan');
             $this->dispatch('adjustment-saved');
             $this->dispatch('close-modal', 'adjustment-modal');
+            $this->dispatch('close-modal', 'lampiran-adjustment-modal');
 
         } catch (\Exception $e) {
             DB::rollBack();
