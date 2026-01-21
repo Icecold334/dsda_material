@@ -4,6 +4,9 @@
             <div class="text-3xl font-semibold">Detail Stok Gudang</div>
         </div>
         <div class="text-right">
+            <x-button type="button" variant="success"
+                wire:click="$dispatch('openAdjustmentModal', { warehouseId: '{{ $warehouse->id }}' })">Penyesuaian
+                Stok</x-button>
             <x-button type="button" variant="info"
                 wire:click="$dispatch('openStokOpnameModal', { warehouseId: '{{ $warehouse->id }}' })">Stok
                 Opname</x-button>
@@ -52,4 +55,7 @@
 
     <!-- Modal Stok Opname -->
     <livewire:stock.stok-opname-modal />
+
+    <!-- Modal Penyesuaian Stok -->
+    <livewire:stock.adjustment-modal />
 </div>
