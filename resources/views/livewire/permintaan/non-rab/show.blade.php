@@ -5,6 +5,8 @@
         </div>
         <div class="text-right flex gap-2 justify-end" x-data="{ fileCount: 0 }"
             @file-count-updated.window="fileCount = $event.detail">
+            <livewire:approval-panel :module="'permintaan'" :approvable-type="\App\Models\RequestModel::class"
+                :approvable-id="$permintaan->id" />
             @if ($permintaan->status == 'draft')
             <x-primary-button wire:click='sendRequest'>
                 Ajukan Permintaan
@@ -23,7 +25,7 @@
             </x-secondary-button>
             <x-button variant="secondary" href="{{ route('permintaan.nonRab.index') }}" wire:navigate>
                 Kembali
-                </x-button>
+            </x-button>
         </div>
     </div>
     <div>
@@ -116,6 +118,5 @@
         category="lampiran_permintaan" label="Lampiran Permintaan" :multiple="true" accept="image/*,.pdf,.doc,.docx"
         modalId="lampiran-modal" :key="'doc-show-lampiran-' . $permintaan->id" />
 
-    <livewire:approval-panel :module="'permintaan'" :approvable-type="\App\Models\RequestModel::class"
-        :approvable-id="$permintaan->id" />
+
 </div>

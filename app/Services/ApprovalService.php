@@ -149,4 +149,79 @@ class ApprovalService
             ->orderBy('level')
             ->first();
     }
+
+    public function getCurrentApproverUser(Model $model): ?User
+    {
+        if ($this->isRejected($model)) {
+            return null;
+        }
+
+        $current = $this->getCurrentApproval($model);
+        if (!$current) {
+            return null;
+        }
+
+        // 1️⃣ Kalau user login adalah approver → return dia
+        $authUser = auth()->user();
+        if ($authUser && $this->canApprove($model, $authUser)) {
+            return $authUser;
+        }
+
+        // 2️⃣ Cari PLT aktif
+        $pltUserId = PositionDelegation::where('position_id', $current->position_id)
+            ->where(function ($q) use ($current) {
+                $q->whereNull('division_id')
+                    ->orWhere('division_id', $current->division_id);
+            })
+            ->whereDate('start_date', '<=', now())
+            ->whereDate('end_date', '>=', now())
+            ->value('user_id');
+
+        if ($pltUserId) {
+            return User::find($pltUserId);
+        }
+
+        // 3️⃣ User jabatan asli
+        return User::where('position_id', $current->position_id)
+            ->where('sudin_id', $model->sudin_id)
+            ->when(
+                $current->division_id,
+                fn($q) =>
+                $q->where('division_id', $current->division_id)
+            )
+            ->orderBy('id')
+            ->first();
+    }
+
+    public function getApproverUserFor(RequestApproval $approval, $i = 0)
+    {
+
+
+
+        // 1️⃣ Cari PLT aktif (diutamakan)
+        $pltUserId = PositionDelegation::where('position_id', $approval->position_id)
+            ->where(function ($q) use ($approval) {
+                $q->whereNull('division_id')
+                    ->orWhere('division_id', $approval->division_id);
+            })
+            ->whereDate('start_date', '<=', now())
+            ->whereDate('end_date', '>=', now())
+            ->value('user_id');
+
+        if ($pltUserId) {
+            return User::find($pltUserId);
+        }
+        // 2️⃣ User jabatan asli
+        $user = User::where('position_id', $approval->position_id)
+            ->where('sudin_id', $approval->sudin_id)
+            ->when(
+                $approval->division_id,
+                fn($q) => $q->where('division_id', $approval->division_id)
+            )
+            ->orderBy('id')
+            ->firstorFail();
+
+        return $user;
+    }
+
 }

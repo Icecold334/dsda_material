@@ -2,15 +2,23 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class RequestApproval extends Model
 {
-    use HasUuids, SoftDeletes;
+    use HasUuids, SoftDeletes, HasStatus;
 
     protected $guarded = [];
+
+    protected function casts()
+    {
+        return [
+            'approved_at' => 'datetime',
+        ];
+    }
 
     // polymorphic to any document
     public function document()

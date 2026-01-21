@@ -2,13 +2,16 @@
 
 namespace App\Livewire;
 
+use App\Models\User;
 use Livewire\Component;
+use App\Models\RequestApproval;
 use App\Services\ApprovalService;
 use Illuminate\Database\Eloquent\Model;
 
 class ApprovalPanel extends Component
 {
     public string $module;
+    public $approvals;
     public string $approvableType;
     public string|int $approvableId;
     public bool $showRejectForm = false;
@@ -22,18 +25,21 @@ class ApprovalPanel extends Component
         'approvalExtraCheckResult' => 'onExtraCheckResult',
     ];
 
-    public function mount(string $module, string $approvableType, $approvableId)
+    public function mount(string $module, string $approvableType, $approvableId, ApprovalService $approvalService)
     {
         $this->module = $module;
         $this->approvableType = $approvableType;
         $this->approvableId = $approvableId;
 
-        // trigger check syarat tambahan di parent (kalau parent mau)
+        $this->getApprovals($approvalService);
+
         $this->dispatch('approvalExtraCheckRequested');
     }
 
-    public function onExtraCheckResult(bool $ready, string $message = '')
+
+    public function onExtraCheckResult(bool $ready, string $message = '', ApprovalService $approvalService)
     {
+        $this->getApprovals($approvalService);
 
         $this->extraReady = $ready;
         $this->extraError = $message;
@@ -43,6 +49,28 @@ class ApprovalPanel extends Component
     {
         $class = $this->approvableType;
         return $class::findOrFail($this->approvableId);
+    }
+    protected function getApprovals(ApprovalService $approvalService)
+    {
+        $this->approvals = RequestApproval::with(['position', 'division'])
+            ->where('document_type', $this->approvableType)
+            ->where('document_id', $this->approvableId)
+            ->orderBy('level')
+            ->get()
+            ->map(function ($approval, $i) use ($approvalService) {
+                $approval->approver_user = $approvalService->getApproverUserFor($approval, $i);
+                return $approval;
+            });
+    }
+
+
+    public function getButtonLabelProperty(): string
+    {
+        $current = $this->approvals->firstWhere('status', 'pending');
+
+        return $current
+            ? 'Menunggu ' . $current->position->name . ' ' . $current->division?->name
+            : 'Sudah Disetujui';
     }
 
     public function approve(ApprovalService $approvalService)
@@ -89,16 +117,18 @@ class ApprovalPanel extends Component
     }
 
 
+
+
     public function render(ApprovalService $approvalService)
     {
         $model = $this->getModel();
 
         $user = auth()->user();
-
         return view('livewire.approval-panel', [
             'canApprove' => $user ? $approvalService->canApprove($model, $user) : false,
             'isFinal' => $approvalService->isFinal($model),
             'isGuest' => !$user,
+            'currentApprover' => $approvalService->getCurrentApproverUser($model),
         ]);
 
     }
