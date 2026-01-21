@@ -17,6 +17,7 @@ return new class extends Migration {
             // foreign key ke sudins
             $table->uuid('sudin_id');
             $table->string('name');
+            $table->string('type')->default('district');  // district = kecamatan, bisa diperluas untuk type lain
 
             // FK
             $table->foreign('sudin_id')->references('id')->on('sudins')->cascadeOnDelete();

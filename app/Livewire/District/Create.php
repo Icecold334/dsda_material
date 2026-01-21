@@ -2,7 +2,7 @@
 
 namespace App\Livewire\District;
 
-use App\Models\District;
+use App\Models\Division;
 use App\Models\Sudin;
 use Livewire\Component;
 
@@ -23,9 +23,10 @@ class Create extends Component
     {
         $this->validate();
 
-        District::create([
+        Division::create([
             'name' => $this->name,
             'sudin_id' => $this->sudin_id,
+            'type' => 'district',  // kecamatan
         ]);
 
         $this->dispatch('close-modal', 'create-district');

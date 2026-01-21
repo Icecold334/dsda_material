@@ -40,7 +40,7 @@ return new class extends Migration {
             $table->foreign('sudin_id')->references('id')->on('sudins');
             $table->foreign('warehouse_id')->references('id')->on('warehouses');
             $table->foreign('item_type_id')->references('id')->on('item_types');
-            $table->foreign('district_id')->references('id')->on('districts');
+            $table->foreign('district_id')->references('id')->on('divisions');  // kecamatan sekarang di divisions
             $table->foreign('subdistrict_id')->references('id')->on('subdistricts');
             $table->foreign('unit_id')->references('id')->on('units');
             $table->foreign('user_id')->references('id')->on('users');

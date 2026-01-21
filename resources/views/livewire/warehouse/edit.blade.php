@@ -44,9 +44,9 @@
                 x-on:click="$dispatch('close-modal', 'edit-warehouse-{{ $warehouse->id }}')">
                 Batal
             </x-secondary-button>
-            <x-primary-button type="button" @click="confirmUpdate()">
+            <x-button type="submit" @click="confirmUpdate()">
                 Update
-            </x-primary-button>
+            </x-button>
         </div>
     </form>
 </x-modal>

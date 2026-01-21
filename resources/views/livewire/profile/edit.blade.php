@@ -212,10 +212,9 @@
                     <canvas x-ref="signatureCanvas" width="400" height="200"
                         class="border border-gray-300 rounded cursor-crosshair w-full" @mousedown="startDrawing($event)"
                         @mousemove="draw($event)" @mouseup="stopDrawing()" @mouseleave="stopDrawing()"></canvas>
-                    <button type="button" @click="clearCanvas()"
-                        class="mt-2 px-3 py-1 text-sm text-gray-700 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200">
+                    <x-button variant="secondary" type="button" @click="clearCanvas()">
                         Hapus Tanda Tangan
-                    </button>
+                    </x-button>
                 </div>
                 @error('ttd')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -224,14 +223,12 @@
         </div>
 
         <div class="mt-6 flex justify-end gap-3">
-            <button type="button" x-on:click="$dispatch('close-modal', 'edit-profile')"
-                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+            <x-button variant="secondary" type="button" x-on:click="$dispatch('close-modal', 'edit-profile')">
                 Batal
-            </button>
-            <button type="button" @click="confirmUpdate()"
-                class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700">
+            </x-button>
+            <x-button type="button" @click="confirmUpdate()">
                 Update Profil
-            </button>
+            </x-button>
         </div>
     </form>
 </x-modal>

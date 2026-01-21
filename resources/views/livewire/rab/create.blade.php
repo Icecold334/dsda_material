@@ -17,9 +17,9 @@
                       x-text="fileCount">
                 </span>
             </x-secondary-button>
-            <x-primary-button href="{{ route('rab.index') }}" wire:navigate>
+            <x-button variant="secondary" href="{{ route('rab.index') }}" wire:navigate>
                 Kembali
-            </x-primary-button>
+            </x-button>
         </div>
     </div>
 
@@ -156,47 +156,47 @@
                         </div>
 
                         @if($item_type_id)
-                            <div class="flex items-center justify-between">
-                                <x-input-label for="item_category_id" value="Kategori Barang" />
-                                <div class="mt-1 block w-full max-w-[500px]">
-                                    <livewire:components.select-input wire:model.live="item_category_id"
-                                        :options="$itemCategories->pluck('name', 'id')" placeholder="-- Pilih Kategori --"
-                                        :key="'category-select-' . $sudin_id . '-' . $item_type_id" />
-                                <x-input-error :messages="$errors->get('item_category_id')" class="mt-2" />
-                            </div>
-                        </div>
-
-                        @if($item_category_id)
-                            <div class="flex items-center justify-between">
-                                <x-input-label for="item_id" value="Spesifikasi Barang" />
-                                <div class="mt-1 block w-full max-w-[500px]">
-                                    <livewire:components.select-input wire:model.live="item_id"
-                                        :options="$availableItems->pluck('spec', 'id')" 
-                                        placeholder="-- Pilih Barang --"
-                                        :key="'item-select-' . $item_category_id" />
-                                    <x-input-error :messages="$errors->get('item_id')" class="mt-2" />
+                                <div class="flex items-center justify-between">
+                                    <x-input-label for="item_category_id" value="Kategori Barang" />
+                                    <div class="mt-1 block w-full max-w-[500px]">
+                                        <livewire:components.select-input wire:model.live="item_category_id"
+                                            :options="$itemCategories->pluck('name', 'id')" placeholder="-- Pilih Kategori --"
+                                            :key="'category-select-' . $sudin_id . '-' . $item_type_id" />
+                                    <x-input-error :messages="$errors->get('item_category_id')" class="mt-2" />
                                 </div>
                             </div>
-                        @endif
 
-                        @if($item_id)
-                            <div class="flex items-center justify-between">
-                                <x-input-label for="qty" value="Jumlah" />
-                                <div class="mt-1 block w-full max-w-[500px]">
-                                    <x-text-input id="qty" wire:model="qty" type="number" step="0.01" min="0.01"
-                                        class="w-full" placeholder="0.00" />
-                                    <x-input-error :messages="$errors->get('qty')" class="mt-2" />
+                            @if($item_category_id)
+                                <div class="flex items-center justify-between">
+                                    <x-input-label for="item_id" value="Spesifikasi Barang" />
+                                    <div class="mt-1 block w-full max-w-[500px]">
+                                        <livewire:components.select-input wire:model.live="item_id"
+                                            :options="$availableItems->pluck('spec', 'id')" 
+                                            placeholder="-- Pilih Barang --"
+                                            :key="'item-select-' . $item_category_id" />
+                                        <x-input-error :messages="$errors->get('item_id')" class="mt-2" />
+                                    </div>
                                 </div>
-                            </div>
-                        @endif
+                            @endif
+
+                            @if($item_id)
+                                <div class="flex items-center justify-between">
+                                    <x-input-label for="qty" value="Jumlah" />
+                                    <div class="mt-1 block w-full max-w-[500px]">
+                                        <x-text-input id="qty" wire:model="qty" type="number" step="0.01" min="0.01"
+                                            class="w-full" placeholder="0.00" />
+                                        <x-input-error :messages="$errors->get('qty')" class="mt-2" />
+                                    </div>
+                                </div>
+                            @endif
                         @endif
 
                         <div class="flex justify-end">
-                            <x-primary-button 
+                            <x-button 
                                 type="button" 
                                 wire:click="addItem">
                                 Tambah Item
-                            </x-primary-button>
+                            </x-button>
                         </div>
                     @endif
                 </div>
@@ -225,13 +225,13 @@
                                     <td class="px-6 py-4 text-center">{{ $item['item_unit'] }}</td>
                                     <td class="px-6 py-4 text-right">{{ number_format($item['qty'], 2) }}</td>
                                     <td class="px-6 py-4 text-center">
-                                        <button type="button" wire:click="removeItem({{ $index }})"
-                                            class="text-red-600 hover:text-red-900">
+                                        <x-button variant="danger" type="button" wire:click="removeItem({{ $index }})"
+                                            >
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                             </svg>
-                                        </button>
+                                        </x-button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -268,9 +268,9 @@
                 class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
                 Batal
             </a>
-            <x-primary-button type="submit">
+            <x-button type="submit">
                 Simpan RAB
-            </x-primary-button>
+            </x-button>
         </div>
     </form>
 

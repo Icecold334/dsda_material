@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Rab;
 use App\Models\Sudin;
-use App\Models\District;
+use App\Models\Division;
 use App\Models\ItemType;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -35,8 +35,12 @@ class RabSeeder extends Seeder
                 $users = User::all();
             }
 
-            // Ambil district dari sudin
-            $districts = District::where('sudin_id', $sudin->id)->get();
+            // Ambil kecamatan (district) dari divisions
+            $districts = Division::districts()->where('sudin_id', $sudin->id)->get();
+
+            if ($districts->isEmpty()) {
+                return; // Skip jika tidak ada kecamatan
+            }
 
             // 10 RAB per Sudin
             for ($i = 1; $i <= 10; $i++) {

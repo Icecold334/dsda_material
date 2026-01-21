@@ -18,94 +18,93 @@
                     class="rounded-none bg-gray-50 border border-gray-300 text-gray-900 block w-20 text-sm p-2.5"
                     placeholder="Tahun" required>
 
-                <button type="button" id="btnCariContract" class=" inline-flex items-center px-3 text-sm text-white bg-primary-600 hover:bg-primary-800
-                        rounded-e-md transition">
+                <x-button variant="info" type="button" id="btnCariContract">
                     Cari
-                </button>
+                </x-button>
             </div>
             {{--
         </form> --}}
     </div>
 </x-modal>
 @push('scripts')
-<script type="module">
-    const btnCariContract = document.getElementById("btnCariContract");
-    if (btnCariContract) {
-        btnCariContract.addEventListener("click", async () => {
+    <script type="module">
+        const btnCariContract = document.getElementById("btnCariContract");
+        if (btnCariContract) {
+            btnCariContract.addEventListener("click", async () => {
 
 
-            const nomorContract = document.getElementById("nomorContract")?.value.trim();
-            const tahun = document.getElementById("contractYear")?.value.trim();
+                const nomorContract = document.getElementById("nomorContract")?.value.trim();
+                const tahun = document.getElementById("contractYear")?.value.trim();
 
-            if (!nomorContract || !tahun) {
-                showAlert({
-                    type: "warning",
-                    title: "Lengkapi Data!",
-                    text: "Nomor kontrak dan tahun wajib diisi",
-                    showConfirmButton: false,
-                });
-                return;
-            }
-
-            try {
-                window.Livewire.dispatch('loading');
-                const params = new URLSearchParams({
-                    nomor_kontrak: nomorContract,
-                    tahun: tahun,
-                });
-
-                const res = await fetch(`/contract/api/emonev?${params.toString()}`, {
-                    headers: {
-                        "Accept": "application/json",
-                    },
-                });
-
-                const data = await res.json();
-                
-                if (!res.ok) {
-                    throw new Error(data.message || "Terjadi kesalahan");
-                }
-                if (data.status == 'error') {
+                if (!nomorContract || !tahun) {
                     showAlert({
-                    type: "error",
-                    title: "Gagal!",
-                    text: data.data,
-                    showConfirmButton: false,
-                    })
-                }else{
-                    window.Livewire.dispatch('confirmContract', {
-                                data: {
-                                    nomor_kontrak: nomorContract,
-                                    tahun: tahun,
-                                    apiExist: true,
-                                    dataContract: data.data,
-                                    }
+                        type: "warning",
+                        title: "Lengkapi Data!",
+                        text: "Nomor kontrak dan tahun wajib diisi",
+                        showConfirmButton: false,
                     });
+                    return;
                 }
-                // window.Livewire.dispatch('close-modal', 'input-contract-number');
-            } catch (err) {
-                showConfirm({
-                    title: "Gagal!",
-                    text: "Daftarkan kontrak secara manual?",
-                    type: "error",
-                    confirmButtonText: "Ya",
-                    cancelButtonText: "Tidak",
-                    onConfirm: () => {
-                        window.Livewire.dispatch('close-modal', 'input-contract-number');
 
-                        window.Livewire.dispatch("proceedCreateContract", {
+                try {
+                    window.Livewire.dispatch('loading');
+                    const params = new URLSearchParams({
+                        nomor_kontrak: nomorContract,
+                        tahun: tahun,
+                    });
+
+                    const res = await fetch(`/contract/api/emonev?${params.toString()}`, {
+                        headers: {
+                            "Accept": "application/json",
+                        },
+                    });
+
+                    const data = await res.json();
+
+                    if (!res.ok) {
+                        throw new Error(data.message || "Terjadi kesalahan");
+                    }
+                    if (data.status == 'error') {
+                        showAlert({
+                            type: "error",
+                            title: "Gagal!",
+                            text: data.data,
+                            showConfirmButton: false,
+                        })
+                    } else {
+                        window.Livewire.dispatch('confirmContract', {
                             data: {
-                                no_spk: nomorContract,
-                                tahun_anggaran: tahun,
-                                apiExist: false,
+                                nomor_kontrak: nomorContract,
+                                tahun: tahun,
+                                apiExist: true,
+                                dataContract: data.data,
                             }
                         });
                     }
-                });
-            }
-        });
-    }
+                    // window.Livewire.dispatch('close-modal', 'input-contract-number');
+                } catch (err) {
+                    showConfirm({
+                        title: "Gagal!",
+                        text: "Daftarkan kontrak secara manual?",
+                        type: "error",
+                        confirmButtonText: "Ya",
+                        cancelButtonText: "Tidak",
+                        onConfirm: () => {
+                            window.Livewire.dispatch('close-modal', 'input-contract-number');
+
+                            window.Livewire.dispatch("proceedCreateContract", {
+                                data: {
+                                    no_spk: nomorContract,
+                                    tahun_anggaran: tahun,
+                                    apiExist: false,
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
 
 
-</script>
+    </script>
 @endpush

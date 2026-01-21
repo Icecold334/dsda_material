@@ -16,9 +16,9 @@
                     x-show="fileCount > 0" x-text="fileCount">
                 </span>
             </x-secondary-button>
-            <x-primary-button href="{{ route('permintaan.rab.index') }}" wire:navigate>
+            <x-button variant="secondary" href="{{ route('permintaan.rab.index') }}" wire:navigate>
                 Kembali
-            </x-primary-button>
+            </x-button>
         </div>
     </div>
 
@@ -39,10 +39,9 @@
                     class="rounded-none rounded-s-lg bg-gray-50 border border-gray-300 text-gray-900 block flex-1 text-sm p-2.5"
                     placeholder="Masukkan Nomor RAB" />
 
-                <button type="button" wire:click="searchRab"
-                    class="inline-flex items-center px-3 text-sm text-white bg-primary-600 hover:bg-primary-800 rounded-e-md transition">
+                <x-button variant="info" type="button" wire:click="searchRab">
                     Cari
-                </button>
+                </x-button>
             </div>
 
             @error('rab_nomor')
@@ -102,10 +101,9 @@
                                         <x-text-input type="text" class="w-full bg-gray-100" placeholder="-- Pilih Gudang --"
                                             disabled />
                                     @endif
-                                    <button type="button" wire:click="openWarehouseModal"
-                                        class="px-4 py-2 bg-primary-600 text-white text-sm rounded-md hover:bg-primary-700 transition">
+                                    <x-button type="button" wire:click="openWarehouseModal">
                                         Pilih
-                                    </button>
+                                    </x-button>
                                 </div>
                                 <x-input-error :messages="$errors->get('warehouse_id')" class="mt-2" />
                             </div>
@@ -262,9 +260,9 @@
                     class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
                     Batal
                 </a>
-                <x-primary-button type="submit">
+                <x-button type="submit">
                     Simpan Permintaan
-                </x-primary-button>
+                </x-button>
             </div>
         </form>
 

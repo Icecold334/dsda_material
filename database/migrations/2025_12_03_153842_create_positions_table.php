@@ -14,6 +14,7 @@ return new class extends Migration {
             $this->uuid($table);
 
             $table->string('name'); // contoh: Kepala Seksi, Kasubag, Staff, PPK
+            $table->string('slug');
         });
     }
 

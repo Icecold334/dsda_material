@@ -61,7 +61,8 @@ class RequestModel extends Model
 
     public function district()
     {
-        return $this->belongsTo(District::class);
+        // Kecamatan sekarang ada di divisions dengan type='district'
+        return $this->belongsTo(Division::class, 'district_id');
     }
 
     public function subdistrict()

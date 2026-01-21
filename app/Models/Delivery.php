@@ -13,6 +13,11 @@ class Delivery extends Model
 
     protected $guarded = [];
 
+    public function contract()
+    {
+        return $this->belongsTo(Contract::class);
+    }
+
     public function sudin()
     {
         return $this->belongsTo(Sudin::class);

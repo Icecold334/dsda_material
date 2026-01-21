@@ -3,7 +3,7 @@
 namespace App\Livewire\District;
 
 use Livewire\Component;
-use App\Models\District;
+use App\Models\Division;
 use App\Models\Subdistrict;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
@@ -12,7 +12,7 @@ class Show extends Component
 {
     #[Title('Detail Kecamatan')]
 
-    public District $district;
+    public Division $district;  // tetap pakai nama $district untuk backward compatibility
     public $editSubdistrictId = null;
 
     #[On('subdistrict-created')]
@@ -27,7 +27,7 @@ class Show extends Component
     public function deleteSubdistrict($subdistrictId)
     {
         $subdistrict = Subdistrict::find($subdistrictId);
-        if ($subdistrict && $subdistrict->district_id === $this->district->id) {
+        if ($subdistrict && $subdistrict->division_id === $this->district->id) {
             $subdistrict->delete();
             $this->dispatch('refresh-grid');
             $this->dispatch('subdistrict-deleted');

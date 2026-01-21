@@ -21,4 +21,25 @@ class Division extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function subdistricts()
+    {
+        return $this->hasMany(Subdistrict::class);
+    }
+
+    public function requests()
+    {
+        return $this->hasMany(RequestModel::class);
+    }
+
+    public function rabs()
+    {
+        return $this->hasMany(Rab::class);
+    }
+
+    // Scope untuk filter hanya kecamatan
+    public function scopeDistricts($query)
+    {
+        return $query->where('type', 'district');
+    }
 }

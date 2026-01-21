@@ -25,9 +25,9 @@
             <x-secondary-button type="button" x-on:click="$dispatch('close-modal', 'create-item-type')">
                 Batal
             </x-secondary-button>
-            <x-primary-button type="submit">
+            <x-button type="submit">
                 Simpan
-            </x-primary-button>
+            </x-button>
         </div>
     </form>
 </x-modal>

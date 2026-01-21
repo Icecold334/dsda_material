@@ -3,12 +3,12 @@
 namespace App\Livewire\Subdistrict;
 
 use App\Models\Subdistrict;
-use App\Models\District;
+use App\Models\Division;
 use Livewire\Component;
 
 class Create extends Component
 {
-    public District $district;
+    public Division $district;  // tetap pakai nama $district untuk backward compatibility di views
     public $name = '';
 
     public function rules()
@@ -24,7 +24,7 @@ class Create extends Component
 
         Subdistrict::create([
             'name' => $this->name,
-            'district_id' => $this->district->id,
+            'division_id' => $this->district->id,  // kecamatan sekarang di divisions
             'sudin_id' => $this->district->sudin_id,
         ]);
 

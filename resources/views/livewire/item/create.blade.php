@@ -14,11 +14,8 @@
 
             <div>
                 <x-input-label for="sudin_id" value="Sudin" />
-                <livewire:components.select-input
-                    wire:model.live="sudin_id"
-                    :options="$sudins->pluck('name', 'id')"
-                    placeholder="-- Pilih Sudin --"
-                    :key="'sudin-select'" />
+                <livewire:components.select-input wire:model.live="sudin_id" :options="$sudins->pluck('name', 'id')"
+                    placeholder="-- Pilih Sudin --" :key="'sudin-select'" />
                 <x-input-error :messages="$errors->get('sudin_id')" class="mt-2" />
             </div>
 
@@ -37,9 +34,9 @@
                 x-on:click="$dispatch('close-modal', '{{ $itemCategory ? 'create-item-' . $itemCategory->id : 'create-item' }}')">
                 Batal
             </x-secondary-button>
-            <x-primary-button type="submit">
+            <x-button type="submit">
                 Simpan
-            </x-primary-button>
+            </x-button>
         </div>
     </form>
 </x-modal>

@@ -5,7 +5,7 @@
         </div>
         <div class="text-right">
             <a href="{{ route('contract.index') }}" wire:navigate
-                class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  focus:outline-none">Kembali</a>
+                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150 bg-white text-gray-700 border-gray-300 hover:bg-gray-50 active:bg-gray-100 focus:ring-indigo-500">Kembali</a>
         </div>
     </div>
     <div class="grid grid-cols-2 gap-4">
@@ -22,7 +22,7 @@
 
                         <td><span
                                 class="bg-{{ $contract->status_color }}-600 text-{{ $contract->status_color }}-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">{{
-                                $contract->status_text }}</span></td>
+    $contract->status_text }}</span></td>
                     </tr>
 
                 </table>
@@ -31,19 +31,20 @@
         <x-card title="Dokumen Kontrak">
 
             <ul class="divide-y divide-default">
-                @for ($i = 0; $i < 5; $i++) <li class="p-1">
-                    <div class="flex items-center space-x-4 rtl:space-x-reverse">
-                        <div class="shrink-0 text-success-600">
-                            <i class="fa-solid fa-file"></i>
+                @for ($i = 0; $i < 5; $i++)
+                    <li class="p-1">
+                        <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                            <div class="shrink-0 text-success-600">
+                                <i class="fa-solid fa-file"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-heading truncate">
+                                    {{ fake()->sentence }}
+                                </p>
+                            </div>
                         </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-heading truncate">
-                                {{ fake()->sentence }}
-                            </p>
-                        </div>
-                    </div>
                     </li>
-                    @endfor
+                @endfor
             </ul>
 
         </x-card>

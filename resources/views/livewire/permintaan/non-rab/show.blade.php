@@ -21,9 +21,9 @@
                     x-show="fileCount > 0" x-text="fileCount">
                 </span>
             </x-secondary-button>
-            <x-primary-button href="{{ route('permintaan.nonRab.index') }}" wire:navigate>
+            <x-button variant="secondary" href="{{ route('permintaan.nonRab.index') }}" wire:navigate>
                 Kembali
-            </x-primary-button>
+                </x-button>
         </div>
     </div>
     <div>
@@ -115,4 +115,7 @@
     <livewire:components.document-upload mode="show" modelType="App\Models\RequestModel" :modelId="$permintaan->id"
         category="lampiran_permintaan" label="Lampiran Permintaan" :multiple="true" accept="image/*,.pdf,.doc,.docx"
         modalId="lampiran-modal" :key="'doc-show-lampiran-' . $permintaan->id" />
+
+    <livewire:approval-panel :module="'permintaan'" :approvable-type="\App\Models\RequestModel::class"
+        :approvable-id="$permintaan->id" />
 </div>
