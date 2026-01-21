@@ -27,12 +27,12 @@ Route::prefix('stock')->name('stock.')->group(function () {
     })->name('json');
 
     Route::get('/{warehouse}/json', function (Warehouse $warehouse) {
-        $data = $warehouse->stocks()->with('item.category')->get()->map(fn($s) => [
+        $data = $warehouse->stocks()->with('item.category.unit')->get()->map(fn($s) => [
             'category' => $s->item->category?->name ?? '-',
             'code' => '<span class="font-mono">' . $s->item->code . '</span>',
             'name' => $s->item->name,
             'spec' => $s->item->spec ?? '-',
-            'unit' => $s->item->unit ?? '-',
+            'unit' => $s->item->category?->unit?->name ?? '-',
             'qty' => number_format($s->qty, 2),
             'status' => $s->item->active
                 ? '<span class="bg-success-600 text-white text-xs font-medium px-2 py-0.5 rounded">Aktif</span>'
