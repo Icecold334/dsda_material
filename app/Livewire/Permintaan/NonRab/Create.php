@@ -13,6 +13,7 @@ use App\Models\Subdistrict;
 use App\Models\ItemCategory;
 use App\Models\RequestModel;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\On;
 
 class Create extends Component
 {
@@ -40,6 +41,9 @@ class Create extends Component
     // Items collection
     public $items = [];
 
+    // Modal state
+    public $informationFilled = false;
+
     public function rules()
     {
         return [
@@ -56,6 +60,27 @@ class Create extends Component
             'tinggi' => 'nullable|string|max:255',
             'notes' => 'nullable|string',
         ];
+    }
+
+    #[On('requestInformationSaved')]
+    public function handleRequestInformationSaved($data)
+    {
+        $this->nomor = $data['nomor'];
+        $this->name = $data['name'];
+        $this->sudin_id = $data['sudin_id'];
+        $this->warehouse_id = $data['warehouse_id'];
+        $this->district_id = $data['district_id'];
+        $this->subdistrict_id = $data['subdistrict_id'];
+        $this->tanggal_permintaan = $data['tanggal_permintaan'];
+        $this->address = $data['address'];
+        $this->panjang = $data['panjang'];
+        $this->lebar = $data['lebar'];
+        $this->tinggi = $data['tinggi'];
+        $this->notes = $data['notes'];
+
+        $this->informationFilled = true;
+
+        session()->flash('success', 'Informasi permintaan berhasil disimpan. Silakan tambahkan barang.');
     }
 
     public function updatedSudinId($value)
