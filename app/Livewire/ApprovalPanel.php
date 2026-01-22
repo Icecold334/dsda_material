@@ -15,14 +15,14 @@ class ApprovalPanel extends Component
     public string $approvableType;
     public string|int $approvableId;
     public bool $showRejectForm = false;
-    public string $rejectReason = '';
-
-    public bool $extraReady = true; // default: level ini cuma klik approve
+    public bool $extraReady = false; // default: level ini cuma klik approve
     public string $extraError = '';
 
     protected $listeners = [
         // parent akan balas dengan flag siap / tidak
         'approvalExtraCheckResult' => 'onExtraCheckResult',
+        'confirmApprove' => 'approve',
+        'confirmReject' => 'reject'
     ];
 
     public function mount(string $module, string $approvableType, $approvableId, ApprovalService $approvalService)
@@ -31,18 +31,18 @@ class ApprovalPanel extends Component
         $this->approvableType = $approvableType;
         $this->approvableId = $approvableId;
 
-        $this->getApprovals($approvalService);
 
         $this->dispatch('approvalExtraCheckRequested');
+        $this->getApprovals($approvalService);
     }
 
 
     public function onExtraCheckResult(bool $ready, string $message = '', ApprovalService $approvalService)
     {
-        $this->getApprovals($approvalService);
 
         $this->extraReady = $ready;
         $this->extraError = $message;
+        $this->getApprovals($approvalService);
     }
 
     protected function getModel(): Model
@@ -75,6 +75,7 @@ class ApprovalPanel extends Component
 
     public function approve(ApprovalService $approvalService)
     {
+
         $model = $this->getModel();
 
         // 1) cek syarat tambahan dari modul (upload/e-sign/driver)
@@ -89,11 +90,13 @@ class ApprovalPanel extends Component
         // 3) refresh: minta parent cek lagi (kadang level berubah)
         $this->dispatch('approvalExtraCheckRequested');
         $this->dispatch('approvalApproved'); // parent bisa nangkap buat update status bisnis dll
-        session()->flash('success', 'Approval berhasil');
+        $this->getApprovals($approvalService);
+
     }
 
-    public function reject(ApprovalService $approvalService)
+    public function reject($rejectReason, ApprovalService $approvalService)
     {
+
         $model = $this->getModel();
         $user = auth()->user();
 
@@ -102,18 +105,16 @@ class ApprovalPanel extends Component
             return;
         }
 
-        if (trim($this->rejectReason) === '') {
+        if (trim($rejectReason) === '') {
             $this->addError('reject', 'Alasan penolakan wajib diisi');
             return;
         }
 
-        $approvalService->reject($model, $user, $this->rejectReason);
-
-        $this->showRejectForm = false;
-        $this->rejectReason = '';
+        $approvalService->reject($model, $user, $rejectReason);
 
         $this->dispatch('approvalRejected');
-        session()->flash('success', 'Permintaan ditolak');
+        $this->getApprovals($approvalService);
+
     }
 
 

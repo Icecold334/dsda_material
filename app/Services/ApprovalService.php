@@ -118,7 +118,7 @@ class ApprovalService
 
         DB::transaction(function () use ($current, $user, $reason) {
             $current->update([
-                'status' => 'rejected',
+                'status' => 'reject',
                 'approved_by' => $user->id,
                 'approved_at' => now(),
                 'notes' => $reason,

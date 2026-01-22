@@ -3,10 +3,12 @@
 namespace App\Livewire\Permintaan\NonRab;
 
 use Livewire\Component;
+use App\Models\Document;
+use Illuminate\Support\Str;
+use Livewire\Attributes\On;
 use App\Models\RequestModel;
 use Livewire\Attributes\Title;
 use App\Services\ApprovalService;
-use Livewire\Attributes\On;
 
 class Show extends Component
 {
@@ -21,7 +23,6 @@ class Show extends Component
 
     public function mount()
     {
-        // $this->dispatch('approvalExtraCheckResult', ready: false, message: 'atewaiuy');
     }
     public function handleExtraCheck()
     {
@@ -35,23 +36,45 @@ class Show extends Component
             $ready = false;
             $message = 'Security belum dipilih';
         }
-        if ($current->position->slug !== 'pengurus-barang') {
+        $positionSlug = $current->position->slug;
+        // $divisionSlug = Str::slug($current->division->name);
+        if ($positionSlug !== 'pengurus-barang') {
             $this->dispatch(
                 'approvalExtraCheckResult',
                 ready: $ready,
                 message: $message
             );
             return;
+        } else if ($positionSlug == 'pengurus-barang') {
+            if ($this->permintaan->status !== 'approved') {
+                $this->permintaan->status = 'approved';
+                $this->permintaan->save();
+            }
+            if (!$this->hasPickupPhotos()) {
+                $ready = false;
+                $message = 'Foto barang belum lengkap';
+            } elseif (!$this->permintaan->driver_id) {
+                $ready = false;
+                $message = 'Driver belum dipilih';
+            } elseif (!$this->permintaan->security_id) {
+                $ready = false;
+                $message = 'Security belum dipilih';
+            }
         }
 
-
+        $this->dispatch(
+            'approvalExtraCheckResult',
+            ready: $ready,
+            message: $message
+        );
+        return;
 
 
     }
     public function onApprovalRejected()
     {
-        $this->permintaan->status = 'rejected';
-        $this->permintaan->save();
+        // $this->permintaan->status = 'rejected';
+        // $this->permintaan->save();
 
         // optional:
         // kirim notifikasi ke pemohon
@@ -64,6 +87,16 @@ class Show extends Component
         $this->permintaan->status = 'pending';
         $this->permintaan->save();
 
+    }
+
+
+    protected function hasPickupPhotos(): bool
+    {
+        // cek documents category pickup_photo misalnya
+        return Document::where('documentable_type', RequestModel::class)
+            ->where('documentable_id', $this->permintaan->id)
+            ->where('category', 'pickup_photo')
+            ->exists();
     }
 
     public function render()

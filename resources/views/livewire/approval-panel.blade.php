@@ -2,7 +2,7 @@
     <x-primary-button x-on:click="$dispatch('open-modal','approval-panel')">
         {{ $this->buttonLabel }}
     </x-primary-button>
-    <x-modal name="approval-panel" :show="true" maxWidth="4xl">
+    <x-modal name="approval-panel" :show="false" maxWidth="4xl">
         <div class="p-6 space-y-4">
             <div class="flex items-center gap-2">
                 <div class="font-semibold text-2xl">Daftar Persetujuan</div>
@@ -51,7 +51,7 @@
                                     $approval->status_text }}</span>
                             </td>
                             <td class="px-6 py-4 text-center">
-                                {{ $approval->approved_at?->translatedFormat('l, d M Y H:i:s') ?? '-' }}
+                                {{ $approval->approved_at?->translatedFormat('l, d F Y H:i:s') ?? '-' }}
                             </td>
                             <td class="px-6 py-4 text-center">
                                 {{ $approval->notes ?? '-' }}
@@ -69,98 +69,71 @@
                 </table>
             </div>
             <div class="w-full text-center">
-                <button type="button" wire:click="approve" @disabled(! $canApprove || ! $extraReady)
-                    class="px-3 py-2 rounded bg-blue-600 text-white disabled:opacity-50">
-                    Approve
+                <button type="button" id="confirmApprove" @disabled(!$canApprove || !$extraReady)
+                    class="px-3 py-2 rounded bg-primary-600 text-white disabled:opacity-50">
+                    Setuju
                 </button>
 
-                <button type="button" wire:click="$toggle('showRejectForm')" @disabled(! $canApprove)
+                <button type="button" id="confirmReject" @disabled(!$canApprove || !$extraReady)
                     class="px-3 py-2 rounded bg-red-600 text-white disabled:opacity-50">
                     Tolak
                 </button>
             </div>
         </div>
     </x-modal>
-    {{-- @push('scripts')
+    @push('scripts')
     <script type="module">
-        const btnCariContract = document.getElementById("btnCariContract");
-        if (btnCariContract) {
-            btnCariContract.addEventListener("click", async () => {
-
-
-                const nomorContract = document.getElementById("nomorContract")?.value.trim();
-                const tahun = document.getElementById("contractYear")?.value.trim();
-
-                if (!nomorContract || !tahun) {
-                    showAlert({
-                        type: "warning",
-                        title: "Lengkapi Data!",
-                        text: "Nomor kontrak dan tahun wajib diisi",
-                        showConfirmButton: false,
-                    });
-                    return;
+        document.getElementById("confirmApprove").addEventListener("click", () => {
+            showConfirm(
+                {
+                    type: "question",
+                    title: "Konfirmasi",
+                    text: "Apakah Anda yakin ingin menyetujui permintaan ini?",
+                    confirmButtonText: "Lanjutkan",
+                    cancelButtonText: "Batal",
+                    onConfirm: (e) => {
+                        window.Livewire.dispatch('confirmApprove');
+                    }
                 }
-
-                try {
-                    window.Livewire.dispatch('loading');
-                    const params = new URLSearchParams({
-                        nomor_kontrak: nomorContract,
-                        tahun: tahun,
-                    });
-
-                    const res = await fetch(`/contract/api/emonev?${params.toString()}`, {
-                        headers: {
-                            "Accept": "application/json",
-                        },
-                    });
-
-                    const data = await res.json();
-
-                    if (!res.ok) {
-                        throw new Error(data.message || "Terjadi kesalahan");
+            )
+        });
+        document.getElementById("confirmReject").addEventListener("click", () => {
+            Swal.fire({
+                title: "Keterangan",
+                input: "textarea",
+                inputPlaceholder: "Masukkan keterangan",
+                inputAttributes: {
+                    'aria-label': 'Keterangan penolakan'
+                },
+                showCancelButton: true,
+                confirmButtonText: "Lanjutkan",
+                cancelButtonText: "Batal",
+                preConfirm: (value) => {
+                    if (!value) {
+                        Swal.showValidationMessage("Alasan keterangan wajib diisi");
+                        return false;
                     }
-                    if (data.status == 'error') {
-                        showAlert({
-                            type: "error",
-                            title: "Gagal!",
-                            text: data.data,
-                            showConfirmButton: false,
-                        })
-                    } else {
-                        window.Livewire.dispatch('confirmContract', {
-                            data: {
-                                nomor_kontrak: nomorContract,
-                                tahun: tahun,
-                                apiExist: true,
-                                dataContract: data.data,
-                            }
-                        });
-                    }
-                    // window.Livewire.dispatch('close-modal', 'input-contract-number');
-                } catch (err) {
-                    showConfirm({
-                        title: "Gagal!",
-                        text: "Daftarkan kontrak secara manual?",
-                        type: "error",
-                        confirmButtonText: "Ya",
-                        cancelButtonText: "Tidak",
-                        onConfirm: () => {
-                            window.Livewire.dispatch('close-modal', 'input-contract-number');
+                    return value;
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const notes = result.value;
+                    window.Livewire.dispatch('confirmReject',{rejectReason:notes});
 
-                            window.Livewire.dispatch("proceedCreateContract", {
-                                data: {
-                                    no_spk: nomorContract,
-                                    tahun_anggaran: tahun,
-                                    apiExist: false,
-                                }
-                            });
-                        }
+
+                    Swal.fire({
+                        icon: "success",
+                        title: "Penolakan Dikirim",
+                        text: "Permintaan berhasil ditolak.",
+                        timer: 1500,
+                        showConfirmButton: false
                     });
                 }
             });
-        }
+        });
+
 
 
     </script>
-    @endpush --}}
+    @endpush
 </div>
