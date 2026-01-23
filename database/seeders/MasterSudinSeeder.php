@@ -10,12 +10,12 @@ class MasterSudinSeeder extends Seeder
     public function run(): void
     {
         $list = [
-            ['name' => 'Sudin Jakarta Barat', 'short' => 'JAKBAR'],
-            ['name' => 'Sudin Jakarta Timur', 'short' => 'JAKTIM'],
-            ['name' => 'Sudin Jakarta Selatan', 'short' => 'JAKSEL'],
-            ['name' => 'Sudin Jakarta Pusat', 'short' => 'JAKPUS'],
-            ['name' => 'Sudin Jakarta Utara', 'short' => 'JAKUT'],
-            ['name' => 'Sudin Kepulauan Seribu', 'short' => 'KEPSER'],
+            ['name' => 'Jakarta Barat', 'short' => 'JAKBAR'],
+            ['name' => 'Jakarta Timur', 'short' => 'JAKTIM'],
+            ['name' => 'Jakarta Selatan', 'short' => 'JAKSEL'],
+            ['name' => 'Jakarta Pusat', 'short' => 'JAKPUS'],
+            ['name' => 'Jakarta Utara', 'short' => 'JAKUT'],
+            ['name' => 'Kepulauan Seribu', 'short' => 'KEPSER'],
         ];
 
         foreach ($list as $s) {
