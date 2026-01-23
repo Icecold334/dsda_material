@@ -4,70 +4,42 @@
             <div class="text-3xl font-semibold">Buat Permintaan Transfer</div>
         </div>
         <div class="text-right flex gap-2 justify-end">
+            @if($informationFilled)
+                <x-secondary-button @click="$dispatch('open-modal', 'transfer-information-modal')" type="button">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Informasi
+                </x-secondary-button>
+            @endif
             <x-button variant="secondary" href="{{ route('transfer.permintaan.index') }}" wire:navigate>
                 Kembali
             </x-button>
         </div>
     </div>
 
-    <form wire:submit="save">
-        <div class="grid grid-cols-2 gap-4">
-            <x-card title="Informasi Transfer">
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between">
-                        <x-input-label for="sudin_pengirim_id" value="Sudin Peminta" />
-                        <div class="mt-1 block w-full max-w-[500px]">
-                            <livewire:components.select-input wire:model.live="sudin_pengirim_id"
-                                :options="$sudins->pluck('name', 'id')" placeholder="-- Pilih Sudin Peminta --"
-                                :key="'sudin-pengirim-select'" />
-                            <x-input-error :messages="$errors->get('sudin_pengirim_id')" class="mt-2" />
-                        </div>
-                    </div>
+    @if(!$informationFilled)
+        <div class="p-6 bg-amber-50 border border-amber-200 rounded-lg">
+            <div class="flex items-center">
+                <svg class="w-6 h-6 text-amber-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p class="text-amber-800">Silahkan lengkapi informasi transfer terlebih dahulu pada modal.</p>
+            </div>
+        </div>
+    @else
+        <form wire:submit="save">
+            <div class="grid grid-cols-2 gap-4">
+                <x-card title="Tambah Barang">
+                    <div class="space-y-4">
+                        @if (session('error'))
+                            <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50" role="alert">
+                                {{ session('error') }}
+                            </div>
+                        @endif
 
-                    <div class="flex items-center justify-between">
-                        <x-input-label for="sudin_penerima_id" value="Sudin Diminta" />
-                        <div class="mt-1 block w-full max-w-[500px]">
-                            <livewire:components.select-input wire:model.live="sudin_penerima_id"
-                                :options="$sudins->pluck('name', 'id')" placeholder="-- Pilih Sudin Diminta --"
-                                :key="'sudin-penerima-select'" />
-                            <x-input-error :messages="$errors->get('sudin_penerima_id')" class="mt-2" />
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-between">
-                        <x-input-label for="tanggal_transfer" value="Tanggal Transfer" />
-                        <div class="mt-1 block w-full max-w-[500px]">
-                            <x-text-input id="tanggal_transfer" wire:model="tanggal_transfer" type="date"
-                                class="w-full" />
-                            <x-input-error :messages="$errors->get('tanggal_transfer')" class="mt-2" />
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-between">
-                        <x-input-label for="notes" value="Keterangan" />
-                        <div class="mt-1 block w-full max-w-[500px]">
-                            <textarea id="notes" wire:model="notes" rows="5"
-                                class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full"
-                                placeholder="Masukkan keterangan (opsional)"></textarea>
-                            <x-input-error :messages="$errors->get('notes')" class="mt-2" />
-                        </div>
-                    </div>
-                </div>
-            </x-card>
-
-            <x-card title="Tambah Barang">
-                <div class="space-y-4">
-                    @if (session('error'))
-                        <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50" role="alert">
-                            {{ session('error') }}
-                        </div>
-                    @endif
-
-                    @if (!$sudin_penerima_id)
-                        <div class="p-4 text-sm text-amber-800 rounded-lg bg-amber-50" role="alert">
-                            Pilih Sudin Diminta terlebih dahulu untuk menambahkan barang
-                        </div>
-                    @else
                         <div class="flex items-center justify-between">
                             <x-input-label for="item_category_id" value="Kategori Barang" />
                             <div class="mt-1 block w-full max-w-[500px]">
@@ -131,89 +103,92 @@
                                 Tambah Item
                             </x-button>
                         </div>
-                    @endif
-                </div>
-            </x-card>
-        </div>
+                    </div>
+                </x-card>
+            </div>
 
-        <x-card title="Daftar Barang">
-            @if (count($items) > 0)
-                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <table class="w-full text-sm text-left rtl:text-right text-black shadow-lg">
-                        <thead class="text-xs text-gray-700 uppercase bg-primary-200 text-center">
-                            <tr>
-                                <th scope="col" class="px-6 py-3">No</th>
-                                <th scope="col" class="px-6 py-3">Barang</th>
-                                <th scope="col" class="px-6 py-3">Spesifikasi</th>
-                                <th scope="col" class="px-6 py-3">Jumlah</th>
-                                <th scope="col" class="px-6 py-3">Stok di Sudin Diminta</th>
-                                <th scope="col" class="px-6 py-3">Catatan</th>
-                                <th scope="col" class="px-6 py-3"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($items as $index => $item)
-                                <tr class="even:bg-primary-100 odd:bg-primary-50 border-primary-200">
-                                    <td class="px-6 py-4 text-center">{{ $index + 1 }}</td>
-                                    <td class="px-6 py-4 font-medium text-primary-900 whitespace-nowrap">
-                                        {{ $item['item_category'] }}
-                                    </td>
-                                    <td class="px-6 py-4 font-medium text-primary-900 whitespace-nowrap">
-                                        {{ $item['item_spec'] }}
-                                    </td>
-                                    <td class="px-6 py-4 text-right">
-                                        {{ number_format($item['qty'], 2) }} <span
-                                            class="font-medium">{{ $item['item_unit'] }}</span>
-                                    </td>
-                                    <td class="px-6 py-4 text-right text-gray-600">
-                                        {{ number_format($item['stock_available'], 2) }} {{ $item['item_unit'] }}
-                                    </td>
-                                    <td class="px-6 py-4">{{ $item['notes'] ?: '-' }}</td>
-                                    <td class="px-6 py-4 text-center">
-                                        <x-button :variant="danger" type="button" wire:click="removeItem({{ $index }})">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </x-button>
+            <x-card title="Daftar Barang">
+                @if (count($items) > 0)
+                    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                        <table class="w-full text-sm text-left rtl:text-right text-black shadow-lg">
+                            <thead class="text-xs text-gray-700 uppercase bg-primary-200 text-center">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3">No</th>
+                                    <th scope="col" class="px-6 py-3">Barang</th>
+                                    <th scope="col" class="px-6 py-3">Spesifikasi</th>
+                                    <th scope="col" class="px-6 py-3">Jumlah</th>
+                                    <th scope="col" class="px-6 py-3">Stok di Sudin Diminta</th>
+                                    <th scope="col" class="px-6 py-3">Catatan</th>
+                                    <th scope="col" class="px-6 py-3"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($items as $index => $item)
+                                    <tr class="even:bg-primary-100 odd:bg-primary-50 border-primary-200">
+                                        <td class="px-6 py-4 text-center">{{ $index + 1 }}</td>
+                                        <td class="px-6 py-4 font-medium text-primary-900 whitespace-nowrap">
+                                            {{ $item['item_category'] }}
+                                        </td>
+                                        <td class="px-6 py-4 font-medium text-primary-900 whitespace-nowrap">
+                                            {{ $item['item_spec'] }}
+                                        </td>
+                                        <td class="px-6 py-4 text-right">
+                                            {{ number_format($item['qty'], 2) }} <span
+                                                class="font-medium">{{ $item['item_unit'] }}</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-right text-gray-600">
+                                            {{ number_format($item['stock_available'], 2) }} {{ $item['item_unit'] }}
+                                        </td>
+                                        <td class="px-6 py-4">{{ $item['notes'] ?: '-' }}</td>
+                                        <td class="px-6 py-4 text-center">
+                                            <x-button variant="danger" type="button" wire:click="removeItem({{ $index }})">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </x-button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                        <table class="w-full text-sm text-left rtl:text-right text-black shadow-lg">
+                            <thead class="text-xs text-gray-700 uppercase bg-primary-200 text-center">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3">No</th>
+                                    <th scope="col" class="px-6 py-3">Barang</th>
+                                    <th scope="col" class="px-6 py-3">Spesifikasi</th>
+                                    <th scope="col" class="px-6 py-3">Jumlah</th>
+                                    <th scope="col" class="px-6 py-3">Stok di Sudin Diminta</th>
+                                    <th scope="col" class="px-6 py-3">Catatan</th>
+                                    <th scope="col" class="px-6 py-3"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white border-b border-primary-200">
+                                    <td colspan="7"
+                                        class="px-6 py-4 font-medium text-primary-900 whitespace-nowrap text-center">
+                                        Belum ada barang yang ditambahkan.
                                     </td>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @else
-                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <table class="w-full text-sm text-left rtl:text-right text-black shadow-lg">
-                        <thead class="text-xs text-gray-700 uppercase bg-primary-200 text-center">
-                            <tr>
-                                <th scope="col" class="px-6 py-3">No</th>
-                                <th scope="col" class="px-6 py-3">Barang</th>
-                                <th scope="col" class="px-6 py-3">Spesifikasi</th>
-                                <th scope="col" class="px-6 py-3">Jumlah</th>
-                                <th scope="col" class="px-6 py-3">Stok di Sudin Diminta</th>
-                                <th scope="col" class="px-6 py-3">Catatan</th>
-                                <th scope="col" class="px-6 py-3"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="bg-white border-b border-primary-200">
-                                <td colspan="7"
-                                    class="px-6 py-4 font-medium text-primary-900 whitespace-nowrap text-center">
-                                    Belum ada barang yang ditambahkan.
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            @endif
-        </x-card>
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
+            </x-card>
 
-        <div class="mt-6 flex justify-end gap-3">
-            <a href="{{ route('transfer.permintaan.index') }}" wire:navigate
-                class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
-                Batal
-            </a>
-            <x-button type="submit">
-                Simpan Permintaan Transfer
-            </x-button>
-        </div>
-    </form>
+            <div class="mt-6 flex justify-end gap-3">
+                <a href="{{ route('transfer.permintaan.index') }}" wire:navigate
+                    class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
+                    Batal
+                </a>
+                <x-button type="submit">
+                    Simpan Permintaan Transfer
+                </x-button>
+            </div>
+        </form>
+    @endif
+
+    <!-- Modal Components -->
+    <livewire:components.transfer-information-modal mode="create" :key="'transfer-info-modal'" />
 </div>

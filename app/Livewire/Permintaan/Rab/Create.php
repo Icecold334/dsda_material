@@ -8,6 +8,7 @@ use App\Models\RequestItem;
 use App\Models\Warehouse;
 use App\Models\Stock;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class Create extends Component
@@ -40,6 +41,9 @@ class Create extends Component
 
     // Items
     public $items = [];
+
+    // Flag untuk menandakan informasi sudah terisi
+    public $informationFilled = false;
 
     public function rules()
     {
@@ -86,6 +90,23 @@ class Create extends Component
         $this->lebar = $rab->lebar ?? '';
         $this->tinggi = $rab->tinggi ?? '';
 
+        // Dispatch data RAB ke modal
+        $this->dispatch('setRequestData', [
+            'nomor' => '',
+            'name' => $rab->name,
+            'sudin_id' => $rab->sudin_id,
+            'warehouse_id' => '',
+            'district_id' => $rab->district_id,
+            'subdistrict_id' => $rab->subdistrict_id,
+            'tanggal_permintaan' => '',
+            'address' => $rab->address ?? '',
+            'panjang' => $rab->panjang ?? '',
+            'lebar' => $rab->lebar ?? '',
+            'tinggi' => $rab->tinggi ?? '',
+            'notes' => '',
+            'rab' => $rab,
+        ]);
+
         // Tutup modal
         $this->showModal = false;
         $this->dispatch('close-modal', 'input-rab-number');
@@ -94,6 +115,19 @@ class Create extends Component
         $this->initializeItems();
 
         session()->flash('rab_found', 'RAB ditemukan! Data telah dimuat.');
+    }
+
+    #[On('requestInformationSaved')]
+    public function handleRequestInformationSaved($data)
+    {
+        $this->nomor = $data['nomor'];
+        $this->tanggal_permintaan = $data['tanggal_permintaan'];
+        $this->notes = $data['notes'];
+
+        $this->informationFilled = true;
+
+        // Buka modal pilih gudang setelah informasi tersimpan
+        $this->openWarehouseModal();
     }
 
     public function closeModal()
@@ -159,6 +193,8 @@ class Create extends Component
 
         // Update max qty untuk setiap item berdasarkan stok gudang yang dipilih
         $this->updateItemsMaxQty();
+
+        session()->flash('success', 'Gudang berhasil dipilih. Silakan isi jumlah barang yang diminta.');
     }
 
     protected $listeners = ['warehouseSelected' => 'selectWarehouse'];
