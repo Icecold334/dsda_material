@@ -59,7 +59,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="text-center py-4">
+                            <td colspan="5" class="text-center py-4">
                                 Belum ada approval
                             </td>
                         </tr>

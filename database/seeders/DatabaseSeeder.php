@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             DivisionSeeder::class,
             DistrictSeeder::class,
             UserSeeder::class,
+            ApprovalFlowPermintaanNonRabSeeder::class,
             SubdistrictSeeder::class,
             VendorSeeder::class,
             ItemUnitSeeder::class,
@@ -34,8 +35,8 @@ class DatabaseSeeder extends Seeder
             RabSeeder::class,
             RabItemSeeder::class,
             PersonnelSeeder::class,
-            RequestSeeder::class,
             WarehouseSeeder::class,
+            RequestSeeder::class,
             StockSeeder::class,
             DeliverySeeder::class,
         ]);

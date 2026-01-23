@@ -19,6 +19,7 @@ class Show extends Component
     protected $listeners = [
         'approvalExtraCheckRequested' => 'handleExtraCheck',
         'approvalRejected' => 'onApprovalRejected',
+        'confirmSubmit' => 'sendRequest'
     ];
 
     public function mount()
