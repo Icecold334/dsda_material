@@ -8,8 +8,6 @@ use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use App\Models\RequestModel;
 use Livewire\Attributes\Title;
-use Livewire\Attributes\On;
-use Livewire\Component;
 use App\Services\ApprovalService;
 
 class Show extends Component
@@ -17,11 +15,12 @@ class Show extends Component
 
     #[Title('Detail Permintaan')]
     public RequestModel $permintaan;
-  
+
     protected $listeners = [
         'approvalExtraCheckRequested' => 'handleExtraCheck',
         'approvalRejected' => 'onApprovalRejected',
-        'confirmSubmit' => 'sendRequest'
+        'confirmSubmit' => 'sendRequest',
+        'confirmDelete' => 'deleteRequest'
     ];
 
     public function mount()
@@ -42,54 +41,51 @@ class Show extends Component
             'notes' => $this->permintaan->notes,
         ]);
     }
-  
+
     public function handleExtraCheck()
     {
-        $current = $this->permintaan->approvals()
+        $ready = true;
+        $message = '';
+
+        $currentApproval = $this->permintaan->approvals()
             ->where('status', 'pending')
             ->orderBy('level')
             ->first();
-        $ready = true;
-        $message = '';
-        if (!$this->permintaan->security_id) {
+
+        if (!$currentApproval) {
+            $this->dispatch('approvalExtraCheckResult', ready: $ready, message: $message);
+            return;
+        }
+
+        $positionSlug = $currentApproval->position->slug;
+
+        // Jika bukan pengurus barang, langsung lanjut
+        if ($positionSlug !== 'pengurus-barang') {
+            $this->dispatch('approvalExtraCheckResult', ready: $ready, message: $message);
+            return;
+        }
+
+        // Jika pengurus barang, pastikan status approved
+        if ($this->permintaan->status !== 'approved') {
+            $this->permintaan->status = 'approved';
+            $this->permintaan->save();
+        }
+
+        // Validasi tambahan
+        if (!$this->hasPickupPhotos() && false) {
+            $ready = false;
+            $message = 'Foto barang belum lengkap';
+        } elseif (!$this->permintaan->driver_id) {
+            $ready = false;
+            $message = 'Driver belum dipilih';
+        } elseif (!$this->permintaan->security_id) {
             $ready = false;
             $message = 'Security belum dipilih';
         }
-        $positionSlug = $current->position->slug;
-        // $divisionSlug = Str::slug($current->division->name);
-        if ($positionSlug !== 'pengurus-barang') {
-            $this->dispatch(
-                'approvalExtraCheckResult',
-                ready: $ready,
-                message: $message
-            );
-            return;
-        } else if ($positionSlug == 'pengurus-barang') {
-            if ($this->permintaan->status !== 'approved') {
-                $this->permintaan->status = 'approved';
-                $this->permintaan->save();
-            }
-            if (!$this->hasPickupPhotos()) {
-                $ready = false;
-                $message = 'Foto barang belum lengkap';
-            } elseif (!$this->permintaan->driver_id) {
-                $ready = false;
-                $message = 'Driver belum dipilih';
-            } elseif (!$this->permintaan->security_id) {
-                $ready = false;
-                $message = 'Security belum dipilih';
-            }
-        }
 
-        $this->dispatch(
-            'approvalExtraCheckResult',
-            ready: $ready,
-            message: $message
-        );
-        return;
-
-
+        $this->dispatch('approvalExtraCheckResult', ready: $ready, message: $message);
     }
+
     public function onApprovalRejected()
     {
         // $this->permintaan->status = 'rejected';
@@ -105,6 +101,14 @@ class Show extends Component
 
         $this->permintaan->status = 'pending';
         $this->permintaan->save();
+
+    }
+    public function deleteRequest()
+    {
+        $nomor = $this->permintaan->nomor;
+        $this->permintaan->forceDelete();
+        return $this->dispatch('deleteSuccess', nomor: $nomor);
+
 
     }
 

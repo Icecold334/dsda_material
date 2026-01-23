@@ -9,6 +9,9 @@
             <x-primary-button id="confirmSubmit">
                 Ajukan Permintaan
             </x-primary-button>
+            <x-button id="confirmDelete" variant="danger">
+                Hapus Permintaan
+            </x-button>
             @else
             <livewire:approval-panel :module="'permintaan'" :approvable-type="\App\Models\RequestModel::class"
                 :approvable-id="$permintaan->id" />
@@ -47,7 +50,7 @@
                     <td class="font-semibold w-1/2">Status</td>
                     <td><span
                             class="bg-{{ $permintaan->status_color }}-600 text-{{ $permintaan->status_color }}-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">{{
-    $permintaan->status_text }}</span></td>
+                            $permintaan->status_text }}</span></td>
                 </tr>
                 <tr>
                     <td class="font-semibold">Pemohon</td>
@@ -99,6 +102,34 @@
                 }
             )
         });
+        document.getElementById("confirmDelete").addEventListener("click", () => {
+            showConfirm(
+                {
+                    type: "question",
+                    title: "Konfirmasi",
+                    text: "Yakin ingin menghapus permintaan ini?",
+                    confirmButtonText: "Lanjutkan",
+                    cancelButtonText: "Batal",
+                    onConfirm: (e) => {
+                        window.Livewire.dispatch('confirmDelete');
+                    }
+                }
+            )
+        });
+        document.addEventListener('deleteSuccess',function ({detail}) {
+            
+            showAlert(
+                {
+                    type: "success",
+                    title: "Berhasil!",
+                    text: "Hapus permintaan berhasil!",
+                    onClose: (e) => {
+                        Livewire.navigate("{{ route('permintaan.nonRab.index') }}");
+                    }
+                }
+            )
+            
+        })
     </script>
     @endpush
 </div>
