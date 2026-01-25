@@ -198,7 +198,7 @@ class RequestInformationModal extends Component
 
             if ($this->sudin_id) {
                 $warehouses = Warehouse::where('sudin_id', $this->sudin_id)->get();
-                $districts = Division::where('sudin_id', $this->sudin_id)->get();
+                $districts = Division::where('sudin_id', $this->sudin_id)->where('type', 'district')->get();
             }
 
             if ($this->district_id) {
@@ -209,7 +209,7 @@ class RequestInformationModal extends Component
             if ($this->sudin_id) {
                 $sudins = Sudin::where('id', $this->sudin_id)->get();
                 $warehouses = Warehouse::where('id', $this->warehouse_id)->get();
-                $districts = Division::where('id', $this->district_id)->get();
+                $districts = Division::where('id', $this->district_id)->where('type', 'district')->get();
                 $subdistricts = Subdistrict::where('id', $this->subdistrict_id)->get();
             }
 
@@ -218,7 +218,7 @@ class RequestInformationModal extends Component
                 // Cast array to object if needed
                 $rabData = is_array($this->rab) ? (object) $this->rab : $this->rab;
                 $sudins = Sudin::where('id', $rabData->sudin_id)->get();
-                $districts = Division::where('id', $rabData->district_id)->get();
+                $districts = Division::where('id', $rabData->district_id)->where('type', 'district')->get();
                 $subdistricts = Subdistrict::where('id', $rabData->subdistrict_id)->get();
             }
         }

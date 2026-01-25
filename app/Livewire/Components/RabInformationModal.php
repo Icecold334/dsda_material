@@ -159,7 +159,7 @@ class RabInformationModal extends Component
         if ($this->mode === 'create') {
             $sudins = Sudin::all();
             if ($this->sudin_id) {
-                $districts = Division::where('sudin_id', $this->sudin_id)->get();
+                $districts = Division::where('sudin_id', $this->sudin_id)->where('type', 'district')->get();
             }
             if ($this->district_id) {
                 $subdistricts = Subdistrict::where('division_id', $this->district_id)->get();
@@ -168,7 +168,7 @@ class RabInformationModal extends Component
             // Mode show - load all options to display selected values
             $sudins = Sudin::all();
             if ($this->sudin_id) {
-                $districts = Division::where('sudin_id', $this->sudin_id)->get();
+                $districts = Division::where('sudin_id', $this->sudin_id)->where('type', 'district')->get();
             }
             if ($this->district_id) {
                 $subdistricts = Subdistrict::where('division_id', $this->district_id)->get();
