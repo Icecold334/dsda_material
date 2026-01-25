@@ -16,8 +16,9 @@ class MasterPositionSeeder extends Seeder
             'Admin Sudin',
 
             'Kepala Suku Dinas',
-            'Kepala Sub Bagian Umum',
+            'Kepala Sub Bagian',
             'Kepala Seksi',
+            'Kepala Satuan Pelaksana',
             'PPK',
             'PPTK',
             'Pengurus Barang',

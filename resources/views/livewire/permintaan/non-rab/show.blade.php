@@ -6,9 +6,12 @@
         <div class="text-right flex gap-2 justify-end" x-data="{ fileCount: 0 }"
             @file-count-updated.window="fileCount = $event.detail">
             @if ($permintaan->status == 'draft')
-                <x-primary-button wire:click='sendRequest'>
-                    Ajukan Permintaan
-                </x-primary-button>
+            <x-primary-button id="confirmSubmit">
+                Ajukan Permintaan
+            </x-primary-button>
+            @else
+            <livewire:approval-panel :module="'permintaan'" :approvable-type="\App\Models\RequestModel::class"
+                :approvable-id="$permintaan->id" />
             @endif
             <x-secondary-button @click="$dispatch('open-modal', 'request-information-modal')" type="button">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -66,6 +69,22 @@
         category="lampiran_permintaan" label="Lampiran Permintaan" :multiple="true" accept="image/*,.pdf,.doc,.docx"
         modalId="lampiran-modal" :key="'doc-show-lampiran-' . $permintaan->id" />
 
-    <livewire:approval-panel :module="'permintaan'" :approvable-type="\App\Models\RequestModel::class"
-        :approvable-id="$permintaan->id" />
+    @push('scripts')
+    <script type="module">
+        document.getElementById("confirmSubmit").addEventListener("click", () => {
+            showConfirm(
+                {
+                    type: "question",
+                    title: "Konfirmasi",
+                    text: "Yakin ingin mengirim permintaan ini?",
+                    confirmButtonText: "Lanjutkan",
+                    cancelButtonText: "Batal",
+                    onConfirm: (e) => {
+                        window.Livewire.dispatch('confirmSubmit');
+                    }
+                }
+            )
+        });
+    </script>
+    @endpush
 </div>

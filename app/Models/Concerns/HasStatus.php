@@ -20,7 +20,7 @@ trait HasStatus
     {
         return match ($this->status) {
             'draft' => 'Draf',
-            'pending' => 'Menunggu Persetujuan',
+            'pending' => 'Diproses',
             'approved' => 'Disetujui',
             'expired' => 'Kadaluarsa',
             'rejected' => 'Ditolak',
