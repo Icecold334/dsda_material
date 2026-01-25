@@ -14,6 +14,36 @@
                 </button>
             </div>
 
+            @if($mode === 'show')
+                <div class="mb-6 space-y-3 bg-gray-50 p-4 rounded-lg">
+                    <!-- Status -->
+                    <div class="flex items-center justify-between">
+                        <span class="font-semibold text-gray-700">Status:</span>
+                        <span class="bg-{{ $status_color }}-600 text-{{ $status_color }}-100 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                            {{ $status_text }}
+                        </span>
+                    </div>
+
+                    <!-- Pembuat -->
+                    <div class="flex items-center justify-between">
+                        <span class="font-semibold text-gray-700">Pembuat:</span>
+                        <span class="text-gray-600">{{ $pembuat ?: '-' }}</span>
+                    </div>
+
+                    <!-- Total Anggaran -->
+                    <div class="flex items-center justify-between">
+                        <span class="font-semibold text-gray-700">Total Anggaran:</span>
+                        <span class="text-gray-600 font-semibold">Rp {{ number_format($total, 0, ',', '.') }}</span>
+                    </div>
+
+                    <!-- Tipe Barang -->
+                    <div class="flex items-center justify-between">
+                        <span class="font-semibold text-gray-700">Tipe Barang:</span>
+                        <span class="text-gray-600">{{ $item_type ?: '-' }}</span>
+                    </div>
+                </div>
+            @endif
+
             <div class="grid grid-cols-2 gap-4">
                 <!-- Left Column -->
                 <div class="space-y-4">

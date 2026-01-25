@@ -18,6 +18,10 @@ class TransferInformationModal extends Component
 
     // For show mode
     public $transfer_id = null;
+    public $status = '';
+    public $status_text = '';
+    public $status_color = '';
+    public $pembuat = '';
 
     protected $listeners = [
         'openTransferModal' => 'openTransferModal',
@@ -70,6 +74,10 @@ class TransferInformationModal extends Component
         $this->sudin_penerima_id = $data['sudin_penerima_id'] ?? '';
         $this->tanggal_transfer = $data['tanggal_transfer'] ?? '';
         $this->notes = $data['notes'] ?? '';
+        $this->status = $data['status'] ?? '';
+        $this->status_text = $data['status_text'] ?? '';
+        $this->status_color = $data['status_color'] ?? '';
+        $this->pembuat = $data['pembuat'] ?? '';
     }
 
     public function saveInformation()

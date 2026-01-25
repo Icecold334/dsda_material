@@ -28,6 +28,12 @@ class RabInformationModal extends Component
 
     // For show mode
     public $rab_id = null;
+    public $status = '';
+    public $status_text = '';
+    public $status_color = '';
+    public $pembuat = '';
+    public $total = 0;
+    public $item_type = '';
 
     protected $listeners = [
         'openRabModal' => 'openRabModal',
@@ -106,6 +112,12 @@ class RabInformationModal extends Component
         $this->panjang = $data['panjang'] ?? '';
         $this->lebar = $data['lebar'] ?? '';
         $this->tinggi = $data['tinggi'] ?? '';
+        $this->status = $data['status'] ?? '';
+        $this->status_text = $data['status_text'] ?? '';
+        $this->status_color = $data['status_color'] ?? '';
+        $this->pembuat = $data['pembuat'] ?? '';
+        $this->total = $data['total'] ?? 0;
+        $this->item_type = $data['item_type'] ?? '';
     }
 
     public function saveInformation()

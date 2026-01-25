@@ -28,6 +28,16 @@ class RequestInformationModal extends Component
     public $tinggi = '';
     public $notes = '';
 
+    // Data untuk show mode
+    public $status = '';
+    public $status_text = '';
+    public $status_color = '';
+    public $pemohon = '';
+    public $item_type = '';
+    public $rab_nomor = '';
+    public $rab_tahun = '';
+    public $rab_id = '';
+
     // Data untuk RAB (readonly)
     public $rab = null;
 
@@ -107,6 +117,14 @@ class RequestInformationModal extends Component
         $this->lebar = $data['lebar'] ?? '';
         $this->tinggi = $data['tinggi'] ?? '';
         $this->notes = $data['notes'] ?? '';
+        $this->status = $data['status'] ?? '';
+        $this->status_text = $data['status_text'] ?? '';
+        $this->status_color = $data['status_color'] ?? '';
+        $this->pemohon = $data['pemohon'] ?? '';
+        $this->item_type = $data['item_type'] ?? '';
+        $this->rab_nomor = $data['rab_nomor'] ?? '';
+        $this->rab_tahun = $data['rab_tahun'] ?? '';
+        $this->rab_id = $data['rab_id'] ?? '';
 
         if (isset($data['rab'])) {
             $this->rab = $data['rab'];

@@ -28,6 +28,12 @@ class Show extends Component
             'panjang' => $this->rab->panjang,
             'lebar' => $this->rab->lebar,
             'tinggi' => $this->rab->tinggi,
+            'status' => $this->rab->status,
+            'status_text' => $this->rab->status_text,
+            'status_color' => $this->rab->status_color,
+            'pembuat' => $this->rab->user?->name,
+            'total' => $this->rab->total,
+            'item_type' => $this->rab->itemType?->name,
         ]);
     }
 
