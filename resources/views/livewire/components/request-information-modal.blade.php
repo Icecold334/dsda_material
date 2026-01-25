@@ -1,20 +1,18 @@
 <div>
-    <x-modal name="request-information-modal" :show="$showModal" :dismissable="$mode === 'show'" maxWidth="4xl">
+    <x-modal name="request-information-modal" :show="$showModal" :dismissable="true" maxWidth="4xl">
         <div class="p-6">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-2xl font-semibold text-gray-900">
                     {{ $mode === 'create' ? 'Informasi Permintaan' : 'Detail Informasi Permintaan' }}
                 </h2>
-                @if($mode === 'show')
-                    <button type="button" @click="$dispatch('close-modal', 'request-information-modal')"
-                        wire:click="closeModal"
-                        class="text-gray-400 hover:text-gray-500">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                @endif
+                <button type="button" @click="$dispatch('close-modal', 'request-information-modal')"
+                    wire:click="closeModal"
+                    class="text-gray-400 hover:text-gray-500">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
             </div>
 
             @error('modal')

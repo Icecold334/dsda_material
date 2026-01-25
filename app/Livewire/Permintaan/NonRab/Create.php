@@ -44,6 +44,8 @@ class Create extends Component
     // Modal state
     public $informationFilled = false;
 
+    protected $listeners = ['warehouseChanged' => 'handleWarehouseChanged'];
+
     public function rules()
     {
         return [
@@ -99,9 +101,29 @@ class Create extends Component
 
     public function updatedWarehouseId($value)
     {
+        $this->clearItemsOnWarehouseChange();
+    }
+
+    public function handleWarehouseChanged($value)
+    {
+        $this->clearItemsOnWarehouseChange();
+    }
+
+    private function clearItemsOnWarehouseChange()
+    {
+        // Simpan status apakah ada items sebelum di-reset
+        $hadItems = count($this->items) > 0;
+
+        // Reset semua field
         $this->item_type_id = '';
         $this->item_category_id = '';
         $this->item_id = '';
+        $this->items = [];
+
+        // Tampilkan pesan jika sebelumnya ada items
+        if ($hadItems) {
+            session()->flash('info', 'Daftar barang telah dikosongkan karena perubahan gudang');
+        }
     }
 
     public function updatedItemTypeId($value)

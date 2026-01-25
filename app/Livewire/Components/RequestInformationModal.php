@@ -13,6 +13,7 @@ class RequestInformationModal extends Component
     public $mode = 'create'; // 'create' atau 'show'
     public $isRab = false;
     public $showModal = false;
+    public $isFirstTime = true; // Track apakah ini pembukaan pertama
 
     // Data form
     public $nomor = '';
@@ -51,6 +52,7 @@ class RequestInformationModal extends Component
         // Jika mode create, tampilkan modal otomatis
         if ($mode === 'create') {
             $this->showModal = true;
+            $this->isFirstTime = true;
         }
     }
 
@@ -101,6 +103,10 @@ class RequestInformationModal extends Component
     public function openRequestModal()
     {
         $this->showModal = true;
+        // Jika sudah pernah save, ini bukan first time lagi
+        if (!empty($this->nomor)) {
+            $this->isFirstTime = false;
+        }
     }
 
     public function setRequestData($data)
@@ -134,8 +140,7 @@ class RequestInformationModal extends Component
     public function saveInformation()
     {
         if ($this->mode === 'show') {
-            $this->showModal = false;
-            $this->dispatch('close-modal', 'request-information-modal');
+            $this->closeModalForce();
             return;
         }
 
@@ -157,18 +162,26 @@ class RequestInformationModal extends Component
             'notes' => $this->notes,
         ]);
 
-        $this->showModal = false;
-        $this->dispatch('close-modal', 'request-information-modal');
+        // Setelah save pertama kali, set isFirstTime = false
+        $this->isFirstTime = false;
+
+        $this->closeModalForce();
     }
 
     public function closeModal()
     {
-        if ($this->mode === 'create' && empty($this->nomor)) {
+        // Hanya validasi jika ini pembukaan pertama kali dan belum ada data
+        if ($this->mode === 'create' && $this->isFirstTime && empty($this->nomor)) {
             // Jika mode create dan belum ada data, tidak bisa tutup modal
             $this->addError('modal', 'Harap isi informasi permintaan terlebih dahulu');
             return;
         }
 
+        $this->closeModalForce();
+    }
+
+    private function closeModalForce()
+    {
         $this->showModal = false;
         $this->dispatch('close-modal', 'request-information-modal');
     }

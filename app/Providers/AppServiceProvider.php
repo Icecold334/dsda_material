@@ -30,6 +30,6 @@ class AppServiceProvider extends ServiceProvider
         // Auth::login(User::where('email', 'kepala-seksipemeliharaanjakarta-barat@test.com')->first());
         // Auth::login(User::where('email', 'kepala-suku-dinasjakarta-barat@test.com')->first());
         // Auth::login(User::where('email', 'kepala-sub-bagiantata-usahajakarta-barat@test.com')->first());
-        Auth::login(User::where('email', 'pengurus-barangjakarta-barat@test.com')->first());
+        // Auth::login(User::where('email', 'pengurus-barangjakarta-barat@test.com')->first());
     }
 }

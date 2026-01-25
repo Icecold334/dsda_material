@@ -8,8 +8,6 @@ use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use App\Models\RequestModel;
 use Livewire\Attributes\Title;
-use Livewire\Attributes\On;
-use Livewire\Component;
 use App\Services\ApprovalService;
 
 class Show extends Component
@@ -17,7 +15,7 @@ class Show extends Component
 
     #[Title('Detail Permintaan')]
     public RequestModel $permintaan;
-  
+
     protected $listeners = [
         'approvalExtraCheckRequested' => 'handleExtraCheck',
         'approvalRejected' => 'onApprovalRejected',
@@ -47,7 +45,7 @@ class Show extends Component
             'item_type' => $this->permintaan->itemType?->name,
         ]);
     }
-  
+
     public function handleExtraCheck()
     {
         $current = $this->permintaan->approvals()
