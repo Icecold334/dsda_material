@@ -29,7 +29,9 @@
             <h3 class="text-xs font-bold">DINAS SUMBER DAYA AIR</h3>
             <h3 class="text-sm font-bold">SUKU DINAS SUMBER DAYA AIR</h3>
             <h3 class="text-sm font-bold uppercase">KOTA ADMINISTRASI {{$permintaan->sudin->name ?? "-"}}</h3>
-            <div class="text-[10px]">{{$permintaan->sudin->address ?? "-"}}</div>
+            <div class="text-[10px]">{{$permintaan->sudin->address ?? "-"}}, Telp.
+                {{ $permintaan->sudin->phone ?? "-" }}, Kode Pos : {{ $permintaan->sudin->postal_code ?? "-" }}
+            </div>
             <div class="text-[10px] tracking-widest">JAKARTA</div>
         </div>
     </div>

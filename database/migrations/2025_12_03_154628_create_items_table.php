@@ -15,6 +15,7 @@ return new class extends Migration {
 
             $table->uuid('sudin_id');              // tiap sudin punya barang sendiri
             $table->uuid('item_category_id')->nullable();
+            $table->string('code')->unique();      // kode barang
 
             $table->string('spec');    // spesifikasi tambahan
             $table->string('slug');

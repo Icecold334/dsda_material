@@ -17,6 +17,8 @@ return new class extends Migration {
             $table->string('name');
             $table->string('short')->nullable();      // contoh: JAKSEL, KEP-SERIBU
             $table->string('address')->nullable();
+            $table->string('postal_code')->nullable();
+            $table->string('phone')->nullable();
         });
     }
 

@@ -7,7 +7,8 @@
 
             <div class="space-y-3">
                 <!-- Button Surat Jalan -->
-                <a href="{{ route('download-pdf.surat-jalan.non-rab', $permintaanId) }}" target="_blank"
+                <a href="{{ route($isRab ? 'download-pdf.surat-jalan.rab' : 'download-pdf.surat-jalan.non-rab', $permintaanId) }}"
+                    target="_blank"
                     class="w-full flex items-center justify-between px-4 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200 group">
                     <div class="flex items-center space-x-3">
                         <div class="flex-shrink-0">
