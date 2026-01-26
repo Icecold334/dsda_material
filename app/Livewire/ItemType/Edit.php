@@ -5,6 +5,8 @@ namespace App\Livewire\ItemType;
 use App\Models\ItemType;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Validator;
 
 class Edit extends Component
 {
@@ -26,10 +28,34 @@ class Edit extends Component
         ];
     }
 
-    public function update()
+    public function validateForm()
     {
-        $this->validate();
+        $validator = Validator::make(
+            [
+                'name' => $this->name,
+                'active' => $this->active,
+            ],
+            $this->rules(),
+            [
+                'name.required' => 'Nama tipe barang wajib diisi',
+                'name.string' => 'Nama tipe barang harus berupa teks',
+                'name.max' => 'Nama tipe barang maksimal 255 karakter',
+                'active.boolean' => 'Status aktif harus berupa boolean',
+            ]
+        );
 
+        if ($validator->fails()) {
+            $this->dispatch('alert', type: 'error', title: 'Gagal!', text: $validator->errors()->first());
+            return;
+        }
+
+        $this->dispatch('validation-passed-update');
+        return;
+    }
+
+    #[On('confirm-update-item-type')]
+    public function confirmUpdate()
+    {
         $this->itemType->update([
             'name' => $this->name,
             'slug' => Str::slug($this->name),

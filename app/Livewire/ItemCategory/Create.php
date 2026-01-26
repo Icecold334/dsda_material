@@ -4,6 +4,8 @@ namespace App\Livewire\ItemCategory;
 
 use App\Models\ItemCategory;
 use Livewire\Component;
+use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Validator;
 
 class Create extends Component
 {
@@ -18,10 +20,34 @@ class Create extends Component
         ];
     }
 
-    public function save()
+    public function validateForm()
     {
-        $this->validate();
+        $validator = Validator::make(
+            [
+                'name' => $this->name,
+                'item_unit_id' => $this->item_unit_id,
+            ],
+            $this->rules(),
+            [
+                'name.required' => 'Nama barang wajib diisi',
+                'name.string' => 'Nama barang harus berupa teks',
+                'name.max' => 'Nama barang maksimal 255 karakter',
+                'item_unit_id.exists' => 'Satuan yang dipilih tidak valid',
+            ]
+        );
 
+        if ($validator->fails()) {
+            $this->dispatch('alert', type: 'error', title: 'Gagal!', text: $validator->errors()->first());
+            return;
+        }
+
+        $this->dispatch('validation-passed-create');
+        return;
+    }
+
+    #[On('confirm-save-item-category')]
+    public function confirmSave()
+    {
         ItemCategory::create([
             'name' => $this->name,
             'item_unit_id' => $this->item_unit_id ?: null,

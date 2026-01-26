@@ -1,5 +1,5 @@
 <x-modal name="create-district" focusable>
-    <form wire:submit="save" class="p-6">
+    <form wire:submit.prevent="validateForm" class="p-6">
         <h2 class="text-lg font-medium text-gray-900">
             Tambah Kecamatan Baru
         </h2>
@@ -9,14 +9,12 @@
                 <x-input-label for="name" value="Nama Kecamatan" />
                 <x-text-input id="name" wire:model="name" type="text" class="mt-1 block w-full"
                     placeholder="Masukkan nama Kecamatan" />
-                <x-input-error :messages="$errors->get('name')" class="mt-2" />
             </div>
 
             <div>
                 <x-input-label for="sudin_id" value="Sudin" />
                 <livewire:components.select-input wire:model="sudin_id" :options="$sudins->pluck('name', 'id')"
                     placeholder="-- Pilih Sudin --" :key="'sudin-select'" />
-                <x-input-error :messages="$errors->get('sudin_id')" class="mt-2" />
             </div>
         </div>
 
@@ -30,3 +28,30 @@
         </div>
     </form>
 </x-modal>
+
+@push('scripts')
+    <script type="module">
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('validation-passed-create', () => {
+                showConfirm({
+                    title: "Konfirmasi Simpan Kecamatan",
+                    text: "Apakah anda yakin ingin menambahkan kecamatan ini?",
+                    type: "question",
+                    confirmButtonText: "Ya, Simpan",
+                    cancelButtonText: "Batal",
+                    onConfirm: () => {
+                        Swal.fire({
+                            title: "Menyimpan Kecamatan...",
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            },
+                        });
+                        Livewire.dispatch('confirm-save-district');
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

@@ -1,17 +1,5 @@
 <x-modal name="edit-item-{{ $item->id }}" focusable>
-    <form wire:submit.prevent="update" class="p-6" x-data="{
-        confirmUpdate() {
-            showConfirm({
-                title: 'Update Barang?',
-                text: 'Data barang akan diperbarui.',
-                confirmButtonText: 'Ya, update!',
-                cancelButtonText: 'Batal',
-                onConfirm: () => {
-                    @this.update();
-                }
-            });
-        }
-    }">
+    <form wire:submit.prevent="validateForm" class="p-6">
         <h2 class="text-lg font-medium text-gray-900">
             Edit Spesifikasi
         </h2>
@@ -21,27 +9,18 @@
                 <x-input-label for="spec-{{ $item->id }}" value="Spesifikasi" />
                 <x-text-input id="spec-{{ $item->id }}" wire:model="spec" type="text" class="mt-1 block w-full"
                     placeholder="Masukkan spesifikasi" />
-                <x-input-error :messages="$errors->get('spec')" class="mt-2" />
             </div>
 
             <div>
                 <x-input-label for="sudin_id-{{ $item->id }}" value="Sudin" />
-                <livewire:components.select-input
-                    wire:model.live="sudin_id"
-                    :options="$sudins->pluck('name', 'id')"
-                    placeholder="-- Pilih Sudin --"
-                    :key="'sudin-select-' . $item->id" />
-                <x-input-error :messages="$errors->get('sudin_id')" class="mt-2" />
+                <livewire:components.select-input wire:model.live="sudin_id" :options="$sudins->pluck('name', 'id')"
+                    placeholder="-- Pilih Sudin --" :key="'sudin-select-' . $item->id" />
             </div>
 
             <div>
                 <x-input-label for="item_category_id-{{ $item->id }}" value="Barang" />
-                <livewire:components.select-input
-                    wire:model="item_category_id"
-                    :options="$categories->pluck('name', 'id')"
-                    placeholder="-- Pilih Barang --"
-                    :key="'item-category-select-' . $item->id . '-' . $sudin_id" />
-                <x-input-error :messages="$errors->get('item_category_id')" class="mt-2" />
+                <livewire:components.select-input wire:model="item_category_id" :options="$categories->pluck('name', 'id')"
+                    placeholder="-- Pilih Barang --" :key="'item-category-select-' . $item->id . '-' . $sudin_id" />
             </div>
 
             <div>
@@ -57,9 +36,35 @@
             <x-secondary-button type="button" x-on:click="$dispatch('close-modal', 'edit-item-{{ $item->id }}')">
                 Batal
             </x-secondary-button>
-            <x-button type="submit" @click="confirmUpdate()">
+            <x-button type="submit">
                 Update
             </x-button>
         </div>
     </form>
 </x-modal>
+@push('scripts')
+    <script type="module">
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('validation-passed-update', () => {
+                showConfirm({
+                    title: "Konfirmasi Update Spesifikasi",
+                    text: "Apakah anda yakin ingin memperbarui spesifikasi ini?",
+                    type: "question",
+                    confirmButtonText: "Ya, Update",
+                    cancelButtonText: "Batal",
+                    onConfirm: () => {
+                        Swal.fire({
+                            title: "Memperbarui Spesifikasi...",
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            },
+                        });
+                        Livewire.dispatch('confirm-update-item');
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

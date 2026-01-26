@@ -1,5 +1,5 @@
 <x-modal name="create-item-category" focusable>
-    <form wire:submit="save" class="p-6">
+    <form wire:submit.prevent="validateForm" class="p-6">
         <h2 class="text-lg font-medium text-gray-900">
             Tambah Barang
         </h2>
@@ -9,14 +9,12 @@
                 <x-input-label for="name" value="Nama Barang" />
                 <x-text-input id="name" wire:model="name" type="text" class="mt-1 block w-full"
                     placeholder="Masukkan nama kategori" />
-                <x-input-error :messages="$errors->get('name')" class="mt-2" />
             </div>
 
             <div>
                 <x-input-label for="item_unit_id" value="Satuan" />
                 <livewire:components.select-input wire:model="item_unit_id" :options="$units->pluck('name', 'id')"
                     placeholder="-- Pilih Satuan --" :key="'unit-select'" />
-                <x-input-error :messages="$errors->get('item_unit_id')" class="mt-2" />
             </div>
         </div>
 
@@ -30,3 +28,30 @@
         </div>
     </form>
 </x-modal>
+
+@push('scripts')
+    <script type="module">
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('validation-passed-create', () => {
+                showConfirm({
+                    title: "Konfirmasi Simpan Barang",
+                    text: "Apakah anda yakin ingin menambahkan barang ini?",
+                    type: "question",
+                    confirmButtonText: "Ya, Simpan",
+                    cancelButtonText: "Batal",
+                    onConfirm: () => {
+                        Swal.fire({
+                            title: "Menyimpan Barang...",
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            },
+                        });
+                        Livewire.dispatch('confirm-save-item-category');
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

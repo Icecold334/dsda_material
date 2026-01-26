@@ -1,5 +1,5 @@
 <x-modal name="create-item-type" focusable>
-    <form wire:submit="save" class="p-6">
+    <form wire:submit.prevent="validateForm" class="p-6">
         <h2 class="text-lg font-medium text-gray-900">
             Tambah Tipe Barang Baru
         </h2>
@@ -9,7 +9,6 @@
                 <x-input-label for="name" value="Nama Tipe Barang" />
                 <x-text-input id="name" wire:model="name" type="text" class="mt-1 block w-full"
                     placeholder="Masukkan nama Tipe Barang" />
-                <x-input-error :messages="$errors->get('name')" class="mt-2" />
             </div>
 
             <div>
@@ -31,3 +30,30 @@
         </div>
     </form>
 </x-modal>
+
+@push('scripts')
+    <script type="module">
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('validation-passed-create', () => {
+                showConfirm({
+                    title: "Konfirmasi Simpan Tipe Barang",
+                    text: "Apakah anda yakin ingin menambahkan tipe barang ini?",
+                    type: "question",
+                    confirmButtonText: "Ya, Simpan",
+                    cancelButtonText: "Batal",
+                    onConfirm: () => {
+                        Swal.fire({
+                            title: "Menyimpan Tipe Barang...",
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            },
+                        });
+                        Livewire.dispatch('confirm-save-item-type');
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

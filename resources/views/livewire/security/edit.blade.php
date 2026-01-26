@@ -1,17 +1,5 @@
 <x-modal name="edit-security-{{ $security->id }}" focusable>
-    <form wire:submit.prevent="update" class="p-6" x-data="{
-        confirmUpdate() {
-            showConfirm({
-                title: 'Update Satpam?',
-                text: 'Data satpam akan diperbarui.',
-                confirmButtonText: 'Ya, update!',
-                cancelButtonText: 'Batal',
-                onConfirm: () => {
-                    @this.update();
-                }
-            });
-        }
-    }">
+    <form wire:submit.prevent="validateForm" class="p-6">
         <h2 class="text-lg font-medium text-gray-900">
             Edit Security
         </h2>
@@ -21,14 +9,12 @@
                 <x-input-label for="name" value="Nama Security" />
                 <x-text-input id="name" wire:model="name" type="text" class="mt-1 block w-full"
                     placeholder="Masukkan nama security" />
-                <x-input-error :messages="$errors->get('name')" class="mt-2" />
             </div>
 
             <div>
                 <x-input-label for="sudin_id" value="Sudin" />
                 <livewire:components.select-input wire:model="sudin_id" :options="$sudins->pluck('name', 'id')"
                     placeholder="-- Pilih Sudin --" :key="'sudin-select-' . $security->id" />
-                <x-input-error :messages="$errors->get('sudin_id')" class="mt-2" />
             </div>
         </div>
 
@@ -37,9 +23,35 @@
                 x-on:click="$dispatch('close-modal', 'edit-security-{{ $security->id }}')">
                 Batal
             </x-secondary-button>
-            <x-button type="submit" @click="confirmUpdate()">
+            <x-button type="submit">
                 Update
             </x-button>
         </div>
     </form>
 </x-modal>
+@push('scripts')
+    <script type="module">
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('validation-passed-update', () => {
+                showConfirm({
+                    title: "Konfirmasi Update Security",
+                    text: "Apakah anda yakin ingin memperbarui security ini?",
+                    type: "question",
+                    confirmButtonText: "Ya, Update",
+                    cancelButtonText: "Batal",
+                    onConfirm: () => {
+                        Swal.fire({
+                            title: "Memperbarui Security...",
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            },
+                        });
+                        Livewire.dispatch('confirm-update-security');
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

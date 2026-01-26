@@ -4,6 +4,8 @@ namespace App\Livewire\ItemCategory;
 
 use App\Models\ItemCategory;
 use Livewire\Component;
+use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Validator;
 
 class Edit extends Component
 {
@@ -25,10 +27,34 @@ class Edit extends Component
         ];
     }
 
-    public function update()
+    public function validateForm()
     {
-        $this->validate();
+        $validator = Validator::make(
+            [
+                'name' => $this->name,
+                'item_unit_id' => $this->item_unit_id,
+            ],
+            $this->rules(),
+            [
+                'name.required' => 'Nama barang wajib diisi',
+                'name.string' => 'Nama barang harus berupa teks',
+                'name.max' => 'Nama barang maksimal 255 karakter',
+                'item_unit_id.exists' => 'Satuan yang dipilih tidak valid',
+            ]
+        );
 
+        if ($validator->fails()) {
+            $this->dispatch('alert', type: 'error', title: 'Gagal!', text: $validator->errors()->first());
+            return;
+        }
+
+        $this->dispatch('validation-passed-update');
+        return;
+    }
+
+    #[On('confirm-update-item-category')]
+    public function confirmUpdate()
+    {
         $this->itemCategory->update([
             'name' => $this->name,
             'item_unit_id' => $this->item_unit_id ?: null,

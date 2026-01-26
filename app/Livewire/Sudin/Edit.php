@@ -4,6 +4,8 @@ namespace App\Livewire\Sudin;
 
 use App\Models\Sudin;
 use Livewire\Component;
+use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Validator;
 
 class Edit extends Component
 {
@@ -28,10 +30,37 @@ class Edit extends Component
         ];
     }
 
-    public function update()
+    public function validateForm()
     {
-        $this->validate();
+        $validator = Validator::make(
+            [
+                'name' => $this->name,
+                'short' => $this->short,
+                'address' => $this->address,
+            ],
+            $this->rules(),
+            [
+                'name.required' => 'Nama sudin wajib diisi',
+                'name.string' => 'Nama sudin harus berupa teks',
+                'name.max' => 'Nama sudin maksimal 255 karakter',
+                'short.string' => 'Singkatan harus berupa teks',
+                'short.max' => 'Singkatan maksimal 50 karakter',
+                'address.string' => 'Alamat harus berupa teks',
+            ]
+        );
 
+        if ($validator->fails()) {
+            $this->dispatch('alert', type: 'error', title: 'Gagal!', text: $validator->errors()->first());
+            return;
+        }
+
+        $this->dispatch('validation-passed-update');
+        return;
+    }
+
+    #[On('confirm-update-sudin')]
+    public function confirmUpdate()
+    {
         $this->sudin->update([
             'name' => $this->name,
             'short' => $this->short,

@@ -1,5 +1,5 @@
 <x-modal name="{{ $itemCategory ? 'create-item-' . $itemCategory->id : 'create-item' }}" focusable>
-    <form wire:submit="save" class="p-6">
+    <form wire:submit.prevent="validateForm" class="p-6">
         <h2 class="text-lg font-medium text-gray-900">
             Tambah Spesifikasi
         </h2>
@@ -9,14 +9,12 @@
                 <x-input-label for="spec" value="Spesifikasi" />
                 <x-text-input id="spec" wire:model="spec" type="text" class="mt-1 block w-full"
                     placeholder="Masukkan spesifikasi" />
-                <x-input-error :messages="$errors->get('spec')" class="mt-2" />
             </div>
 
             <div>
                 <x-input-label for="sudin_id" value="Sudin" />
                 <livewire:components.select-input wire:model.live="sudin_id" :options="$sudins->pluck('name', 'id')"
                     placeholder="-- Pilih Sudin --" :key="'sudin-select'" />
-                <x-input-error :messages="$errors->get('sudin_id')" class="mt-2" />
             </div>
 
 
@@ -40,3 +38,30 @@
         </div>
     </form>
 </x-modal>
+
+@push('scripts')
+    <script type="module">
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('validation-passed-create', () => {
+                showConfirm({
+                    title: "Konfirmasi Simpan Spesifikasi",
+                    text: "Apakah anda yakin ingin menambahkan spesifikasi ini?",
+                    type: "question",
+                    confirmButtonText: "Ya, Simpan",
+                    cancelButtonText: "Batal",
+                    onConfirm: () => {
+                        Swal.fire({
+                            title: "Menyimpan Spesifikasi...",
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            },
+                        });
+                        Livewire.dispatch('confirm-save-item');
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

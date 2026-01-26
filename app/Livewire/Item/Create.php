@@ -6,6 +6,8 @@ use App\Models\Item;
 use App\Models\Sudin;
 use App\Models\ItemCategory;
 use Livewire\Component;
+use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Validator;
 
 class Create extends Component
 {
@@ -33,10 +35,39 @@ class Create extends Component
         ];
     }
 
-    public function save()
+    public function validateForm()
     {
-        $this->validate();
+        $validator = Validator::make(
+            [
+                'spec' => $this->spec,
+                'sudin_id' => $this->sudin_id,
+                'item_category_id' => $this->item_category_id,
+                'active' => $this->active,
+            ],
+            $this->rules(),
+            [
+                'spec.required' => 'Spesifikasi barang wajib diisi',
+                'spec.string' => 'Spesifikasi barang harus berupa teks',
+                'spec.max' => 'Spesifikasi barang maksimal 255 karakter',
+                'sudin_id.required' => 'Sudin wajib dipilih',
+                'sudin_id.exists' => 'Sudin yang dipilih tidak valid',
+                'item_category_id.exists' => 'Kategori barang yang dipilih tidak valid',
+                'active.boolean' => 'Status aktif harus berupa boolean',
+            ]
+        );
 
+        if ($validator->fails()) {
+            $this->dispatch('alert', type: 'error', title: 'Gagal!', text: $validator->errors()->first());
+            return;
+        }
+
+        $this->dispatch('validation-passed-create');
+        return;
+    }
+
+    #[On('confirm-save-item')]
+    public function confirmSave()
+    {
         Item::create([
             'spec' => $this->spec,
             'sudin_id' => $this->sudin_id,

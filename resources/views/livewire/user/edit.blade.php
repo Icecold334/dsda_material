@@ -1,17 +1,5 @@
 <x-modal name="edit-user-{{ $user->id }}" focusable>
-    <form wire:submit.prevent="update" class="p-6" x-data="{
-        confirmUpdate() {
-            showConfirm({
-                title: 'Update Pengguna?',
-                text: 'Data pengguna akan diperbarui.',
-                confirmButtonText: 'Ya, update!',
-                cancelButtonText: 'Batal',
-                onConfirm: () => {
-                    @this.update();
-                }
-            });
-        }
-    }">
+    <form wire:submit.prevent="validateForm" class="p-6">
         <h2 class="text-lg font-medium text-gray-900">
             Edit Pengguna
         </h2>
@@ -21,49 +9,42 @@
                 <x-input-label for="name-{{ $user->id }}" value="Nama" />
                 <x-text-input id="name-{{ $user->id }}" wire:model="name" type="text" class="mt-1 block w-full"
                     placeholder="Masukkan nama" />
-                <x-input-error :messages="$errors->get('name')" class="mt-2" />
             </div>
 
             <div>
                 <x-input-label for="email-{{ $user->id }}" value="Email" />
                 <x-text-input id="email-{{ $user->id }}" wire:model="email" type="email" class="mt-1 block w-full"
                     placeholder="email@example.com" />
-                <x-input-error :messages="$errors->get('email')" class="mt-2" />
             </div>
 
             <div>
                 <x-input-label for="password-{{ $user->id }}" value="Password Baru (Kosongkan jika tidak diubah)" />
                 <x-text-input id="password-{{ $user->id }}" wire:model="password" type="password"
                     class="mt-1 block w-full" placeholder="Minimal 8 karakter" />
-                <x-input-error :messages="$errors->get('password')" class="mt-2" />
             </div>
 
             <div>
                 <x-input-label for="password_confirmation-{{ $user->id }}" value="Konfirmasi Password Baru" />
                 <x-text-input id="password_confirmation-{{ $user->id }}" wire:model="password_confirmation"
                     type="password" class="mt-1 block w-full" placeholder="Ulangi password" />
-                <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
             </div>
 
             <div>
                 <x-input-label for="sudin_id-{{ $user->id }}" value="Sudin" />
                 <livewire:components.select-input wire:model="sudin_id" :options="$sudins->pluck('name', 'id')"
                     placeholder="-- Pilih Sudin --" :key="'sudin-select-' . $user->id" />
-                <x-input-error :messages="$errors->get('sudin_id')" class="mt-2" />
             </div>
 
             <div>
                 <x-input-label for="division_id-{{ $user->id }}" value="Divisi" />
                 <livewire:components.select-input wire:model="division_id" :options="$divisions->pluck('name', 'id')"
                     placeholder="-- Pilih Divisi --" :key="'division-select-' . $user->id" />
-                <x-input-error :messages="$errors->get('division_id')" class="mt-2" />
             </div>
 
             <div>
                 <x-input-label for="position_id-{{ $user->id }}" value="Jabatan" />
                 <livewire:components.select-input wire:model="position_id" :options="$positions->pluck('name', 'id')"
                     placeholder="-- Pilih Jabatan --" :key="'position-select-' . $user->id" />
-                <x-input-error :messages="$errors->get('position_id')" class="mt-2" />
             </div>
 
             <div x-data="{
@@ -134,7 +115,6 @@
                         Hapus Tanda Tangan
                     </x-secondary-button>
                 </div>
-                <x-input-error :messages="$errors->get('ttd')" class="mt-2" />
             </div>
         </div>
 
@@ -142,9 +122,35 @@
             <x-secondary-button type="button" x-on:click="$dispatch('close-modal', 'edit-user-{{ $user->id }}')">
                 Batal
             </x-secondary-button>
-            <x-button type="submit" @click="confirmUpdate()">
+            <x-button type="submit">
                 Update
             </x-button>
         </div>
     </form>
 </x-modal>
+@push('scripts')
+    <script type="module">
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('validation-passed-update', () => {
+                showConfirm({
+                    title: "Konfirmasi Update Pengguna",
+                    text: "Apakah anda yakin ingin memperbarui pengguna ini?",
+                    type: "question",
+                    confirmButtonText: "Ya, Update",
+                    cancelButtonText: "Batal",
+                    onConfirm: () => {
+                        Swal.fire({
+                            title: "Memperbarui Pengguna...",
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            },
+                        });
+                        Livewire.dispatch('confirm-update-user');
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

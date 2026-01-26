@@ -5,6 +5,8 @@ namespace App\Livewire\Driver;
 use App\Models\Personnel;
 use App\Models\Sudin;
 use Livewire\Component;
+use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Validator;
 
 class Edit extends Component
 {
@@ -26,10 +28,34 @@ class Edit extends Component
         ];
     }
 
-    public function update()
+    public function validateForm()
     {
-        $this->validate();
+        $validator =Validator::make(
+            [
+                'name' => $this->name,
+                'sudin_id' => $this->sudin_id,
+            ],
+            $this->rules(),
+            [
+                'name.required' => 'Nama driver wajib diisi',
+                'name.string' => 'Nama driver harus berupa teks',
+                'name.max' => 'Nama driver maksimal 255 karakter',
+                'sudin_id.exists' => 'Sudin yang dipilih tidak valid',
+            ]
+        );
 
+        if ($validator->fails()) {
+            $this->dispatch('alert', type: 'error', title: 'Gagal!', text: $validator->errors()->first());
+            return;
+        }
+
+        $this->dispatch('validation-passed-update');
+        return;
+    }
+
+    #[On('confirm-update-driver')]
+    public function confirmUpdate()
+    {
         $this->driver->update([
             'name' => $this->name,
             'sudin_id' => $this->sudin_id ?: null,

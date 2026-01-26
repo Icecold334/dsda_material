@@ -5,6 +5,8 @@ namespace App\Livewire\Security;
 use App\Models\Personnel;
 use App\Models\Sudin;
 use Livewire\Component;
+use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Validator;
 
 class Create extends Component
 {
@@ -19,16 +21,39 @@ class Create extends Component
         ];
     }
 
-    public function save()
+    public function validateForm()
     {
-        $this->validate();
+        $validator = Validator::make(
+            [
+                'name' => $this->name,
+                'sudin_id' => $this->sudin_id,
+            ],
+            $this->rules(),
+            [
+                'name.required' => 'Nama security wajib diisi',
+                'name.string' => 'Nama security harus berupa teks',
+                'name.max' => 'Nama security maksimal 255 karakter',
+                'sudin_id.exists' => 'Sudin yang dipilih tidak valid',
+            ]
+        );
 
+        if ($validator->fails()) {
+            $this->dispatch('alert', type: 'error', title: 'Gagal!', text: $validator->errors()->first());
+            return;
+        }
+
+        $this->dispatch('validation-passed-create');
+        return;
+    }
+
+    #[On('confirm-save-security')]
+    public function confirmSave()
+    {
         Personnel::create([
             'name' => $this->name,
             'sudin_id' => $this->sudin_id ?: null,
             'type' => 'security',
         ]);
-
         $this->dispatch('close-modal', 'create-security');
         $this->dispatch('success-created', message: 'Security berhasil ditambahkan');
         $this->dispatch('security-created');
