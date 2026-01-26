@@ -48,48 +48,48 @@ class Show extends Component
 
     public function handleExtraCheck()
     {
-        $current = $this->permintaan->approvals()
-            ->where('status', 'pending')
-            ->orderBy('level')
-            ->first();
-        $ready = true;
-        $message = '';
-        if (!$this->permintaan->security_id) {
-            $ready = false;
-            $message = 'Security belum dipilih';
-        }
-        $positionSlug = $current->position->slug;
-        // $divisionSlug = Str::slug($current->division->name);
-        if ($positionSlug !== 'pengurus-barang') {
-            $this->dispatch(
-                'approvalExtraCheckResult',
-                ready: $ready,
-                message: $message
-            );
-            return;
-        } else if ($positionSlug == 'pengurus-barang') {
-            if ($this->permintaan->status !== 'approved') {
-                $this->permintaan->status = 'approved';
-                $this->permintaan->save();
-            }
-            if (!$this->hasPickupPhotos()) {
-                $ready = false;
-                $message = 'Foto barang belum lengkap';
-            } elseif (!$this->permintaan->driver_id) {
-                $ready = false;
-                $message = 'Driver belum dipilih';
-            } elseif (!$this->permintaan->security_id) {
-                $ready = false;
-                $message = 'Security belum dipilih';
-            }
-        }
+        // $current = $this->permintaan->approvals()
+        //     ->where('status', 'pending')
+        //     ->orderBy('level')
+        //     ->first();
+        // $ready = true;
+        // $message = '';
+        // if (!$this->permintaan->security_id) {
+        //     $ready = false;
+        //     $message = 'Security belum dipilih';
+        // }
+        // $positionSlug = $current->position->slug;
+        // // $divisionSlug = Str::slug($current->division->name);
+        // if ($positionSlug !== 'pengurus-barang') {
+        //     $this->dispatch(
+        //         'approvalExtraCheckResult',
+        //         ready: $ready,
+        //         message: $message
+        //     );
+        //     return;
+        // } else if ($positionSlug == 'pengurus-barang') {
+        //     if ($this->permintaan->status !== 'approved') {
+        //         $this->permintaan->status = 'approved';
+        //         $this->permintaan->save();
+        //     }
+        //     if (!$this->hasPickupPhotos()) {
+        //         $ready = false;
+        //         $message = 'Foto barang belum lengkap';
+        //     } elseif (!$this->permintaan->driver_id) {
+        //         $ready = false;
+        //         $message = 'Driver belum dipilih';
+        //     } elseif (!$this->permintaan->security_id) {
+        //         $ready = false;
+        //         $message = 'Security belum dipilih';
+        //     }
+        // }
 
-        $this->dispatch(
-            'approvalExtraCheckResult',
-            ready: $ready,
-            message: $message
-        );
-        return;
+        // $this->dispatch(
+        //     'approvalExtraCheckResult',
+        //     ready: $ready,
+        //     message: $message
+        // );
+        // return;
 
 
     }
