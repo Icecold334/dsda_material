@@ -13,6 +13,7 @@ Route::prefix('user')->name('user.')->group(function () {
         $data = User::with(['sudin', 'division', 'position'])->get()->map(fn($u) => [
             'name' => $u->name,
             'email' => $u->email,
+            'nip' => $u->nip ?? '-',
             'sudin' => $u->sudin?->name ?? '-',
             'division' => $u->division?->name ?? '-',
             'position' => $u->position?->name ?? '-',

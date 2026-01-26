@@ -12,17 +12,18 @@
         <div class="text-right">
             <x-button x-on:click="$dispatch('open-modal', 'create-user')">
                 Tambah Pengguna
-                </x-button>
+            </x-button>
         </div>
     </div>
 
     <div data-grid data-api="{{ route('user.json') }}" data-columns='[
-        { "name": "Nama", "id": "name","width": "20%" },
-        { "name": "Email", "id": "email","width": "20%" },
-        { "name": "Sudin", "id": "sudin","width": "15%"  },
-        { "name": "Divisi", "id": "division","width": "15%"  },
-        { "name": "Jabatan", "id": "position","width": "15%"  },
-        { "name": "", "id": "action" ,"width": "15%"}
+        { "name": "Nama", "id": "name","width": "15%" },
+        { "name": "Email", "id": "email","width": "15%" },
+        { "name": "NIP", "id": "nip","width": "10%" },
+        { "name": "Sudin", "id": "sudin","width": "12%"  },
+        { "name": "Divisi", "id": "division","width": "12%"  },
+        { "name": "Jabatan", "id": "position","width": "12%"  },
+        { "name": "", "id": "action" ,"width": "14%"}
     ]' data-limit="10" wire:ignore
         x-data="{ reloadGrid() { this.$el.dispatchEvent(new CustomEvent('reload-grid')); } }"
         @refresh-grid.window="reloadGrid()">

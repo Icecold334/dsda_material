@@ -12,7 +12,11 @@ Route::prefix('download-pdf')->name('download-pdf.')->group(function () {
             'user',
             'district',
             'subdistrict',
-            'items.item.category.unit'
+            'items.item.category.unit',
+            'driver',
+            'security',
+            'sudin',
+            'documents'
         ]);
 
         return Pdf::view('pdf.surat-jalan', [
@@ -28,7 +32,11 @@ Route::prefix('download-pdf')->name('download-pdf.')->group(function () {
             'user',
             'district',
             'subdistrict',
-            'items.item.category.unit'
+            'items.item.category.unit',
+            'driver',
+            'security',
+            'sudin',
+            'documents'
         ]);
 
         return Pdf::view('pdf.surat-jalan', [

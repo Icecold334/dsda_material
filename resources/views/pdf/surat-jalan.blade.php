@@ -106,6 +106,57 @@
         Jakarta,
         <em>{{ \Carbon\Carbon::parse($permintaan->tanggal_permintaan)->locale('id')->translatedFormat('d F Y') }}</em>
     </div>
+
+    @php
+        $ttdDriver = $permintaan->documents()->where('category', 'ttd_driver')->first();
+        $ttdSecurity = $permintaan->documents()->where('category', 'ttd_security')->first();
+    @endphp
+
+    <!-- Signature Section -->
+    <table class="w-full  text-[11px] mt-8">
+        <tr>
+            <td class=" p-3 text-center align-top w-1/2" style="height: 140px;">
+                <div class="font-bold mb-1">Pemohon</div>
+                <div class="mb-16 font-bold">{{$permintaan->user->position->name ?? '-'}}
+                    {{ $permintaan->user->division->name ?? '' }}
+                </div>
+                <div class="mt-2 font-bold underline">{{$permintaan->user->name ?? '-'}}</div>
+                <div class="text-[10px]">{{$permintaan->user->nip ?? ''}}</div>
+            </td>
+            <td class=" p-3 text-center align-top w-1/2" style="height: 140px;">
+                <div class="font-bold mb-1">Driver</div>
+                <div class="mb-2">&nbsp;</div>
+                @if($ttdDriver)
+                    <img src="{{ storage_path('app/public/' . $ttdDriver->file_path) }}" alt="TTD Driver"
+                        style="width: 150px; height: 60px; object-fit: contain; margin: 0 auto;">
+                @else
+                    <div style="height: 60px;"></div>
+                @endif
+                <div class="mt-2 font-bold underline">{{ $permintaan->driver->name ?? '-' }}</div>
+                <div class="text-[10px]">&nbsp;</div>
+            </td>
+        </tr>
+        <tr>
+            <td class=" p-3 text-center align-top w-1/2" style="height: 140px;">
+                <div class="font-bold mb-1">Keamanan</div>
+                <div class="mb-2">&nbsp;</div>
+                @if($ttdSecurity)
+                    <img src="{{ storage_path('app/public/' . $ttdSecurity->file_path) }}" alt="TTD Security"
+                        style="width: 150px; height: 60px; object-fit: contain; margin: 0 auto;">
+                @else
+                    <div style="height: 60px;"></div>
+                @endif
+                <div class="mt-2 font-bold underline">{{$permintaan->security->name ?? '-'}}</div>
+                <div class="text-[10px]">&nbsp;</div>
+            </td>
+            <td class=" p-3 text-center align-top w-1/2" style="height: 140px;">
+                <div class="font-bold mb-1">Mengetahui,</div>
+                <div class="mb-16 font-bold">Pengurus Barang Suku Dinas {{ $permintaan->sudin->name ?? '-' }}</div>
+                <div class="mt-2 font-bold underline">(Nama Pengurus Barang)</div>
+                <div class="text-[10px]">(NIP)</div>
+            </td>
+        </tr>
+    </table>
 </body>
 
 </html>

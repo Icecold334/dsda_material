@@ -18,6 +18,7 @@ class Edit extends Component
     public $email = '';
     public $password = '';
     public $password_confirmation = '';
+    public $nip = '';
     public $sudin_id = '';
     public $division_id = '';
     public $position_id = '';
@@ -28,6 +29,7 @@ class Edit extends Component
     {
         $this->name = $this->user->name;
         $this->email = $this->user->email;
+        $this->nip = $this->user->nip;
         $this->sudin_id = $this->user->sudin_id;
         $this->division_id = $this->user->division_id;
         $this->position_id = $this->user->position_id;
@@ -40,6 +42,7 @@ class Edit extends Component
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($this->user->id)],
             'password' => 'nullable|string|min:8|confirmed',
+            'nip' => 'nullable|string|max:50',
             'sudin_id' => 'nullable|exists:sudins,id',
             'division_id' => 'nullable|exists:divisions,id',
             'position_id' => 'nullable|exists:positions,id',
@@ -54,6 +57,7 @@ class Edit extends Component
         $data = [
             'name' => $this->name,
             'email' => $this->email,
+            'nip' => $this->nip ?: null,
             'sudin_id' => $this->sudin_id ?: null,
             'division_id' => $this->division_id ?: null,
             'position_id' => $this->position_id ?: null,

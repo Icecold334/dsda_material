@@ -16,6 +16,7 @@ class Create extends Component
     public $email = '';
     public $password = '';
     public $password_confirmation = '';
+    public $nip = '';
     public $sudin_id = '';
     public $division_id = '';
     public $position_id = '';
@@ -27,6 +28,7 @@ class Create extends Component
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
+            'nip' => 'nullable|string|max:50',
             'sudin_id' => 'nullable|exists:sudins,id',
             'division_id' => 'nullable|exists:divisions,id',
             'position_id' => 'nullable|exists:positions,id',
@@ -56,6 +58,7 @@ class Create extends Component
             'name' => $this->name,
             'email' => $this->email,
             'password' => Hash::make($this->password),
+            'nip' => $this->nip ?: null,
             'sudin_id' => $this->sudin_id ?: null,
             'division_id' => $this->division_id ?: null,
             'position_id' => $this->position_id ?: null,
