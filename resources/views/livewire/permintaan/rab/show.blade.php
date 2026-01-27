@@ -76,49 +76,109 @@
 
     @push('scripts')
         <script type="module">
-            // Render Livewire component untuk setiap foto item setelah grid loaded
-            document.addEventListener('DOMContentLoaded', function () {
-                // Observer untuk mendeteksi ketika grid selesai render
-                const observer = new MutationObserver(function (mutations) {
-                    const photoContainers = document.querySelectorAll('[data-item-photo]');
+            let currentUploadItemId = null;
 
-                    photoContainers.forEach(container => {
-                        if (!container.hasAttribute('data-livewire-rendered')) {
-                            const requestItemId = container.getAttribute('data-item-photo');
+            // Event delegation untuk tombol foto
+            document.addEventListener('click', function (e) {
+                // Handle view photo button
+                if (e.target.closest('.btn-view-photo')) {
+                    const btn = e.target.closest('.btn-view-photo');
+                    const photoUrl = btn.getAttribute('data-photo-url');
 
-                            if (!Livewire.find(container)) {
-                                Livewire.mount(container, 'components.item-photo-upload', {
-                                    requestItemId: requestItemId
-                                });
-                                container.setAttribute('data-livewire-rendered', 'true');
-                            }
+                    Swal.fire({
+                        imageUrl: photoUrl,
+                        imageAlt: 'Foto Barang',
+                        showConfirmButton: false,
+                        showCloseButton: true,
+                        width: 'auto',
+                        customClass: {
+                            image: 'max-h-96'
                         }
-                    });
-                });
-
-                // Observe grid container
-                const gridContainer = document.querySelector('[data-grid]');
-                if (gridContainer) {
-                    observer.observe(gridContainer, {
-                        childList: true,
-                        subtree: true
                     });
                 }
 
-                // Trigger pertama kali
-                setTimeout(() => {
-                    const photoContainers = document.querySelectorAll('[data-item-photo]');
-                    photoContainers.forEach(container => {
-                        if (!container.hasAttribute('data-livewire-rendered')) {
-                            const requestItemId = container.getAttribute('data-item-photo');
-                            Livewire.mount(container, 'components.item-photo-upload', {
-                                requestItemId: requestItemId
-                            });
-                            container.setAttribute('data-livewire-rendered', 'true');
+                // Handle upload photo button
+                if (e.target.closest('.btn-upload-photo')) {
+                    const btn = e.target.closest('.btn-upload-photo');
+                    currentUploadItemId = btn.getAttribute('data-item-id');
+
+                    Swal.fire({
+                        title: 'Upload Foto Barang',
+                        html: '<input type="file" id="photo-file-input" accept="image/*" class="swal2-input" style="display:block;">',
+                        showCancelButton: true,
+                        confirmButtonText: 'Upload',
+                        cancelButtonText: 'Batal',
+                        preConfirm: () => {
+                            const fileInput = document.getElementById('photo-file-input');
+                            const file = fileInput.files[0];
+
+                            if (!file) {
+                                Swal.showValidationMessage('Pilih foto terlebih dahulu');
+                                return false;
+                            }
+
+                            if (!file.type.startsWith('image/')) {
+                                Swal.showValidationMessage('File harus berupa gambar');
+                                return false;
+                            }
+
+                            if (file.size > 5120 * 1024) {
+                                Swal.showValidationMessage('Ukuran file maksimal 5MB');
+                                return false;
+                            }
+
+                            return file;
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed && result.value) {
+                            uploadPhoto(result.value);
                         }
                     });
-                }, 500);
+                }
             });
+
+            function uploadPhoto(file) {
+                const formData = new FormData();
+                formData.append('photo', file);
+                formData.append('_token', '{{ csrf_token() }}');
+
+                Swal.fire({
+                    title: 'Mengupload...',
+                    text: 'Mohon tunggu',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                fetch('{{ route("permintaan.rab.item.upload-photo", ["permintaan" => $permintaan->id, "item" => "ITEM_ID"]) }}'.replace('ITEM_ID', currentUploadItemId), {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: data.message || 'Foto berhasil diupload',
+                            timer: 2000
+                        }).then(() => {
+                            location.reload();
+                        });
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: 'Terjadi kesalahan saat upload foto'
+                        });
+                    });
+            }
         </script>
     @endpush
 </div>
