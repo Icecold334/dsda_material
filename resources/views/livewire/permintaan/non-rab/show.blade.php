@@ -6,12 +6,12 @@
         <div class="text-right flex gap-2 justify-end" x-data="{ fileCount: 0 }"
             @file-count-updated.window="fileCount = $event.detail">
             @if ($permintaan->status == 'draft')
-            <x-primary-button id="confirmSubmit">
-                Ajukan Permintaan
-            </x-primary-button>
-            <x-button id="confirmDelete" variant="danger">
-                Hapus Permintaan
-            </x-button>
+                <x-primary-button id="confirmSubmit">
+                    Ajukan Permintaan
+                </x-primary-button>
+                <x-button id="confirmDelete" variant="danger">
+                    Hapus Permintaan
+                </x-button>
             @else
                 <livewire:approval-panel :module="'permintaan'" :approvable-type="\App\Models\RequestModel::class"
                     :approvable-id="$permintaan->id" />
@@ -69,8 +69,9 @@
         { "name": "Kode Barang", "id": "kode", "width": "12%" },
         { "name": "Barang", "id": "barang", "width": "15%" },
         { "name": "Spesifikasi", "id": "spec" },
-        { "name": "Jumlah Diminta", "id": "qty_request", "width": "15%" },
-        { "name": "Jumlah Disetujui", "id": "qty_approved", "width": "15%" }
+        { "name": "Jumlah Diminta", "id": "qty_request", "width": "12%" },
+        { "name": "Jumlah Disetujui", "id": "qty_approved", "width": "12%" },
+        { "name": "Foto", "id": "foto", "width": "12%" }
     ]' wire:ignore>
             </div>
         </x-card>
@@ -85,49 +86,162 @@
     <livewire:components.document-modal :permintaanId="$permintaan->id" :key="'document-modal-' . $permintaan->id" />
 
     @push('scripts')
-    <script type="module">
-        document.getElementById("confirmSubmit").addEventListener("click", () => {
-            showConfirm(
-                {
-                    type: "question",
-                    title: "Konfirmasi",
-                    text: "Yakin ingin mengirim permintaan ini?",
-                    confirmButtonText: "Lanjutkan",
-                    cancelButtonText: "Batal",
-                    onConfirm: (e) => {
-                        window.Livewire.dispatch('confirmSubmit');
+        <script type="module">
+            const confirmSubmitBtn = document.getElementById("confirmSubmit");
+            if (confirmSubmitBtn) {
+                confirmSubmitBtn.addEventListener("click", () => {
+                    showConfirm(
+                        {
+                            type: "question",
+                            title: "Konfirmasi",
+                            text: "Yakin ingin mengirim permintaan ini?",
+                            confirmButtonText: "Lanjutkan",
+                            cancelButtonText: "Batal",
+                            onConfirm: (e) => {
+                                window.Livewire.dispatch('confirmSubmit');
+                            }
+                        }
+                    )
+                });
+            }
+
+            const confirmDeleteBtn = document.getElementById("confirmDelete");
+            if (confirmDeleteBtn) {
+                confirmDeleteBtn.addEventListener("click", () => {
+                    showConfirm(
+                        {
+                            type: "question",
+                            title: "Konfirmasi",
+                            text: "Yakin ingin menghapus permintaan ini?",
+                            confirmButtonText: "Lanjutkan",
+                            cancelButtonText: "Batal",
+                            onConfirm: (e) => {
+                                window.Livewire.dispatch('confirmDelete');
+                            }
+                        }
+                    )
+                });
+            }
+            document.addEventListener('deleteSuccess', function ({ detail }) {
+
+                showAlert(
+                    {
+                        type: "success",
+                        title: "Berhasil!",
+                        text: "Hapus permintaan berhasil!",
+                        onClose: (e) => {
+                            Livewire.navigate("{{ route('permintaan.nonRab.index') }}");
+                        }
                     }
+                )
+
+            });
+
+            let currentUploadItemId = null;
+
+            // Event delegation untuk tombol foto
+            document.addEventListener('click', function (e) {
+                // Handle view photo button
+                if (e.target.closest('.btn-view-photo')) {
+                    const btn = e.target.closest('.btn-view-photo');
+                    const photoUrl = btn.getAttribute('data-photo-url');
+
+                    Swal.fire({
+                        imageUrl: photoUrl,
+                        imageAlt: 'Foto Barang',
+                        showConfirmButton: false,
+                        showCloseButton: true,
+                        width: 'auto',
+                        customClass: {
+                            image: 'max-h-96'
+                        }
+                    });
                 }
-            )
-        });
-        document.getElementById("confirmDelete").addEventListener("click", () => {
-            showConfirm(
-                {
-                    type: "question",
-                    title: "Konfirmasi",
-                    text: "Yakin ingin menghapus permintaan ini?",
-                    confirmButtonText: "Lanjutkan",
-                    cancelButtonText: "Batal",
-                    onConfirm: (e) => {
-                        window.Livewire.dispatch('confirmDelete');
+
+                // Handle upload photo button
+                if (e.target.closest('.btn-upload-photo')) {
+                    const btn = e.target.closest('.btn-upload-photo');
+                    currentUploadItemId = btn.getAttribute('data-item-id');
+
+                    // Open file input
+                    Swal.fire({
+                        title: 'Upload Foto Barang',
+                        html: '<input type="file" id="photo-file-input" accept="image/*" class="swal2-input" style="display:block;">',
+                        showCancelButton: true,
+                        confirmButtonText: 'Upload',
+                        cancelButtonText: 'Batal',
+                        preConfirm: () => {
+                            const fileInput = document.getElementById('photo-file-input');
+                            const file = fileInput.files[0];
+
+                            if (!file) {
+                                Swal.showValidationMessage('Pilih foto terlebih dahulu');
+                                return false;
+                            }
+
+                            if (!file.type.startsWith('image/')) {
+                                Swal.showValidationMessage('File harus berupa gambar');
+                                return false;
+                            }
+
+                            if (file.size > 5120 * 1024) {
+                                Swal.showValidationMessage('Ukuran file maksimal 5MB');
+                                return false;
+                            }
+
+                            return file;
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed && result.value) {
+                            uploadPhoto(result.value);
+                        }
+                    });
+                }
+            });
+
+            function uploadPhoto(file) {
+                const formData = new FormData();
+                formData.append('photo', file);
+                formData.append('_token', '{{ csrf_token() }}');
+
+                // Show loading
+                Swal.fire({
+                    title: 'Mengupload...',
+                    text: 'Mohon tunggu',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        Swal.showLoading();
                     }
-                }
-            )
-        });
-        document.addEventListener('deleteSuccess',function ({detail}) {
-            
-            showAlert(
-                {
-                    type: "success",
-                    title: "Berhasil!",
-                    text: "Hapus permintaan berhasil!",
-                    onClose: (e) => {
-                        Livewire.navigate("{{ route('permintaan.nonRab.index') }}");
+                });
+
+                fetch('{{ route("permintaan.nonRab.item.upload-photo", ["permintaan" => $permintaan->id, "item" => "ITEM_ID"]) }}'.replace('ITEM_ID', currentUploadItemId), {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
                     }
-                }
-            )
-            
-        })
-    </script>
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: data.message || 'Foto berhasil diupload',
+                            timer: 2000
+                        }).then(() => {
+                            location.reload();
+                        });
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: 'Terjadi kesalahan saat upload foto'
+                        });
+                    });
+            }
+        </script>
     @endpush
 </div>

@@ -58,8 +58,9 @@
         { "name": "Kode Barang", "id": "kode", "width": "12%" },
         { "name": "Barang", "id": "barang", "width": "15%" },
         { "name": "Spesifikasi", "id": "spec" },
-        { "name": "Jumlah Diminta", "id": "qty_request", "width": "15%" },
-        { "name": "Jumlah Disetujui", "id": "qty_approved", "width": "15%" }
+        { "name": "Jumlah Diminta", "id": "qty_request", "width": "12%" },
+        { "name": "Jumlah Disetujui", "id": "qty_approved", "width": "12%" },
+        { "name": "Foto", "id": "foto", "width": "12%" }
     ]' wire:ignore>
             </div>
         </x-card>
@@ -72,4 +73,52 @@
 
     <!-- Modal Lihat Dokumen -->
     <livewire:components.document-modal :permintaanId="$permintaan->id" :key="'document-modal-rab-' . $permintaan->id" />
+
+    @push('scripts')
+        <script type="module">
+            // Render Livewire component untuk setiap foto item setelah grid loaded
+            document.addEventListener('DOMContentLoaded', function () {
+                // Observer untuk mendeteksi ketika grid selesai render
+                const observer = new MutationObserver(function (mutations) {
+                    const photoContainers = document.querySelectorAll('[data-item-photo]');
+
+                    photoContainers.forEach(container => {
+                        if (!container.hasAttribute('data-livewire-rendered')) {
+                            const requestItemId = container.getAttribute('data-item-photo');
+
+                            if (!Livewire.find(container)) {
+                                Livewire.mount(container, 'components.item-photo-upload', {
+                                    requestItemId: requestItemId
+                                });
+                                container.setAttribute('data-livewire-rendered', 'true');
+                            }
+                        }
+                    });
+                });
+
+                // Observe grid container
+                const gridContainer = document.querySelector('[data-grid]');
+                if (gridContainer) {
+                    observer.observe(gridContainer, {
+                        childList: true,
+                        subtree: true
+                    });
+                }
+
+                // Trigger pertama kali
+                setTimeout(() => {
+                    const photoContainers = document.querySelectorAll('[data-item-photo]');
+                    photoContainers.forEach(container => {
+                        if (!container.hasAttribute('data-livewire-rendered')) {
+                            const requestItemId = container.getAttribute('data-item-photo');
+                            Livewire.mount(container, 'components.item-photo-upload', {
+                                requestItemId: requestItemId
+                            });
+                            container.setAttribute('data-livewire-rendered', 'true');
+                        }
+                    });
+                }, 500);
+            });
+        </script>
+    @endpush
 </div>
