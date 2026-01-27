@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->string('password');
 
             // DSDA custom fields
+            $table->string('nip')->nullable();
             $table->string('ttd')->nullable();
             $table->uuid('sudin_id')->nullable();
             $table->uuid('division_id')->nullable();
@@ -43,7 +44,7 @@ return new class extends Migration {
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
+            $table->string('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');

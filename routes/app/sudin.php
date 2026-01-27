@@ -14,6 +14,8 @@ Route::prefix('sudin')->name('sudin.')->group(function () {
             'name' => $s->name,
             'short' => $s->short ?? '-',
             'address' => $s->address ?? '-',
+            'postal_code' => $s->postal_code ?? '-',
+            'phone' => $s->phone ?? '-',
             'action' => '
                 <div class="flex gap-1">
                     <a href="' . route('sudin.show', $s->id) . '" class="bg-blue-600 text-white text-xs font-medium px-1.5 py-0.5 rounded" wire:navigate>Detail</a>

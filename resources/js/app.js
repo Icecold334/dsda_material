@@ -112,17 +112,32 @@ window.showAlert = function ({
     type = "success", // success | error | info | warning
     title = "",
     text = "",
-    timer = 2000,
+    timer = 1500,
     showConfirmButton = false,
     confirmButtonText = "OK",
     cancelButtonText = "Batal",
     confirmEvent = null,
     confirmData = {},
+
+    // 🔥 NEW PROPS
+    onOpen = null,     // callback saat alert muncul
+    onClose = null,    // callback saat alert ditutup
+    onConfirm = null,  // callback saat confirm
 } = {}) {
     const options = {
         title,
         text,
         icon: type,
+        didOpen: () => {
+            if (typeof onOpen === "function") {
+                onOpen();
+            }
+        },
+        willClose: () => {
+            if (typeof onClose === "function") {
+                onClose();
+            }
+        },
     };
 
     // CONFIRM MODE
@@ -140,8 +155,16 @@ window.showAlert = function ({
     }
 
     return Swal.fire(options).then((result) => {
-        if (mode === "confirm" && result.isConfirmed && confirmEvent) {
-            window.Livewire.dispatch(confirmEvent, confirmData);
+        if (mode === "confirm" && result.isConfirmed) {
+            // Callback JS
+            if (typeof onConfirm === "function") {
+                onConfirm(result);
+            }
+
+            // Backward compatibility (Livewire event)
+            if (confirmEvent) {
+                window.Livewire.dispatch(confirmEvent, confirmData);
+            }
         }
     });
 };

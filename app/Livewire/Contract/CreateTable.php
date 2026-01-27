@@ -88,8 +88,8 @@ class CreateTable extends Component
             [
                 'namaBarang.required' => 'Nama barang wajib diisi.',
                 'spesifikasiBarang.required' => 'Spesifikasi barang wajib diisi.',
-                'satuanBarang.required' => 'Satuan barang wajib diisi.',
-                'jumlahBarang.required' => 'Jumlah barang wajib diisi.',
+                // 'satuanBarang.required' => 'Satuan barang wajib diisi.',
+                // 'jumlahBarang.required' => 'Jumlah barang wajib diisi.',
                 'jumlahBarang.numeric' => 'Jumlah barang harus berupa angka.',
                 'jumlahBarang.min' => 'Jumlah barang minimal 1.',
                 'hargaSatuanBarang.required' => 'Harga satuan barang wajib diisi.',

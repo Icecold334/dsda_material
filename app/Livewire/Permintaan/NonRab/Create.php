@@ -13,6 +13,7 @@ use App\Models\Subdistrict;
 use App\Models\ItemCategory;
 use App\Models\RequestModel;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\On;
 
 class Create extends Component
 {
@@ -40,6 +41,11 @@ class Create extends Component
     // Items collection
     public $items = [];
 
+    // Modal state
+    public $informationFilled = false;
+
+    protected $listeners = ['warehouseChanged' => 'handleWarehouseChanged'];
+
     public function rules()
     {
         return [
@@ -58,6 +64,27 @@ class Create extends Component
         ];
     }
 
+    #[On('requestInformationSaved')]
+    public function handleRequestInformationSaved($data)
+    {
+        $this->nomor = $data['nomor'];
+        $this->name = $data['name'];
+        $this->sudin_id = $data['sudin_id'];
+        $this->warehouse_id = $data['warehouse_id'];
+        $this->district_id = $data['district_id'];
+        $this->subdistrict_id = $data['subdistrict_id'];
+        $this->tanggal_permintaan = $data['tanggal_permintaan'];
+        $this->address = $data['address'];
+        $this->panjang = $data['panjang'];
+        $this->lebar = $data['lebar'];
+        $this->tinggi = $data['tinggi'];
+        $this->notes = $data['notes'];
+
+        $this->informationFilled = true;
+
+        session()->flash('success', 'Informasi permintaan berhasil disimpan. Silakan tambahkan barang.');
+    }
+
     public function updatedSudinId($value)
     {
         $this->warehouse_id = '';
@@ -74,9 +101,29 @@ class Create extends Component
 
     public function updatedWarehouseId($value)
     {
+        $this->clearItemsOnWarehouseChange();
+    }
+
+    public function handleWarehouseChanged($value)
+    {
+        $this->clearItemsOnWarehouseChange();
+    }
+
+    private function clearItemsOnWarehouseChange()
+    {
+        // Simpan status apakah ada items sebelum di-reset
+        $hadItems = count($this->items) > 0;
+
+        // Reset semua field
         $this->item_type_id = '';
         $this->item_category_id = '';
         $this->item_id = '';
+        $this->items = [];
+
+        // Tampilkan pesan jika sebelumnya ada items
+        if ($hadItems) {
+            session()->flash('info', 'Daftar barang telah dikosongkan karena perubahan gudang');
+        }
     }
 
     public function updatedItemTypeId($value)
@@ -173,7 +220,7 @@ class Create extends Component
             'panjang' => $this->panjang,
             'lebar' => $this->lebar,
             'tinggi' => $this->tinggi,
-            'user_id' => User::first()->id,
+            'user_id' => auth()->user()->id,
             'notes' => $this->notes,
             'status' => 'draft',
             'rab_id' => null,

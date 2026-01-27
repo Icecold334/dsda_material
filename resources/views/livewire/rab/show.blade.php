@@ -5,6 +5,13 @@
         </div>
         <div class="text-right flex gap-2 justify-end" x-data="{ fileCount: 0 }"
             @file-count-updated.window="fileCount = $event.detail">
+            <x-secondary-button @click="$dispatch('open-modal', 'rab-information-modal')" type="button">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Informasi RAB
+            </x-secondary-button>
             <x-secondary-button @click="$dispatch('open-modal', 'lampiran-modal')" type="button">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -18,83 +25,10 @@
             </x-secondary-button>
             <x-button variant="secondary" href="{{ route('rab.index') }}" wire:navigate>
                 Kembali
-                </x-button>
+            </x-button>
         </div>
     </div>
-    <div>
-        <x-card title="Detail RAB">
-            <div class="">
-                <table class="table-auto w-full text-md space-y-2 ">
-                    <tr>
-                        <td class="font-semibold w-1/2">Nomor RAB</td>
-                        <td>{{ $rab->nomor }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Nama Kegiatan</td>
-                        <td>{{ $rab->name }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Tahun Anggaran</td>
-                        <td>{{ $rab->tahun }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Tanggal Mulai</td>
-                        <td>{{ $rab->tanggal_mulai?->format('d/m/Y') ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Tanggal Selesai</td>
-                        <td>{{ $rab->tanggal_selesai?->format('d/m/Y') ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Status</td>
-                        <td><span
-                                class="bg-{{ $rab->status_color }}-600 text-{{ $rab->status_color }}-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">{{
-    $rab->status_text }}</span></td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Pembuat</td>
-                        <td>{{ $rab->user?->name ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Total Anggaran</td>
-                        <td>Rp {{ number_format($rab->total, 0, ',', '.') }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Sudin</td>
-                        <td>{{ $rab->sudin?->name ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Tipe Barang</td>
-                        <td>{{ $rab->itemType?->name ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Kecamatan</td>
-                        <td>{{ $rab->district?->name ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Kelurahan</td>
-                        <td>{{ $rab->subdistrict?->name ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Alamat</td>
-                        <td>{{ $rab->address ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Panjang</td>
-                        <td>{{ $rab->panjang ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Lebar</td>
-                        <td>{{ $rab->lebar ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Tinggi</td>
-                        <td>{{ $rab->tinggi ?? '-' }}</td>
-                    </tr>
-                </table>
-            </div>
-        </x-card>
-    </div>
+
     <div>
         <x-card title="Daftar Barang">
             <div data-grid data-api="{{ route('rab.show.json', $rab) }}" data-columns='[
@@ -107,6 +41,9 @@
 
         </x-card>
     </div>
+
+    <!-- Modal Components -->
+    <livewire:components.rab-information-modal mode="show" :key="'rab-info-modal-' . $rab->id" />
 
     <!-- Modal Lampiran -->
     <livewire:components.document-upload mode="show" modelType="App\Models\Rab" :modelId="$rab->id"

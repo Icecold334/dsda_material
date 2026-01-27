@@ -17,6 +17,8 @@ class Create extends Component
 {
     #[Title('Buat RAB')]
 
+    public $informationFilled = false;
+
     public $nomor = '';
     public $name = '';
     public $tahun = '';
@@ -39,9 +41,33 @@ class Create extends Component
     // Items collection
     public $items = [];
 
+    protected $listeners = [
+        'rabInformationSaved' => 'handleRabInformationSaved',
+    ];
+
     public function mount()
     {
         $this->tahun = now()->year;
+    }
+
+    public function handleRabInformationSaved($data)
+    {
+        $this->nomor = $data['nomor'];
+        $this->name = $data['name'];
+        $this->tahun = $data['tahun'];
+        $this->tanggal_mulai = $data['tanggal_mulai'];
+        $this->tanggal_selesai = $data['tanggal_selesai'];
+        $this->sudin_id = $data['sudin_id'];
+        $this->district_id = $data['district_id'];
+        $this->subdistrict_id = $data['subdistrict_id'];
+        $this->address = $data['address'];
+        $this->panjang = $data['panjang'];
+        $this->lebar = $data['lebar'];
+        $this->tinggi = $data['tinggi'];
+
+        $this->informationFilled = true;
+
+        session()->flash('success', 'Informasi RAB berhasil disimpan, silahkan tambahkan item');
     }
 
     public function rules()

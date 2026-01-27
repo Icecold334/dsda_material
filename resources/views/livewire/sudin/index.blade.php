@@ -17,9 +17,11 @@
     </div>
 
     <div data-grid data-api="{{ route('sudin.json') }}" data-columns='[
-        { "name": "Nama", "id": "name","width": "30%" },
-        { "name": "Singkatan", "id": "short","width": "20%"  },
-        { "name": "Alamat", "id": "address","width": "20%"  },
+        { "name": "Nama", "id": "name","width": "20%" },
+        { "name": "Singkatan", "id": "short","width": "10%"  },
+        { "name": "Alamat", "id": "address","width": "25%"  },
+        { "name": "Kode Pos", "id": "postal_code","width": "10%"  },
+        { "name": "Telepon", "id": "phone","width": "15%"  },
         { "name": "", "id": "action" ,"width": "10%"}
     ]' data-limit="10" wire:ignore
         x-data="{ reloadGrid() { this.$el.dispatchEvent(new CustomEvent('reload-grid')); } }"

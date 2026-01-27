@@ -1,50 +1,63 @@
 <div class="space-y-4">
-    <x-card title="Tambah Barang" class="space-y-4">
-        <form wire:submit.prevent="save" class="space-y-4">
-            <div class="flex items-center gap-4">
-                <div class="w-1/3 font-semibold bg-gray-50 px-4 py-2 rounded">
-                    Nama Barang
-                </div>
-                <div class="w-2/3">
-                    <livewire:components.select-input wire:model.live="itemCategory"
-                        :options="$itemCategories->pluck('name', 'id')" placeholder="Pilih Barang" />
-                </div>
-                <div class="w-1/3 font-semibold bg-gray-50 px-4 py-2 rounded">
-                    Spesifikasi
-                </div>
-                <div class="w-2/3">
-                    <livewire:components.select-input wire:model.live="item" :disabled="!$itemCategory"
-                        wire:key="item-select-{{ $itemCategory }}" :options="$items->pluck('spec', 'id')"
-                        placeholder="Pilih Spesifikasi" />
-                </div>
-                <div class="w-1/3 font-semibold bg-gray-50 px-4 py-2 rounded">
-                    Jumlah
-                    @if ($maxQty > 0)
-                        <div class="text-xs font-bold text-gray-500">
-                            Max: {{ $maxQty }} {{ $unit }}
+    <div class="grid grid-cols-2">
+        <x-card title="Tambah Barang">
+            <form wire:submit.prevent="save">
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="flex items-center justify-between">
+                        <x-input-label for="itemCategory" value="Nama Barang" />
+                        <div class="mt-1 block w-full max-w-[500px]">
+                            <livewire:components.select-input wire:model.live="itemCategory"
+                                :options="$itemCategories->pluck('name', 'id')" placeholder="-- Pilih Barang --"
+                                :key="'item-category-select'" />
+                            <x-input-error :messages="$errors->get('itemCategory')" class="mt-2" />
                         </div>
-                    @endif
-                </div>
+                    </div>
 
-                <div class="w-2/3">
-                    <div class="flex">
-                        <input type="number" wire:model.live.debounce.500ms='qty'
-                            class="rounded-none rounded-s-lg bg-gray-50 border border-gray-300 text-gray-900 block flex-1 text-sm p-2.5"
-                            @disabled(!$item) placeholder="Jumlah Pengiriman" max="{{ $maxQty }}" required>
+                    <div class="flex items-center justify-between">
+                        <x-input-label for="item" value="Spesifikasi" />
+                        <div class="mt-1 block w-full max-w-[500px]">
+                            <livewire:components.select-input wire:model.live="item" :disabled="!$itemCategory"
+                                wire:key="item-select-{{ $itemCategory }}" :options="$items->pluck('spec', 'id')"
+                                placeholder="-- Pilih Spesifikasi --" />
+                            <x-input-error :messages="$errors->get('item')" class="mt-2" />
+                        </div>
+                    </div>
 
-                        <div
-                            class="text-center rounded-none rounded-e-lg bg-gray-200 font-semibold Satuan border border-gray-300 text-gray-900 block w-20 text-sm p-2.5">
-                            {{ $unit }}
+                    <div class="flex items-center justify-between">
+                        <x-input-label for="qty" value="Jumlah" />
+                        <div class="mt-1 block w-full max-w-[500px]">
+                            <div class="relative">
+                                <x-text-input id="qty" wire:model.live.debounce.500ms="qty" type="number" step="0.01"
+                                    :disabled="!$item" class="w-full pr-20" placeholder="Masukkan jumlah"
+                                    max="{{ $maxQty }}" required />
+                                @if ($unit)
+                                    <span
+                                        class="absolute inset-y-0 right-0 flex items-center pr-3 text-sm text-gray-500 pointer-events-none">
+                                        {{ $unit }}
+                                    </span>
+                                @endif
+                            </div>
+                            @if($maxQty > 0)
+                                <p class="mt-1 text-xs text-gray-500">Maksimal: {{ number_format($maxQty, 2) }} {{ $unit }}
+                                </p>
+                            @endif
+                            <x-input-error :messages="$errors->get('qty')" class="mt-2" />
                         </div>
                     </div>
                 </div>
-                <div class="w-1/12">
-                    <button type="submit" @disabled($disablAdd)
-                        class="{{ !$disablAdd ? 'bg-primary-700 hover:bg-primary-800' : 'bg-gray-400 cursor-not-allowed' }} text-center text-white focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 focus:outline-none">Tambah</button>
+
+                <div class="mt-6 flex justify-end">
+                    <x-button type="submit" :disabled="$disablAdd">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        Tambah Barang
+                    </x-button>
                 </div>
-            </div>
-        </form>
-    </x-card>
+            </form>
+        </x-card>
+    </div>
     <x-card title="Daftar Barang">
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-sm text-left rtl:text-right text-black shadow-lg">

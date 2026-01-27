@@ -14,6 +14,8 @@ class Create extends Component
 {
     #[Title('Buat Transfer Permintaan')]
 
+    public $informationFilled = false;
+
     public $sudin_pengirim_id = '';
     public $sudin_penerima_id = '';
     public $tanggal_transfer = '';
@@ -27,6 +29,22 @@ class Create extends Component
 
     // Items collection
     public $items = [];
+
+    protected $listeners = [
+        'transferInformationSaved' => 'handleTransferInformationSaved',
+    ];
+
+    public function handleTransferInformationSaved($data)
+    {
+        $this->sudin_pengirim_id = $data['sudin_pengirim_id'];
+        $this->sudin_penerima_id = $data['sudin_penerima_id'];
+        $this->tanggal_transfer = $data['tanggal_transfer'];
+        $this->notes = $data['notes'];
+
+        $this->informationFilled = true;
+
+        session()->flash('success', 'Informasi transfer berhasil disimpan, silahkan tambahkan item');
+    }
 
     public function rules()
     {

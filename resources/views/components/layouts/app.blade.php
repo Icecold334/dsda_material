@@ -41,7 +41,8 @@
                 <div id="avatarButton" type="button" data-dropdown-toggle="userDropdown"
                     data-dropdown-placement="bottom-start"
                     class="w-10 h-10 rounded-full cursor-pointer bg-primary-600 text-white flex items-center justify-center font-semibold text-sm">
-                    {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1) . (strpos(auth()->user()->name ?? '', ' ') ? substr(auth()->user()->name, strpos(auth()->user()->name, ' ') + 1, 1) : '')) }}
+                    {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1) . (strpos(auth()->user()->name ?? '', ' ') ?
+                    substr(auth()->user()->name, strpos(auth()->user()->name, ' ') + 1, 1) : '')) }}
                 </div>
 
                 <!-- Dropdown menu -->
@@ -52,7 +53,8 @@
                     </div>
                     <ul class="py-2 text-sm text-gray-700 " aria-labelledby="avatarButton">
                         <li>
-                            <a href="/profile" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
+                            <a href="{{ route('profile.edit') }}" wire:navigate
+                                class="block px-4 py-2 hover:bg-gray-100 :bg-gray-600 :text-white">Profile</a>
                         </li>
                     </ul>
                     <div class="py-1">

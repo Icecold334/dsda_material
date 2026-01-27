@@ -5,6 +5,15 @@
         </div>
         <div class="text-right flex gap-2 justify-end" x-data="{ fileCount: 0 }"
             @file-count-updated.window="fileCount = $event.detail">
+            @if($rab && $informationFilled)
+                <x-secondary-button @click="$dispatch('open-modal', 'request-information-modal')" type="button">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Informasi
+                </x-secondary-button>
+            @endif
             <x-secondary-button @click="$dispatch('open-modal', 'lampiran-modal')" type="button">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -56,118 +65,29 @@
         </div>
     @endif
 
+    @if (session('success'))
+        <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50" role="alert">
+            {{ session('success') }}
+        </div>
+    @endif
+
     @if ($rab)
-        <form wire:submit="save">
-            <div class="grid grid-cols-1 gap-4">
-                <x-card title="Informasi Permintaan">
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between">
-                            <x-input-label for="nomor" value="Nomor SPB" />
-                            <div class="mt-1 block w-full max-w-[500px]">
-                                <x-text-input id="nomor" wire:model="nomor" placeholder="Masukkan nomor SPB" type="text"
-                                    class="w-full" />
-                                <x-input-error :messages="$errors->get('nomor')" class="mt-2" />
-                            </div>
-                        </div>
+        <!-- Modal Informasi Permintaan -->
+        <livewire:components.request-information-modal :mode="$informationFilled ? 'show' : 'create'" :isRab="true"
+            :key="'request-info-modal-rab'" />
 
-                        <div class="flex items-center justify-between">
-                            <x-input-label for="name" value="Nama Permintaan" />
-                            <div class="mt-1 block w-full max-w-[500px]">
-                                <x-text-input id="name" wire:model="name" type="text" class="w-full bg-gray-100"
-                                    placeholder="Otomatis dari RAB" disabled />
-                                <x-input-error :messages="$errors->get('name')" class="mt-2" />
-                            </div>
-                        </div>
+        @if(!$informationFilled)
+            <div class="p-4 text-center text-amber-800 rounded-lg bg-amber-50" role="alert">
+                <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p class="text-lg font-semibold">Silakan isi informasi permintaan terlebih dahulu</p>
+            </div>
+        @endif
 
-                        <div class="flex items-center justify-between">
-                            <x-input-label for="sudin_id" value="Sudin" />
-                            <div class="mt-1 block w-full max-w-[500px]">
-                                <x-text-input type="text" class="w-full bg-gray-100"
-                                    value="{{ $rab?->sudin?->name ?? '-' }}" disabled />
-                            </div>
-                        </div>
-
-                        <div class="flex items-center justify-between">
-                            <x-input-label for="warehouse_id" value="Gudang" />
-                            <div class="mt-1 block w-full max-w-[500px]">
-                                <div class="flex gap-2">
-                                    @if ($warehouse_id)
-                                        @php
-                                            $selectedWarehouse = $warehousesWithStock->firstWhere('id', $warehouse_id);
-                                        @endphp
-                                        <x-text-input type="text" class="w-full bg-gray-100"
-                                            value="{{ $selectedWarehouse['name'] ?? '-' }}" disabled />
-                                    @else
-                                        <x-text-input type="text" class="w-full bg-gray-100" placeholder="-- Pilih Gudang --"
-                                            disabled />
-                                    @endif
-                                    <x-button type="button" wire:click="openWarehouseModal">
-                                        Pilih
-                                    </x-button>
-                                </div>
-                                <x-input-error :messages="$errors->get('warehouse_id')" class="mt-2" />
-                            </div>
-                        </div>
-
-                        <div class="flex items-center justify-between">
-                            <x-input-label for="tanggal_permintaan" value="Tanggal Permintaan" />
-                            <div class="mt-1 block w-full max-w-[500px]">
-                                <x-text-input id="tanggal_permintaan" wire:model="tanggal_permintaan" type="date"
-                                    class="w-full" />
-                                <x-input-error :messages="$errors->get('tanggal_permintaan')" class="mt-2" />
-                            </div>
-                        </div>
-
-                        <div class="flex items-center justify-between">
-                            <x-input-label for="district_id" value="Lokasi" />
-                            <div class="input w-full max-w-[500px] flex flex-col gap-4">
-                                <div class="grid-cols-2 flex gap-4">
-                                    <div class="w-full">
-                                        <x-text-input type="text" class="w-full bg-gray-100"
-                                            value="{{ $rab?->district?->name ?? '-' }}" disabled />
-                                    </div>
-                                    <div class="w-full">
-                                        <x-text-input type="text" class="w-full bg-gray-100"
-                                            value="{{ $rab?->subdistrict?->name ?? '-' }}" disabled />
-                                    </div>
-                                </div>
-                                <textarea id="address" wire:model="address" rows="3"
-                                    class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full bg-gray-100"
-                                    placeholder="Otomatis dari RAB" disabled></textarea>
-                                <x-input-error :messages="$errors->get('address')" />
-                            </div>
-                        </div>
-
-                        <div class="flex items-center justify-between">
-                            <x-input-label for="panjang" value="Dimensi" />
-                            <div class="w-full max-w-[500px] grid grid-cols-3 gap-4">
-                                <div class="w-full">
-                                    <x-text-input id="panjang" wire:model="panjang" type="text" class="w-full bg-gray-100"
-                                        placeholder="0" disabled />
-                                </div>
-                                <div class="w-full">
-                                    <x-text-input id="lebar" wire:model="lebar" type="text" class="w-full bg-gray-100"
-                                        placeholder="0" disabled />
-                                </div>
-                                <div class="w-full">
-                                    <x-text-input id="tinggi" wire:model="tinggi" type="text" class="w-full bg-gray-100"
-                                        placeholder="0" disabled />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center justify-between">
-                            <x-input-label for="notes" value="Keterangan" />
-                            <div class="mt-1 block w-full max-w-[500px]">
-                                <textarea id="notes" wire:model="notes" rows="3"
-                                    class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full"
-                                    placeholder="Masukkan keterangan (opsional)"></textarea>
-                                <x-input-error :messages="$errors->get('notes')" class="mt-2" />
-                            </div>
-                        </div>
-                    </div>
-                </x-card>
-
+        @if($informationFilled)
+            <form wire:submit="save">
                 <!-- Daftar Barang dari RAB -->
                 <x-card title="Daftar Barang dari RAB">
                     @if (session('error'))
@@ -231,8 +151,8 @@
                                         </td>
                                         <td class="px-4 py-3">
                                             <div class="flex items-center gap-2">
-                                                <input type="number" wire:model.live="items.{{ $index }}.qty_request"
-                                                    step="0.01" min="0" max="{{ $item['max_qty'] }}"
+                                                <input type="number" wire:model.live="items.{{ $index }}.qty_request" step="0.01"
+                                                    min="0" max="{{ $item['max_qty'] }}"
                                                     class="w-24 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm"
                                                     {{ !$warehouse_id || $item['max_qty'] <= 0 ? 'disabled' : '' }} />
                                                 <span class="text-gray-600">{{ $item['item_unit'] }}</span>
@@ -253,18 +173,18 @@
                         </table>
                     </div>
                 </x-card>
-            </div>
 
-            <div class="mt-6 flex justify-end gap-3">
-                <a href="{{ route('permintaan.rab.index') }}" wire:navigate
-                    class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
-                    Batal
-                </a>
-                <x-button type="submit">
-                    Simpan Permintaan
-                </x-button>
-            </div>
-        </form>
+                <div class="mt-6 flex justify-end gap-3">
+                    <a href="{{ route('permintaan.rab.index') }}" wire:navigate
+                        class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
+                        Batal
+                    </a>
+                    <x-button type="submit">
+                        Simpan Permintaan
+                    </x-button>
+                </div>
+            </form>
+        @endif
 
         <!-- Modal Lampiran -->
         <livewire:components.document-upload mode="create" modelType="App\Models\RequestModel"
