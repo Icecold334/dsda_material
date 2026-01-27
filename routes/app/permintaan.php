@@ -56,17 +56,23 @@ Route::prefix('permintaan')->name('permintaan.')->group(function () {
         Route::get('/{permintaan}', ShowRab::class)->name('show');
     });
     Route::prefix('non-rab')->name('nonRab.')->group(function () {
+
         Route::get('/', IndexNonRab::class)->name('index');
-        Route::get('/create', CreateNonRab::class)->name('create');
+        Route::get('/create', CreateNonRab::class)->middleware(['inject.sudin', 'plt'])->name('create');
         Route::get('/json', function () {
-            $data = RequestModel::whereNull('rab_id')->get()->map(fn($r) => [
-                'nomor' => $r->nomor,
-                'user' => $r->user->name,
-                'status' => '<span class="bg-' . $r->status_color . '-600 text-' . $r->status_color . '-100 text-xs font-medium px-2.5 py-0.5 rounded-full">'
-                    . $r->status_text .
-                    '</span>',
-                'action' => '<a href="' . route('permintaan.nonRab.show', $r->id) . '" class="bg-primary-600 text-white text-xs font-medium px-1.5 py-0.5 rounded" wire:navigate>Detail</a>',
-            ]);
+            $data = RequestModel::whereNull('rab_id')->when(auth()->user()->sudin, function ($request) {
+                if (auth()->user()->division?->type == 'district') {
+                    return $request->whereUserId(auth()->id());
+                }
+                return $request->whereSudinId(auth()->user()->sudin_id);
+            })->get()->map(fn($r) => [
+                    'nomor' => $r->nomor,
+                    'user' => $r->user->name,
+                    'status' => '<span class="bg-' . $r->status_color . '-600 text-' . $r->status_color . '-100 text-xs font-medium px-2.5 py-0.5 rounded-full">'
+                        . $r->status_text .
+                        '</span>',
+                    'action' => '<a href="' . route('permintaan.nonRab.show', $r->id) . '" class="bg-primary-600 text-white text-xs font-medium px-1.5 py-0.5 rounded" wire:navigate>Detail</a>',
+                ]);
 
             return response()->json([
                 'status' => 'success',

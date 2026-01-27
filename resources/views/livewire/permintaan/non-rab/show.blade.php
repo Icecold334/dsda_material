@@ -5,16 +5,16 @@
         </div>
         <div class="text-right flex gap-2 justify-end" x-data="{ fileCount: 0 }"
             @file-count-updated.window="fileCount = $event.detail">
-            @if ($permintaan->status == 'draft')
+            @if ($permintaan->status == 'draft' && $permintaan->user_id == auth()->id())
             <x-primary-button id="confirmSubmit">
                 Ajukan Permintaan
             </x-primary-button>
             <x-button id="confirmDelete" variant="danger">
                 Hapus Permintaan
             </x-button>
-            @else
-                <livewire:approval-panel :module="'permintaan'" :approvable-type="\App\Models\RequestModel::class"
-                    :approvable-id="$permintaan->id" />
+            @elseif($permintaan->status != 'draft')
+            <livewire:approval-panel :module="'permintaan'" :approvable-type="\App\Models\RequestModel::class"
+                :approvable-id="$permintaan->id" />
             @endif
             <x-secondary-button @click="$dispatch('open-modal', 'request-information-modal')" type="button">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -23,6 +23,7 @@
                 </svg>
                 Informasi Permintaan
             </x-secondary-button>
+            @if($permintaan->status == 'approved')
             <x-secondary-button @click="$dispatch('open-modal', 'delivery-info-modal')" type="button">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -30,6 +31,7 @@
                 </svg>
                 Informasi Pengiriman
             </x-secondary-button>
+            @endif
             <x-secondary-button @click="$dispatch('open-modal', 'lampiran-modal')" type="button">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -60,7 +62,8 @@
     <livewire:components.request-information-modal :mode="'show'" :isRab="false" :key="'request-info-modal-show'" />
 
     <!-- Modal Informasi Pengiriman -->
-    <livewire:components.delivery-info-modal :permintaan="$permintaan" :key="'delivery-info-modal-' . $permintaan->id" />
+    <livewire:components.delivery-info-modal :permintaan="$permintaan"
+        :key="'delivery-info-modal-' . $permintaan->id" />
 
     <div>
         <x-card title="Daftar Barang">

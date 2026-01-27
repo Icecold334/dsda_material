@@ -50,6 +50,18 @@ class UserSeeder extends Seeder
                     'position' => 'Kepala Satuan Pelaksana',
                     'division' => 'Tebet',
                 ],
+                [
+                    'name' => 'Kasatpel Gambir',
+                    'email' => 'satpelagambir',
+                    'position' => 'Kepala Satuan Pelaksana',
+                    'division' => 'Gambir',
+                ],
+                [
+                    'name' => 'Kasatpel Senen',
+                    'email' => 'satpelasenen',
+                    'position' => 'Kepala Satuan Pelaksana',
+                    'division' => 'Senen',
+                ],
 
                 // KASIE SEKSI
                 [
