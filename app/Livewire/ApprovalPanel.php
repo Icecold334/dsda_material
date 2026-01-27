@@ -39,7 +39,6 @@ class ApprovalPanel extends Component
 
     public function onExtraCheckResult(bool $ready, string $message = '', ApprovalService $approvalService)
     {
-
         $this->extraReady = $ready;
         $this->extraError = $message;
         $this->getApprovals($approvalService);

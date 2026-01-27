@@ -61,7 +61,8 @@ class RequestSeeder extends Seeder
                 'driver_id' => $driver?->id,
                 'security_id' => $security?->id,
                 'tanggal_permintaan' => now()->subDays(rand(0, 10)),
-                'status' => collect(['draft', 'pending', 'approved'])->random(),
+                // 'status' => collect(['draft', 'pending', 'approved'])->random(),
+                'status' => 'draft',
                 'notes' => 'Seeder request ke-' . $i,
             ]);
 

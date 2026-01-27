@@ -75,6 +75,8 @@ class DeliveryInfo extends Component
 
         // Dispatch event to notify parent component
         $this->dispatch('delivery-info-saved');
+        $this->dispatch('approvalExtraCheckRequested');
+
     }
 
     private function saveSignature($signatureData, $category)
@@ -107,6 +109,8 @@ class DeliveryInfo extends Component
             'size_kb' => strlen($imageData) / 1024,
             'user_id' => Auth::id(),
         ]);
+        $this->dispatch('approvalExtraCheckRequested');
+
     }
 
     public function getDriversProperty()
