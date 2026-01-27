@@ -37,4 +37,10 @@ class StockTransaction extends Model
     {
         return $this->morphTo(__FUNCTION__, 'ref_type', 'ref_id');
     }
+
+    // Relationship untuk documents (polymorphic)
+    public function documents()
+    {
+        return $this->morphMany(Document::class, 'documentable');
+    }
 }

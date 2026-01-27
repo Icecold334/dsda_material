@@ -21,25 +21,27 @@ class RequestSeeder extends Seeder
 {
     public function run(): void
     {
-        $sudin = Sudin::first();
-        $unit = Unit::first();
-        $user = User::first();
-        $rab = Rab::all()->random();
-        $driver = Personnel::where('type', 'driver')->first();
-        $security = Personnel::where('type', 'security')->first();
-        $warehouse = Warehouse::first();
-        $district = Division::districts()->first();  // Kecamatan dari divisions
-        $subdistrict = Subdistrict::first();
-        $items = Item::all();
 
-        if (!$sudin || !$user || $items->isEmpty()) {
-            $this->command->warn('Seeder Request dilewati, data master belum lengkap.');
-            return;
-        }
 
         // Buat 5 request
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 1; $i <= 50; $i++) {
+            $sudin = Sudin::first();
+            $unit = Unit::first();
+            $user = User::whereHas('position', function ($pos) {
+                return $pos->where('name', 'Kepala Satuan Pelaksana');
+            })->inRandomOrder()->first();
+            $rab = Rab::all()->random();
+            $driver = Personnel::where('type', 'driver')->first();
+            $security = Personnel::where('type', 'security')->first();
+            $warehouse = Warehouse::all()->random();
+            $district = Division::districts()->first();  // Kecamatan dari divisions
+            $subdistrict = Subdistrict::first();
+            $items = Item::all();
 
+            if (!$sudin || !$user || $items->isEmpty()) {
+                $this->command->warn('Seeder Request dilewati, data master belum lengkap.');
+                return;
+            }
             $request = RequestModel::create([
                 'nomor' => 'REQ-' . now()->format('Ymd') . '-' . str_pad($i, 3, '0', STR_PAD_LEFT),
                 'name' => 'Permintaan Barang ' . $i,
@@ -59,7 +61,8 @@ class RequestSeeder extends Seeder
                 'driver_id' => $driver?->id,
                 'security_id' => $security?->id,
                 'tanggal_permintaan' => now()->subDays(rand(0, 10)),
-                'status' => collect(['draft', 'pending', 'approved'])->random(),
+                // 'status' => collect(['draft', 'pending', 'approved'])->random(),
+                'status' => 'draft',
                 'notes' => 'Seeder request ke-' . $i,
             ]);
 

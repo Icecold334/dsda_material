@@ -1,68 +1,83 @@
 <div class="space-y-4">
-    <x-card title="Tambah Barang" class="space-y-4">
-        <form wire:submit.prevent="save">
-            <div class="grid md:grid-cols-2 w-full md:gap-4">
-                <table>
-                    <tr>
-                        <td class="font-semibold bg-gray-50 px-4 py-2">Nama Barang</td>
-                        <td class="px-4 py-2">
+    <div class="grid-cols-2 grid">
+        <x-card title="Tambah Barang">
+            <form wire:submit.prevent="save">
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <x-input-label for="namaBarang" value="Nama Barang" />
+                        <div class="mt-1 block w-full max-w-[500px]">
                             <livewire:components.select-input wire:model="namaBarang" :freetext="true"
-                                :options="$barangs->pluck('name', 'id')" placeholder="Nama Barang" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold bg-gray-50 px-4 py-2">Spesifikasi</td>
-                        <td class="px-4 py-2">
-                            <textarea id="message" rows="4" wire:model="spesifikasiBarang"
-                                class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 "
-                                placeholder="Spesifikasi Barang"></textarea>
-                        </td>
-                    </tr>
+                                :options="$barangs->pluck('name', 'id')" placeholder="-- Pilih Nama Barang --"
+                                :key="'nama-barang-select'" />
+                            <x-input-error :messages="$errors->get('namaBarang')" class="mt-2" />
+                        </div>
+                    </div>
 
-                </table>
-                <table>
-                    <tr>
-                        <td class="font-semibold bg-gray-50 px-4 py-2">Jumlah</td>
-                        <td class="px-4 py-2"><input type="text" wire:model="jumlahBarang"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                                placeholder="Jumlah Barang" /></td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold bg-gray-50 px-4 py-2">Satuan</td>
-                        <td class="px-4 py-2">
+                    <div class="flex items-center justify-between">
+                        <x-input-label for="spesifikasiBarang" value="Spesifikasi" />
+                        <div class="mt-1 block w-full max-w-[500px]">
+                            <textarea id="spesifikasiBarang" rows="4" wire:model="spesifikasiBarang"
+                                class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full"
+                                placeholder="Masukkan spesifikasi barang"></textarea>
+                            <x-input-error :messages="$errors->get('spesifikasiBarang')" class="mt-2" />
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <x-input-label for="jumlahBarang" value="Jumlah" />
+                        <div class="mt-1 block w-full max-w-[500px]">
+                            <x-text-input id="jumlahBarang" wire:model="jumlahBarang" type="number" step="0.01"
+                                class="w-full" placeholder="Masukkan jumlah barang" />
+                            <x-input-error :messages="$errors->get('jumlahBarang')" class="mt-2" />
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <x-input-label for="satuanBarang" value="Satuan" />
+                        <div class="mt-1 block w-full max-w-[500px]">
                             <livewire:components.select-input wire:model="satuanBarang" :freetext="true"
-                                :options="$units->pluck('name', 'id')" placeholder="Satuan Barang" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold bg-gray-50 px-4 py-2">Harga Satuan</td>
-                        <td class="px-4 py-2">
-                            <x-text-input wire:model="hargaSatuanBarang" currency placeholder="Harga Satuan Barang"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " />
-                            {{-- <input type="text" wire:model='hargaSatuanBarang'
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                                placeholder="Harga Satuan Barang" /> --}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold bg-gray-50 px-4 py-2">PPN</td>
-                        <td class="px-4 py-2">
-                            <select wire:model="ppnBarang"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
+                                :options="$units->pluck('name', 'id')" placeholder="-- Pilih Satuan --"
+                                :key="'satuan-barang-select'" />
+                            <x-input-error :messages="$errors->get('satuanBarang')" class="mt-2" />
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <x-input-label for="hargaSatuanBarang" value="Harga Satuan" />
+                        <div class="mt-1 block w-full max-w-[500px]">
+                            <x-text-input id="hargaSatuanBarang" wire:model="hargaSatuanBarang" currency
+                                placeholder="Masukkan harga satuan" class="w-full" />
+                            <x-input-error :messages="$errors->get('hargaSatuanBarang')" class="mt-2" />
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <x-input-label for="ppnBarang" value="PPN" />
+                        <div class="mt-1 block w-full max-w-[500px]">
+                            <select id="ppnBarang" wire:model="ppnBarang"
+                                class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full">
                                 <option value="0" selected>Sudah Termasuk PPN</option>
                                 <option value="11">11%</option>
                                 <option value="12">12%</option>
                             </select>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div class="text-right ">
-                <button type="submit"
-                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150 bg-white text-gray-700 border-gray-300 hover:bg-gray-50 active:bg-gray-100 focus:ring-indigo-500">Tambah</button>
-            </div>
-        </form>
-    </x-card>
+                            <x-input-error :messages="$errors->get('ppnBarang')" class="mt-2" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                    <x-button type="submit">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        Tambah Barang
+                    </x-button>
+                </div>
+            </form>
+        </x-card>
+
+    </div>
     <x-card title="Daftar Barang">
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-sm text-left rtl:text-right text-black shadow-lg">

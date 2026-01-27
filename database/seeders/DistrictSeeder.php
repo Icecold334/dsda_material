@@ -19,6 +19,7 @@ class DistrictSeeder extends Seeder
             'Cempaka Putih',
             'Menteng',
             'Tanah Abang',
+            'Tebet',
             'Senen',
             'Johar Baru',
             'Kemayoran',

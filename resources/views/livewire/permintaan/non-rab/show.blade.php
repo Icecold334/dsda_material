@@ -6,10 +6,23 @@
         <div class="text-right flex gap-2 justify-end" x-data="{ fileCount: 0 }"
             @file-count-updated.window="fileCount = $event.detail">
             @if ($permintaan->status == 'draft')
-            <x-primary-button wire:click='sendRequest'>
+            <x-primary-button id="confirmSubmit">
                 Ajukan Permintaan
             </x-primary-button>
+            <x-button id="confirmDelete" variant="danger">
+                Hapus Permintaan
+            </x-button>
+            @else
+            <livewire:approval-panel :module="'permintaan'" :approvable-type="\App\Models\RequestModel::class"
+                :approvable-id="$permintaan->id" />
             @endif
+            <x-secondary-button @click="$dispatch('open-modal', 'request-information-modal')" type="button">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Informasi
+            </x-secondary-button>
             <x-secondary-button @click="$dispatch('open-modal', 'lampiran-modal')" type="button">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -23,77 +36,34 @@
             </x-secondary-button>
             <x-button variant="secondary" href="{{ route('permintaan.nonRab.index') }}" wire:navigate>
                 Kembali
-                </x-button>
+            </x-button>
         </div>
     </div>
-    <div>
-        <x-card title="Detail Permintaan">
-            <div class="">
-                <table class="table-auto w-full text-md space-y-2 ">
-                    <tr>
-                        <td class="font-semibold w-1/2">Nomor SPB</td>
-                        <td>{{ $permintaan->nomor }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Nama Permintaan</td>
-                        <td>{{ $permintaan->name }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Tanggal Permintaan</td>
-                        <td>{{ $permintaan->tanggal_permintaan?->format('d/m/Y') ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Status</td>
-                        <td><span
-                                class="bg-{{ $permintaan->status_color }}-600 text-{{ $permintaan->status_color }}-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">{{
-                                $permintaan->status_text }}</span></td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Pemohon</td>
-                        <td>{{ $permintaan->user?->name ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Sudin</td>
-                        <td>{{ $permintaan->sudin?->name ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Gudang</td>
-                        <td>{{ $permintaan->warehouse?->name ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Tipe Barang</td>
-                        <td>{{ $permintaan->itemType?->name ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Kecamatan</td>
-                        <td>{{ $permintaan->district?->name ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Kelurahan</td>
-                        <td>{{ $permintaan->subdistrict?->name ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Alamat</td>
-                        <td>{{ $permintaan->address ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Panjang</td>
-                        <td>{{ $permintaan->panjang ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Lebar</td>
-                        <td>{{ $permintaan->lebar ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Tinggi</td>
-                        <td>{{ $permintaan->tinggi ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Keterangan</td>
-                        <td>{{ $permintaan->notes ?? '-' }}</td>
-                    </tr>
-                </table>
-            </div>
+
+    <!-- Modal Informasi Permintaan -->
+    <livewire:components.request-information-modal :mode="'show'" :isRab="false" :key="'request-info-modal-show'" />
+
+    <div class="grid grid-cols-2 gap-4">
+        <x-card title="Status Permintaan">
+            <table class="table-auto w-full text-md space-y-2 ">
+                <tr>
+                    <td class="font-semibold w-1/2">Status</td>
+                    <td><span
+                            class="bg-{{ $permintaan->status_color }}-600 text-{{ $permintaan->status_color }}-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">{{
+                            $permintaan->status_text }}</span></td>
+                </tr>
+                <tr>
+                    <td class="font-semibold">Pemohon</td>
+                    <td>{{ $permintaan->user?->name ?? '-' }}</td>
+                </tr>
+                <tr>
+                    <td class="font-semibold">Tipe Barang</td>
+                    <td>{{ $permintaan->itemType?->name ?? '-' }}</td>
+                </tr>
+            </table>
+        </x-card>
+        <x-card title="Informasi Pengiriman">
+            <livewire:components.delivery-info :permintaan="$permintaan" :key="'delivery-info-' . $permintaan->id" />
         </x-card>
     </div>
 
@@ -116,6 +86,50 @@
         category="lampiran_permintaan" label="Lampiran Permintaan" :multiple="true" accept="image/*,.pdf,.doc,.docx"
         modalId="lampiran-modal" :key="'doc-show-lampiran-' . $permintaan->id" />
 
-    <livewire:approval-panel :module="'permintaan'" :approvable-type="\App\Models\RequestModel::class"
-        :approvable-id="$permintaan->id" />
+    @push('scripts')
+    <script type="module">
+        document.getElementById("confirmSubmit").addEventListener("click", () => {
+            showConfirm(
+                {
+                    type: "question",
+                    title: "Konfirmasi",
+                    text: "Yakin ingin mengirim permintaan ini?",
+                    confirmButtonText: "Lanjutkan",
+                    cancelButtonText: "Batal",
+                    onConfirm: (e) => {
+                        window.Livewire.dispatch('confirmSubmit');
+                    }
+                }
+            )
+        });
+        document.getElementById("confirmDelete").addEventListener("click", () => {
+            showConfirm(
+                {
+                    type: "question",
+                    title: "Konfirmasi",
+                    text: "Yakin ingin menghapus permintaan ini?",
+                    confirmButtonText: "Lanjutkan",
+                    cancelButtonText: "Batal",
+                    onConfirm: (e) => {
+                        window.Livewire.dispatch('confirmDelete');
+                    }
+                }
+            )
+        });
+        document.addEventListener('deleteSuccess',function ({detail}) {
+            
+            showAlert(
+                {
+                    type: "success",
+                    title: "Berhasil!",
+                    text: "Hapus permintaan berhasil!",
+                    onClose: (e) => {
+                        Livewire.navigate("{{ route('permintaan.nonRab.index') }}");
+                    }
+                }
+            )
+            
+        })
+    </script>
+    @endpush
 </div>
