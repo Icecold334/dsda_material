@@ -10,7 +10,14 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                Informasi
+                Informasi Permintaan
+            </x-secondary-button>
+            <x-secondary-button @click="$dispatch('open-modal', 'delivery-info-modal')" type="button">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Informasi Pengiriman
             </x-secondary-button>
             <x-secondary-button @click="$dispatch('open-modal', 'lampiran-modal')" type="button">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -23,6 +30,15 @@
                     x-show="fileCount > 0" x-text="fileCount">
                 </span>
             </x-secondary-button>
+            <x-secondary-button @click="$dispatch('open-modal', 'document-modal')" type="button">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                Lihat Dokumen
+            </x-secondary-button>
             <x-button variant="secondary" href="{{ route('permintaan.rab.index') }}" wire:navigate>
                 Kembali
             </x-button>
@@ -32,51 +48,8 @@
     <!-- Modal Informasi Permintaan -->
     <livewire:components.request-information-modal :mode="'show'" :isRab="true" :key="'request-info-modal-show-rab'" />
 
-    <div>
-        <x-card title="Status Permintaan">
-            <div class="">
-                <table class="table-auto w-full text-md space-y-2 ">
-                    <tr>
-                        <td class="font-semibold w-1/2">Status</td>
-                        <td><span
-                                class="bg-{{ $permintaan->status_color }}-600 text-{{ $permintaan->status_color }}-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">{{
-    $permintaan->status_text }}</span></td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Pemohon</td>
-                        <td>{{ $permintaan->user?->name ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Tipe Barang</td>
-                        <td>{{ $permintaan->itemType?->name ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Nomor RAB</td>
-                        <td>
-                            @if($permintaan->rab_id)
-                                <a href="{{ route('rab.show', $permintaan->rab_id) }}" wire:navigate
-                                    class="text-primary-600 hover:underline">
-                                    {{ $permintaan->rab?->nomor ?? '-' }}
-                                </a>
-                            @else
-                                -
-                            @endif
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="font-semibold">Tahun Anggaran</td>
-                        <td>{{ $permintaan->rab?->tahun ?? '-' }}</td>
-                    </tr>
-                </table>
-            </div>
-        </x-card>
-    </div>
-
-    <div class="grid grid-cols-2 gap-4">
-        <x-card title="Informasi Pengiriman">
-            <livewire:components.delivery-info :permintaan="$permintaan" :key="'delivery-info-' . $permintaan->id" />
-        </x-card>
-    </div>
+    <!-- Modal Informasi Pengiriman -->
+    <livewire:components.delivery-info-modal :permintaan="$permintaan" :key="'delivery-info-modal-' . $permintaan->id" />
 
     <div>
         <x-card title="Daftar Barang">
@@ -96,4 +69,7 @@
     <livewire:components.document-upload mode="show" modelType="App\Models\RequestModel" :modelId="$permintaan->id"
         category="lampiran_permintaan" label="Lampiran Permintaan" :multiple="true" accept="image/*,.pdf,.doc,.docx"
         modalId="lampiran-modal" :key="'doc-show-lampiran-' . $permintaan->id" />
+
+    <!-- Modal Lihat Dokumen -->
+    <livewire:components.document-modal :permintaanId="$permintaan->id" :key="'document-modal-rab-' . $permintaan->id" />
 </div>

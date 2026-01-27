@@ -34,6 +34,13 @@
             </div>
 
             <div>
+                <x-input-label for="nip" value="NIP" />
+                <x-text-input id="nip" wire:model="nip" type="text" class="mt-1 block w-full"
+                    placeholder="Masukkan NIP (opsional)" />
+                <x-input-error :messages="$errors->get('nip')" class="mt-2" />
+            </div>
+
+            <div>
                 <x-input-label for="sudin_id" value="Sudin" />
                 <livewire:components.select-input wire:model="sudin_id" :options="$sudins->pluck('name', 'id')"
                     placeholder="-- Pilih Sudin --" :key="'sudin-select'" />

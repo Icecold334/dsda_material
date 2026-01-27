@@ -28,6 +28,14 @@ class Show extends Component
             'lebar' => $this->permintaan->lebar,
             'tinggi' => $this->permintaan->tinggi,
             'notes' => $this->permintaan->notes,
+            'status' => $this->permintaan->status,
+            'status_text' => $this->permintaan->status_text,
+            'status_color' => $this->permintaan->status_color,
+            'pemohon' => $this->permintaan->user?->name,
+            'item_type' => $this->permintaan->itemType?->name,
+            'rab_nomor' => $this->permintaan->rab?->nomor,
+            'rab_tahun' => $this->permintaan->rab?->tahun,
+            'rab_id' => $this->permintaan->rab_id,
             'rab' => $this->permintaan->rab,
         ]);
     }

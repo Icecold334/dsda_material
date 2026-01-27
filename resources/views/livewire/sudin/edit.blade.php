@@ -38,6 +38,22 @@
                     placeholder="Masukkan alamat"></textarea>
                 <x-input-error :messages="$errors->get('address')" class="mt-2" />
             </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <x-input-label for="postal_code-{{ $sudin->id }}" value="Kode Pos" />
+                    <x-text-input id="postal_code-{{ $sudin->id }}" wire:model="postal_code" type="text"
+                        class="mt-1 block w-full" placeholder="Masukkan kode pos" />
+                    <x-input-error :messages="$errors->get('postal_code')" class="mt-2" />
+                </div>
+
+                <div>
+                    <x-input-label for="phone-{{ $sudin->id }}" value="Telepon" />
+                    <x-text-input id="phone-{{ $sudin->id }}" wire:model="phone" type="text" class="mt-1 block w-full"
+                        placeholder="Masukkan nomor telepon" />
+                    <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                </div>
+            </div>
         </div>
 
         <div class="mt-6 flex justify-end gap-3">

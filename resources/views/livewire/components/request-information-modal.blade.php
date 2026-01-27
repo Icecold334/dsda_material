@@ -1,20 +1,18 @@
 <div>
-    <x-modal name="request-information-modal" :show="$showModal" :dismissable="$mode === 'show'" maxWidth="4xl">
+    <x-modal name="request-information-modal" :show="$showModal" :dismissable="true" maxWidth="4xl">
         <div class="p-6">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-2xl font-semibold text-gray-900">
                     {{ $mode === 'create' ? 'Informasi Permintaan' : 'Detail Informasi Permintaan' }}
                 </h2>
-                @if($mode === 'show')
-                    <button type="button" @click="$dispatch('close-modal', 'request-information-modal')"
-                        wire:click="closeModal"
-                        class="text-gray-400 hover:text-gray-500">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                @endif
+                <button type="button" @click="$dispatch('close-modal', 'request-information-modal')"
+                    wire:click="closeModal"
+                    class="text-gray-400 hover:text-gray-500">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
             </div>
 
             @error('modal')
@@ -25,6 +23,61 @@
 
             <form wire:submit.prevent="saveInformation">
                 <div class="space-y-4">
+                    @if($mode === 'show')
+                        <!-- Status -->
+                        <div class="grid grid-cols-3 gap-4 items-center">
+                            <x-input-label value="Status" />
+                            <div class="col-span-2">
+                                <span class="bg-{{ $status_color }}-600 text-{{ $status_color }}-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">
+                                    {{ $status_text }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Pemohon -->
+                        <div class="grid grid-cols-3 gap-4 items-center">
+                            <x-input-label value="Pemohon" />
+                            <div class="col-span-2 text-gray-700">
+                                {{ $pemohon ?: '-' }}
+                            </div>
+                        </div>
+
+                        <!-- Tipe Barang -->
+                        <div class="grid grid-cols-3 gap-4 items-center">
+                            <x-input-label value="Tipe Barang" />
+                            <div class="col-span-2 text-gray-700">
+                                {{ $item_type ?: '-' }}
+                            </div>
+                        </div>
+
+                        @if($isRab)
+                            <!-- Nomor RAB -->
+                            <div class="grid grid-cols-3 gap-4 items-center">
+                                <x-input-label value="Nomor RAB" />
+                                <div class="col-span-2">
+                                    @if($rab_id)
+                                        <a href="{{ route('rab.show', $rab_id) }}" wire:navigate
+                                            class="text-primary-600 hover:underline">
+                                            {{ $rab_nomor ?: '-' }}
+                                        </a>
+                                    @else
+                                        <span class="text-gray-700">-</span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- Tahun Anggaran -->
+                            <div class="grid grid-cols-3 gap-4 items-center">
+                                <x-input-label value="Tahun Anggaran" />
+                                <div class="col-span-2 text-gray-700">
+                                    {{ $rab_tahun ?: '-' }}
+                                </div>
+                            </div>
+                        @endif
+
+                        <hr class="my-4">
+                    @endif
+
                     <!-- Nomor SPB -->
                     <div class="grid grid-cols-3 gap-4 items-start">
                         <x-input-label for="nomor" value="Nomor SPB" class="pt-2" />

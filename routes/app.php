@@ -15,3 +15,6 @@ require 'app/delivery.php';
 require 'app/user.php';
 require 'app/stock.php';
 require 'app/transfer.php';
+
+// Download PDF Routes
+require 'app/download-pdf/surat-jalan.php';

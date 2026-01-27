@@ -28,6 +28,12 @@ class RabInformationModal extends Component
 
     // For show mode
     public $rab_id = null;
+    public $status = '';
+    public $status_text = '';
+    public $status_color = '';
+    public $pembuat = '';
+    public $total = 0;
+    public $item_type = '';
 
     protected $listeners = [
         'openRabModal' => 'openRabModal',
@@ -106,6 +112,12 @@ class RabInformationModal extends Component
         $this->panjang = $data['panjang'] ?? '';
         $this->lebar = $data['lebar'] ?? '';
         $this->tinggi = $data['tinggi'] ?? '';
+        $this->status = $data['status'] ?? '';
+        $this->status_text = $data['status_text'] ?? '';
+        $this->status_color = $data['status_color'] ?? '';
+        $this->pembuat = $data['pembuat'] ?? '';
+        $this->total = $data['total'] ?? 0;
+        $this->item_type = $data['item_type'] ?? '';
     }
 
     public function saveInformation()
@@ -147,7 +159,7 @@ class RabInformationModal extends Component
         if ($this->mode === 'create') {
             $sudins = Sudin::all();
             if ($this->sudin_id) {
-                $districts = Division::where('sudin_id', $this->sudin_id)->get();
+                $districts = Division::where('sudin_id', $this->sudin_id)->where('type', 'district')->get();
             }
             if ($this->district_id) {
                 $subdistricts = Subdistrict::where('division_id', $this->district_id)->get();
@@ -156,7 +168,7 @@ class RabInformationModal extends Component
             // Mode show - load all options to display selected values
             $sudins = Sudin::all();
             if ($this->sudin_id) {
-                $districts = Division::where('sudin_id', $this->sudin_id)->get();
+                $districts = Division::where('sudin_id', $this->sudin_id)->where('type', 'district')->get();
             }
             if ($this->district_id) {
                 $subdistricts = Subdistrict::where('division_id', $this->district_id)->get();

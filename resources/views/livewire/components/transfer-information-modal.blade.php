@@ -13,6 +13,25 @@
                 </button>
             </div>
 
+            @if($mode === 'show')
+                <div class="mb-4 space-y-3 bg-gray-50 p-4 rounded-lg">
+                    <!-- Status -->
+                    <div class="flex items-center justify-between">
+                        <span class="font-semibold text-gray-700">Status:</span>
+                        <span
+                            class="bg-{{ $status_color }}-600 text-{{ $status_color }}-100 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                            {{ $status_text }}
+                        </span>
+                    </div>
+
+                    <!-- Pembuat -->
+                    <div class="flex items-center justify-between">
+                        <span class="font-semibold text-gray-700">Pembuat:</span>
+                        <span class="text-gray-600">{{ $pembuat ?: '-' }}</span>
+                    </div>
+                </div>
+            @endif
+
             <div class="space-y-4">
                 <div>
                     <x-input-label for="modal_sudin_pengirim_id" value="Sudin Peminta" />

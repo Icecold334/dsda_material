@@ -21,6 +21,10 @@ class Show extends Component
             'sudin_penerima_id' => $this->transfer->sudin_penerima_id,
             'tanggal_transfer' => $this->transfer->tanggal_transfer?->format('Y-m-d'),
             'notes' => $this->transfer->notes,
+            'status' => $this->transfer->status,
+            'status_text' => $this->transfer->status_text,
+            'status_color' => $this->transfer->status_color,
+            'pembuat' => $this->transfer->user?->name,
         ]);
     }
 
