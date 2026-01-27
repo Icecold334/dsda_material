@@ -6,9 +6,12 @@
         <div class="text-right flex gap-2 justify-end" x-data="{ fileCount: 0 }"
             @file-count-updated.window="fileCount = $event.detail">
             @if ($permintaan->status == 'draft')
-                <x-primary-button id="confirmSubmit">
-                    Ajukan Permintaan
-                </x-primary-button>
+            <x-primary-button id="confirmSubmit">
+                Ajukan Permintaan
+            </x-primary-button>
+            <x-button id="confirmDelete" variant="danger">
+                Hapus Permintaan
+            </x-button>
             @else
                 <livewire:approval-panel :module="'permintaan'" :approvable-type="\App\Models\RequestModel::class"
                     :approvable-id="$permintaan->id" />
@@ -82,24 +85,49 @@
     <livewire:components.document-modal :permintaanId="$permintaan->id" :key="'document-modal-' . $permintaan->id" />
 
     @push('scripts')
-        <script type="module">
-            const confirmSubmitBtn = document.getElementById("confirmSubmit");
-            if (confirmSubmitBtn) {
-                confirmSubmitBtn.addEventListener("click", () => {
-                    showConfirm(
-                        {
-                            type: "question",
-                            title: "Konfirmasi",
-                            text: "Yakin ingin mengirim permintaan ini?",
-                            confirmButtonText: "Lanjutkan",
-                            cancelButtonText: "Batal",
-                            onConfirm: (e) => {
-                                window.Livewire.dispatch('confirmSubmit');
-                            }
-                        }
-                    )
-                });
-            }
-        </script>
+    <script type="module">
+        document.getElementById("confirmSubmit").addEventListener("click", () => {
+            showConfirm(
+                {
+                    type: "question",
+                    title: "Konfirmasi",
+                    text: "Yakin ingin mengirim permintaan ini?",
+                    confirmButtonText: "Lanjutkan",
+                    cancelButtonText: "Batal",
+                    onConfirm: (e) => {
+                        window.Livewire.dispatch('confirmSubmit');
+                    }
+                }
+            )
+        });
+        document.getElementById("confirmDelete").addEventListener("click", () => {
+            showConfirm(
+                {
+                    type: "question",
+                    title: "Konfirmasi",
+                    text: "Yakin ingin menghapus permintaan ini?",
+                    confirmButtonText: "Lanjutkan",
+                    cancelButtonText: "Batal",
+                    onConfirm: (e) => {
+                        window.Livewire.dispatch('confirmDelete');
+                    }
+                }
+            )
+        });
+        document.addEventListener('deleteSuccess',function ({detail}) {
+            
+            showAlert(
+                {
+                    type: "success",
+                    title: "Berhasil!",
+                    text: "Hapus permintaan berhasil!",
+                    onClose: (e) => {
+                        Livewire.navigate("{{ route('permintaan.nonRab.index') }}");
+                    }
+                }
+            )
+            
+        })
+    </script>
     @endpush
 </div>
