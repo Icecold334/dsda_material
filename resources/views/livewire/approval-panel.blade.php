@@ -110,7 +110,7 @@
                 cancelButtonText: "Batal",
                 preConfirm: (value) => {
                     if (!value) {
-                        Swal.showValidationMessage("Alasan keterangan wajib diisi");
+                        Swal.showValidationMessage("Keterangan wajib diisi");
                         return false;
                     }
                     return value;

@@ -45,33 +45,37 @@ class ApprovalService
     }
 
     /**
-     * Cek apakah user boleh approve level aktif
+     * CEK apakah user boleh approve level aktif
+     * PRIORITAS:
+     * 1. Sudin harus sama
+     * 2. PLT dulu
+     * 3. Jabatan asli
      */
     public function canApprove(Model $model, User $user): bool
     {
         if ($this->isRejected($model)) {
             return false;
         }
-        // dd($model);
+
         $current = $this->getCurrentApproval($model);
         if (!$current) {
             return false;
         }
 
-        // 1. cek jabatan asli
-        if (
-            $user->position_id === $current->position_id &&
-            (
-                is_null($current->division_id) ||
-                $user->division_id === $current->division_id
-            )
-        ) {
-            return true;
+        /**
+         * 🚨 VALIDASI SUDIN (WAJIB)
+         * User sudin lain TIDAK BOLEH approve
+         */
+        if ($user->sudin_id !== $current->sudin_id) {
+            return false;
         }
 
-        // 2. cek PLT
-        return PositionDelegation::where('user_id', $user->id)
+        /**
+         * 1️⃣ PRIORITY: PLT
+         */
+        $isPlt = PositionDelegation::where('user_id', $user->id)
             ->where('position_id', $current->position_id)
+            ->where('sudin_id', $current->sudin_id)
             ->where(function ($q) use ($current) {
                 $q->whereNull('division_id')
                     ->orWhere('division_id', $current->division_id);
@@ -79,7 +83,22 @@ class ApprovalService
             ->whereDate('start_date', '<=', now())
             ->whereDate('end_date', '>=', now())
             ->exists();
+
+        if ($isPlt) {
+            return true;
+        }
+
+        /**
+         * 2️⃣ Jabatan asli
+         */
+        return
+            $user->position_id === $current->position_id &&
+            (
+                is_null($current->division_id) ||
+                $user->division_id === $current->division_id
+            );
     }
+
 
     /**
      * Proses approve level aktif

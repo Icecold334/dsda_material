@@ -25,11 +25,11 @@ class RequestSeeder extends Seeder
 
         // Buat 5 request
         for ($i = 1; $i <= 50; $i++) {
-            $sudin = Sudin::first();
+            $sudin = Sudin::all()->random();
             $unit = Unit::first();
             $user = User::whereHas('position', function ($pos) {
                 return $pos->where('name', 'Kepala Satuan Pelaksana');
-            })->inRandomOrder()->first();
+            })->whereSudinId($sudin->id)->inRandomOrder()->first();
             $rab = Rab::all()->random();
             $driver = Personnel::where('type', 'driver')->first();
             $security = Personnel::where('type', 'security')->first();
