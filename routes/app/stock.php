@@ -33,10 +33,7 @@ Route::prefix('stock')->name('stock.')->group(function () {
             'name' => $s->item->name,
             'spec' => $s->item->spec ?? '-',
             'unit' => $s->item->category?->unit?->name ?? '-',
-            'qty' => number_format($s->qty, 2),
-            'status' => $s->item->active
-                ? '<span class="bg-success-600 text-white text-xs font-medium px-2 py-0.5 rounded">Aktif</span>'
-                : '<span class="bg-danger-600 text-white text-xs font-medium px-2 py-0.5 rounded">Nonaktif</span>',
+            'qty' => number_format($s->qty, 0)
         ]);
 
         return response()->json([
