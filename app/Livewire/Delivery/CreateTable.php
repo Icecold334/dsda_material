@@ -28,10 +28,21 @@ class CreateTable extends Component
             $this->contract = Contract::find($contract);
 
             if ($this->contract) {
-                // Ambil item IDs dari contract items
-                $itemIds = \DB::table('contract_items')
-                    ->where('contract_id', $this->contract->id)
-                    ->pluck('item_id');
+                // Ambil versi terbaru kontrak (amendment terakhir atau kontrak asli)
+                $latestVersion = $this->contract->latestVersion;
+
+                // Ambil item IDs dari versi terbaru
+                if ($latestVersion instanceof \App\Models\ContractAmendment) {
+                    // Jika ada amendment, ambil dari amendment terakhir
+                    $itemIds = \DB::table('contract_amendment_items')
+                        ->where('contract_amendment_id', $latestVersion->id)
+                        ->pluck('item_id');
+                } else {
+                    // Jika belum ada amendment, ambil dari kontrak asli
+                    $itemIds = \DB::table('contract_items')
+                        ->where('contract_id', $this->contract->id)
+                        ->pluck('item_id');
+                }
 
                 // Ambil kategori barang dari items tersebut
                 $categoryIds = \DB::table('items')
@@ -42,17 +53,23 @@ class CreateTable extends Component
                 // Filter kategori yang minimal punya 1 spesifikasi dengan stock tersisa
                 $this->itemCategories = ItemCategory::whereIn('id', $categoryIds)
                     ->get()
-                    ->filter(function ($category) use ($itemIds) {
+                    ->filter(function ($category) use ($itemIds, $latestVersion) {
                         // Cek apakah kategori ini punya minimal 1 item dengan stock tersisa
                         $items = Item::where('item_category_id', $category->id)
                             ->whereIn('id', $itemIds)
                             ->get();
 
                         foreach ($items as $item) {
-                            // Ambil qty dari contract
-                            $contractItem = $this->contract->items()
-                                ->where('item_id', $item->id)
-                                ->first();
+                            // Ambil qty dari versi terbaru
+                            if ($latestVersion instanceof \App\Models\ContractAmendment) {
+                                $contractItem = $latestVersion->items()
+                                    ->where('item_id', $item->id)
+                                    ->first();
+                            } else {
+                                $contractItem = $this->contract->items()
+                                    ->where('item_id', $item->id)
+                                    ->first();
+                            }
 
                             if (!$contractItem) {
                                 continue;
@@ -98,17 +115,24 @@ class CreateTable extends Component
         $this->item = null;
         $this->unit = ItemCategory::find($this->itemCategory)->unit->name;
 
-        // Ambil semua items dari kategori ini yang ada di kontrak
-        $allItems = Item::where('item_category_id', $this->itemCategory)
-            ->whereHas('contractItems.contract', fn($q) => $q->whereId($this->contract->id))
-            ->get();
+        // Ambil versi terbaru kontrak
+        $latestVersion = $this->contract->latestVersion;
+
+        // Ambil semua items dari kategori ini yang ada di versi terbaru kontrak
+        $allItems = Item::where('item_category_id', $this->itemCategory)->get();
 
         // Filter items yang masih punya stock tersisa
-        $this->items = $allItems->filter(function ($item) {
-            // Ambil qty dari contract
-            $contractItem = $this->contract->items()
-                ->where('item_id', $item->id)
-                ->first();
+        $this->items = $allItems->filter(function ($item) use ($latestVersion) {
+            // Ambil qty dari versi terbaru
+            if ($latestVersion instanceof \App\Models\ContractAmendment) {
+                $contractItem = $latestVersion->items()
+                    ->where('item_id', $item->id)
+                    ->first();
+            } else {
+                $contractItem = $this->contract->items()
+                    ->where('item_id', $item->id)
+                    ->first();
+            }
 
             if (!$contractItem) {
                 return false;
@@ -145,10 +169,19 @@ class CreateTable extends Component
             return;
         }
 
-        // Ambil qty dari contract item
-        $contractItem = $this->contract->items()
-            ->where('item_id', $this->item)
-            ->first();
+        // Ambil versi terbaru kontrak
+        $latestVersion = $this->contract->latestVersion;
+
+        // Ambil qty dari versi terbaru
+        if ($latestVersion instanceof \App\Models\ContractAmendment) {
+            $contractItem = $latestVersion->items()
+                ->where('item_id', $this->item)
+                ->first();
+        } else {
+            $contractItem = $this->contract->items()
+                ->where('item_id', $this->item)
+                ->first();
+        }
 
         if (!$contractItem) {
             $this->maxQty = 0;

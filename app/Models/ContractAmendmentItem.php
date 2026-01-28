@@ -12,6 +12,12 @@ class ContractAmendmentItem extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'qty' => 'decimal:2',
+        'price' => 'decimal:2',
+        'subtotal' => 'decimal:2',
+    ];
+
     public function amendment()
     {
         return $this->belongsTo(ContractAmendment::class, 'contract_amendment_id');

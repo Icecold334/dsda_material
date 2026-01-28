@@ -3,6 +3,7 @@
 namespace App\Livewire\Delivery;
 
 use App\Models\Contract;
+use App\Models\ContractAmendment;
 use App\Models\Warehouse;
 use Livewire\Component;
 use Livewire\Attributes\On;
@@ -46,10 +47,43 @@ class Create extends Component
             'contract_nomor' => 'required|string',
         ]);
 
+        // Pertama, cari sebagai nomor amendment
+        $amendment = ContractAmendment::where('nomor', $this->contract_nomor)
+            ->where('status', 'approved')
+            ->first();
+
+        if ($amendment) {
+            // Cek apakah ini adalah amendment terakhir
+            $latestAmendment = $amendment->contract->amendments()
+                ->where('status', 'approved')
+                ->first(); // sudah diurutkan desc berdasarkan amend_version
+
+            if ($latestAmendment->id !== $amendment->id) {
+                $this->addError('contract_nomor', 'Adendum ini sudah tidak berlaku. Gunakan adendum terbaru: ' . $latestAmendment->nomor);
+                return;
+            }
+
+            // Ditemukan sebagai amendment terakhir, gunakan kontrak dari amendment
+            $this->contract = $amendment->contract;
+            $this->showModal = false;
+            $this->dispatch('close-modal', 'input-contract-number');
+            $this->dispatch('open-modal', 'delivery-information-modal');
+            session()->flash('contract_found', 'Adendum kontrak ditemukan! Silakan isi informasi pengiriman.');
+            return;
+        }
+
+        // Jika tidak ditemukan sebagai amendment, cari sebagai nomor kontrak asli
         $contract = Contract::where('nomor', $this->contract_nomor)->first();
 
         if (!$contract) {
             $this->addError('contract_nomor', 'Kontrak dengan nomor tersebut tidak ditemukan');
+            return;
+        }
+
+        // Cek apakah kontrak memiliki amendment yang approved
+        if ($contract->hasApprovedAmendments()) {
+            $latestAmendment = $contract->amendments()->where('status', 'approved')->first();
+            $this->addError('contract_nomor', 'Kontrak ini sudah memiliki adendum. Gunakan nomor adendum terbaru: ' . $latestAmendment->nomor);
             return;
         }
 
