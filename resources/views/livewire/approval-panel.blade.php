@@ -68,16 +68,18 @@
                     </tbody>
                 </table>
             </div>
-            <div class="w-full text-center">
-                <button type="button" id="confirmApprove" @disabled(!$canApprove || !$extraReady)
-                    class="px-3 py-2 rounded bg-primary-600 text-white disabled:opacity-50">
-                    Setuju
-                </button>
+            <div class="w-full text-center space-x-4">
+                <div class="{{ $canApprove && $extraReady ? '':'hidden' }}">
+                    <button type="button" id="confirmApprove" @disabled(!$canApprove || !$extraReady)
+                        class="px-3 py-2 rounded bg-primary-600 text-white disabled:opacity-50">
+                        Setuju
+                    </button>
 
-                <button type="button" id="confirmReject" @disabled(!$canApprove || !$extraReady)
-                    class="px-3 py-2 rounded bg-red-600 text-white disabled:opacity-50">
-                    Tolak
-                </button>
+                    <button type="button" id="confirmReject" @disabled(!$canApprove || !$extraReady)
+                        class="px-3 py-2 rounded bg-red-600 text-white disabled:opacity-50">
+                        Tolak
+                    </button>
+                </div>
             </div>
         </div>
     </x-modal>
@@ -131,9 +133,6 @@
                 }
             });
         });
-
-
-
     </script>
     @endpush
 </div>

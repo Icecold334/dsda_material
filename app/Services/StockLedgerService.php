@@ -17,7 +17,7 @@ class StockLedgerService
         $itemId,
         $warehouseId,
         $sudinId
-    ) {
+    ): int {
         return (int) Stock::where([
             'item_id' => $itemId,
             'warehouse_id' => $warehouseId,
@@ -31,15 +31,15 @@ class StockLedgerService
     public function reservedStock(
         $itemId,
         $warehouseId,
-        $sudinId
-    ) {
+        // $sudinId
+    ): int {
         return (int) RequestItem::where('item_id', $itemId)
-            ->whereHas('request', function ($q) use ($warehouseId, $sudinId) {
+            ->whereHas('request', function ($q) use ($warehouseId) {
                 $q->where('warehouse_id', $warehouseId)
-                    ->where('sudin_id', $sudinId)
+                    // ->where('sudin_id', $sudinId)
                     ->whereIn('status', [
-                        'submitted',
-                        'on_progress',
+                        'pending',
+                        'approved',
                     ]);
             })
             ->sum('qty_request');
@@ -52,7 +52,7 @@ class StockLedgerService
         $itemId,
         $warehouseId,
         $sudinId
-    ) {
+    ): int {
         $physical = $this->physicalStock($itemId, $warehouseId, $sudinId);
         $reserved = $this->reservedStock($itemId, $warehouseId, $sudinId);
 
@@ -63,10 +63,10 @@ class StockLedgerService
      * Validasi booking saat submit permintaan
      */
     public function validateAvailability(
-        int $itemId,
-        int $warehouseId,
-        int $sudinId,
-        int $qty
+        $itemId,
+        $warehouseId,
+        $sudinId,
+        $qty
     ): void {
         $available = $this->availableStock($itemId, $warehouseId, $sudinId);
 

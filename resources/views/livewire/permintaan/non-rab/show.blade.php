@@ -66,15 +66,34 @@
         :key="'delivery-info-modal-' . $permintaan->id" />
 
     <div>
+        @php
+        $data = [
+        [ "name"=> "No", "id"=> "no", "width"=> "8%" ],
+        [ "name"=> "Kode Barang", "id"=> "kode", "width"=> "12%" ],
+        [ "name"=> "Barang", "id"=> "barang", "width"=> "15%" ],
+        [ "name"=> "Spesifikasi", "id"=> "spec" ],
+        [ "name"=> "Jumlah Diminta", "id"=> "qty_request", "width"=> "12%" ],
+        [ "name"=> "Jumlah Disetujui", "id"=> "qty_approved", "width"=> "12%" ],
+        [ "name"=> "Foto", "id"=> "foto", "width"=> "12%", "className"=>"text-center" ]
+        ];
+        $hideColumns = [];
+
+        if (false) {
+        $hideColumns[] = 'foto';
+        }
+
+        if (false) {
+        $hideColumns[] = 'qty_approved';
+        }
+
+        $data = array_values(array_filter($data, function ($col) use ($hideColumns) {
+        return !in_array($col['id'], $hideColumns);
+        }));
+        @endphp
+
         <x-card title="Daftar Barang">
-            <div data-grid data-api="{{ route('permintaan.nonRab.show.json', $permintaan) }}" data-columns='[
-        { "name": "No", "id": "no", "width": "8%" },
-        { "name": "Kode Barang", "id": "kode", "width": "12%" },
-        { "name": "Barang", "id": "barang", "width": "15%" },
-        { "name": "Spesifikasi", "id": "spec" },
-        { "name": "Jumlah Diminta", "id": "qty_request", "width": "15%" },
-        { "name": "Jumlah Disetujui", "id": "qty_approved", "width": "15%" }
-    ]' wire:ignore>
+            <div data-grid data-api="{{ route('permintaan.nonRab.show.json', $permintaan) }}"
+                data-columns='{{ json_encode($data) }}' wire:ignore>
             </div>
         </x-card>
     </div>
@@ -127,10 +146,42 @@
                     onClose: (e) => {
                         Livewire.navigate("{{ route('permintaan.nonRab.index') }}");
                     }
+<<<<<<< Updated upstream
                 }
             )
             
         })
+=======
+                });
+
+                fetch('{{ route("permintaan.nonRab.item.upload-photo", ["permintaan" => $permintaan->id, "item" => "ITEM_ID"]) }}'.replace('ITEM_ID', currentUploadItemId), {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: data.message || 'Foto berhasil diupload',
+                            timer: 2000
+                        }).then(() => {
+                            location.reload();
+                        });
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: 'Terjadi kesalahan saat upload foto'
+                        });
+                    });
+            }
+>>>>>>> Stashed changes
     </script>
     @endpush
 </div>
