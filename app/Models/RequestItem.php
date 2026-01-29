@@ -21,4 +21,14 @@ class RequestItem extends Model
     {
         return $this->belongsTo(Item::class);
     }
+
+    public function documents()
+    {
+        return $this->morphMany(Document::class, 'documentable');
+    }
+
+    public function photo()
+    {
+        return $this->morphOne(Document::class, 'documentable')->where('category', 'item_photo');
+    }
 }

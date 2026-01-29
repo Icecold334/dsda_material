@@ -33,10 +33,21 @@ Route::prefix('rab')->name('rab.')->group(function () {
     })->name('json');
 
     Route::get('/{rab}/json', function (Rab $rab) {
-        $data = $rab->items()->with('item')->get()->map(fn($r) => [
-            'item' => $r->item?->spec ?? '-',
-            'code' => $r->item?->code ?? '-',
-            'qty' => (int) $r->qty,
+        $version = request('version', 'latest');
+
+        if ($version === 'original') {
+            $targetVersion = $rab;
+        } elseif ($version === 'latest') {
+            $targetVersion = $rab->latestVersion;
+        } else {
+            // Specific amendment
+            $targetVersion = $rab->amendments()->find($version) ?? $rab->latestVersion;
+        }
+
+        $data = $targetVersion->items()->with('item.category.unit')->get()->map(fn($r) => [
+            'item' => ($r->item->category->name ?? '-') . ' | ' . ($r->item->spec ?? '-'),
+            'code' => $r->item->code ?? '-',
+            'qty' => number_format($r->qty, 2),
             'action' => '<a href="' . route('rab.show', $rab->id) . '" class="bg-primary-600 text-white text-xs font-medium px-1.5 py-0.5 rounded" wire:navigate>Detail</a>',
         ]);
 
@@ -47,5 +58,8 @@ Route::prefix('rab')->name('rab.')->group(function () {
     })->name('show.json');
 
     Route::get('/{rab}', Show::class)->name('show');
+
+    // Amendment routes
+    Route::get('/{rab}/amendment/create', \App\Livewire\Rab\CreateAmendment::class)->name('amendment.create');
 
 });

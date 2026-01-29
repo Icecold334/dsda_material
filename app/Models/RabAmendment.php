@@ -21,4 +21,31 @@ class RabAmendment extends Model
     {
         return $this->hasMany(RabAmendmentItem::class);
     }
+
+    public function getStatusColorAttribute()
+    {
+        return match ($this->status) {
+            'draft' => 'gray',
+            'approved' => 'green',
+            'rejected' => 'red',
+            default => 'gray',
+        };
+    }
+
+    public function getStatusTextAttribute()
+    {
+        return match ($this->status) {
+            'draft' => 'Draft',
+            'approved' => 'Disetujui',
+            'rejected' => 'Ditolak',
+            default => 'Draft',
+        };
+    }
+
+    // Check if item quantity can be reduced
+    public function canReduceItemQuantity($itemId, $newQuantity)
+    {
+        $requestedQty = $this->rab->getRequestedQuantity($itemId);
+        return $newQuantity >= $requestedQty;
+    }
 }

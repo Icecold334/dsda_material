@@ -12,6 +12,10 @@ class ContractAmendment extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'total' => 'decimal:2',
+    ];
+
     public function contract()
     {
         return $this->belongsTo(Contract::class);
@@ -20,5 +24,32 @@ class ContractAmendment extends Model
     public function items()
     {
         return $this->hasMany(ContractAmendmentItem::class, 'contract_amendment_id');
+    }
+
+    public function getStatusColorAttribute()
+    {
+        return match ($this->status) {
+            'draft' => 'gray',
+            'approved' => 'green',
+            'rejected' => 'red',
+            default => 'gray',
+        };
+    }
+
+    public function getStatusTextAttribute()
+    {
+        return match ($this->status) {
+            'draft' => 'Draft',
+            'approved' => 'Disetujui',
+            'rejected' => 'Ditolak',
+            default => 'Draft',
+        };
+    }
+
+    // Check if item quantity can be reduced
+    public function canReduceItemQuantity($itemId, $newQuantity)
+    {
+        $deliveredQty = $this->contract->getDeliveredQuantity($itemId);
+        return $newQuantity >= $deliveredQty;
     }
 }

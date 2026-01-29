@@ -12,6 +12,12 @@ class ContractItem extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'qty' => 'decimal:2',
+        'price' => 'decimal:2',
+        'subtotal' => 'decimal:2',
+    ];
+
     public function contract()
     {
         return $this->belongsTo(Contract::class);

@@ -71,7 +71,13 @@
                         })
                     } else {
 
-                        if (data.data.is_api) {
+                        if (data.data.is_amendment) {
+                            // This is an amendment number - proceed with the amendment's contract
+                            window.Livewire.dispatch('confirmContract', {
+                                contract: data.data.id,
+                                amendment: data.data.amendment_id,
+                            });
+                        } else if (data.data.is_api) {
                             const paramsApi = new URLSearchParams({
                                 nomor_kontrak: nomorContract,
                                 tahun: tahun,
