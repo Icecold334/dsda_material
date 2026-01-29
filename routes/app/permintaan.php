@@ -36,14 +36,24 @@ Route::prefix('permintaan')->name('permintaan.')->group(function () {
         Route::get('/{permintaan}/json', function (RequestModel $permintaan) {
             $data = $permintaan->load(['items.item.category.unit', 'items.photo'])->items->map(function ($requestItem, $index) {
                 $hasPhoto = $requestItem->photo !== null;
-
-                if ($hasPhoto) {
-                    $photoUrl = \Illuminate\Support\Facades\Storage::url($requestItem->photo->file_path);
-                    $buttonHtml = '<button type="button" class="btn-view-photo inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded transition" data-photo-url="' . htmlspecialchars($photoUrl, ENT_QUOTES) . '">Lihat Foto</button>';
+                // Ganti logika berikut sesuai kebutuhan Anda
+                $canUpload = auth()->user()->can('upload-photo', $requestItem) ?? true; // default true jika policy belum ada
+                $fotoOutput = '';
+                if ($canUpload) {
+                    if ($hasPhoto) {
+                        $photoUrl = \Illuminate\Support\Facades\Storage::url($requestItem->photo->file_path);
+                        $fotoOutput = '<button type="button" class="btn-view-photo inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded transition" data-photo-url="' . htmlspecialchars($photoUrl, ENT_QUOTES) . '">Lihat Foto</button>';
+                    } else {
+                        $fotoOutput = '<button type="button" class="btn-upload-photo inline-flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-medium rounded transition" data-item-id="' . $requestItem->id . '">Upload Foto</button>';
+                    }
                 } else {
-                    $buttonHtml = '<button type="button" class="btn-upload-photo inline-flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-medium rounded transition" data-item-id="' . $requestItem->id . '">Upload Foto</button>';
+                    if ($hasPhoto) {
+                        $photoUrl = \Illuminate\Support\Facades\Storage::url($requestItem->photo->file_path);
+                        $fotoOutput = '<button type="button" class="btn-view-photo inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded transition" data-photo-url="' . htmlspecialchars($photoUrl, ENT_QUOTES) . '">Lihat Foto</button>';
+                    } else {
+                        $fotoOutput = '<span class="text-xs text-gray-500">Foto belum diunggah</span>';
+                    }
                 }
-
                 return [
                     'no' => $index + 1,
                     'kode' => $requestItem->item->code ?? '-',
@@ -53,7 +63,8 @@ Route::prefix('permintaan')->name('permintaan.')->group(function () {
                     'qty_approved' => $requestItem->qty_approved
                         ? number_format($requestItem->qty_approved, 2) . ' ' . ($requestItem->item->category->unit->name ?? '')
                         : '-',
-                    'foto' => $buttonHtml,
+                    'foto' => $fotoOutput,
+                    'can_upload' => $canUpload,
                 ];
             });
 
@@ -125,21 +136,24 @@ Route::prefix('permintaan')->name('permintaan.')->group(function () {
 
         Route::get('/{permintaan}/json', function (RequestModel $permintaan) {
             $data = $permintaan->load(['items.item.category.unit', 'items.photo'])->items->map(function ($requestItem, $index) {
-                // Generate button HTML based on photo existence
                 $hasPhoto = $requestItem->photo !== null;
-
-                if ($hasPhoto) {
-                    $photo = $requestItem->photo;
-                    $photoUrl = \Illuminate\Support\Facades\Storage::url($photo->file_path);
-                    $buttonHtml = '<button type="button" class="btn-view-photo inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded transition" data-photo-url="' . htmlspecialchars($photoUrl, ENT_QUOTES) . '">
-                        Lihat Foto
-                    </button>';
+                $canUpload = false;
+                $fotoOutput = '';
+                if ($canUpload) {
+                    if ($hasPhoto) {
+                        $photoUrl = \Illuminate\Support\Facades\Storage::url($requestItem->photo->file_path);
+                        $fotoOutput = '<button type="button" class="btn-view-photo inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded transition" data-photo-url="' . htmlspecialchars($photoUrl, ENT_QUOTES) . '">Lihat Foto</button>';
+                    } else {
+                        $fotoOutput = '<button type="button" class="btn-upload-photo inline-flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-medium rounded transition" data-item-id="' . $requestItem->id . '">Upload Foto</button>';
+                    }
                 } else {
-                    $buttonHtml = '<button type="button" class="btn-upload-photo inline-flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-medium rounded transition" data-item-id="' . $requestItem->id . '">
-                        Upload Foto
-                    </button>';
+                    if ($hasPhoto) {
+                        $photoUrl = \Illuminate\Support\Facades\Storage::url($requestItem->photo->file_path);
+                        $fotoOutput = '<button type="button" class="btn-view-photo inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded transition" data-photo-url="' . htmlspecialchars($photoUrl, ENT_QUOTES) . '">Lihat Foto</button>';
+                    } else {
+                        $fotoOutput = '<span class="text-xs text-gray-500">Foto belum diunggah</span>';
+                    }
                 }
-
                 return [
                     'no' => $index + 1,
                     'kode' => $requestItem->item->code ?? '-',
@@ -149,7 +163,8 @@ Route::prefix('permintaan')->name('permintaan.')->group(function () {
                     'qty_approved' => $requestItem->qty_approved
                         ? number_format($requestItem->qty_approved, 2) . ' ' . ($requestItem->item->category->unit->name ?? '')
                         : '-',
-                    'foto' => $buttonHtml,
+                    'foto' => $fotoOutput,
+                    'can_upload' => $canUpload,
                 ];
             });
 

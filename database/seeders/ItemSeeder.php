@@ -20,31 +20,28 @@ class ItemSeeder extends Seeder
             return;
         }
 
-        foreach ($sudins as $sudin) {
+        // Track used codes to prevent duplicates
+        $usedCodes = [];
 
+        foreach ($sudins as $sudin) {
             $totalItem = rand(20, 40);
 
-            // Prefix code per sudin (AMAN & HUMAN READABLE)
-            // $sudinCode = strtoupper(Str::slug($sudin->name ?? 'SD', ''));
-            $sudinCode = strtoupper(fake()->lexify('SD??'));
+            // Generate unique sudin code
+            do {
+                $sudinCode = strtoupper(fake()->lexify('SD??'));
+            } while (in_array($sudinCode, $usedCodes));
+
+            $usedCodes[] = $sudinCode;
 
             for ($i = 1; $i <= $totalItem; $i++) {
                 $spec = fake()->sentence;
+
                 Item::create([
                     'sudin_id' => $sudin->id,
-
                     'item_category_id' => $categories->isNotEmpty()
                         ? $categories->random()->id
                         : null,
-
-                    // 🔑 CODE UNIQUE
-                    'code' => sprintf(
-                        'ITEM-%s-%04d',
-                        $sudinCode,
-                        $i
-                    ),
-
-
+                    'code' => sprintf('ITEM-%s-%04d', $sudinCode, $i),
                     'spec' => $spec,
                     'slug' => Str::slug($spec),
                     'active' => fake()->boolean(90),
