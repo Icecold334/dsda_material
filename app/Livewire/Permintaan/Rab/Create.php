@@ -22,6 +22,7 @@ class Create extends Component
     // Search RAB
     public $rab_nomor = '';
     public $rab = null;
+    public $originalRab = null;
 
     // Data dari RAB (readonly/disabled)
     public $name = '';
@@ -64,9 +65,32 @@ class Create extends Component
             'rab_nomor' => 'required|string',
         ]);
 
-        $rab = Rab::with(['sudin', 'district', 'subdistrict', 'user'])
-            ->where('nomor', $this->rab_nomor)
+        // Pertama, cari sebagai nomor amendment
+        $amendment = \App\Models\RabAmendment::where('nomor', $this->rab_nomor)
+            ->where('status', 'approved')
             ->first();
+
+        if ($amendment) {
+            // Cek apakah ini adalah amendment terakhir
+            $latestAmendment = $amendment->rab->amendments()
+                ->where('status', 'approved')
+                ->first(); // sudah diurutkan desc berdasarkan amend_version
+
+            if ($latestAmendment->id !== $amendment->id) {
+                $this->addError('rab_nomor', 'Adendum ini sudah tidak berlaku. Gunakan adendum terbaru: ' . $latestAmendment->nomor);
+                return;
+            }
+
+            // Ditemukan sebagai amendment terakhir, gunakan RAB dari amendment
+            $this->originalRab = $amendment->rab;
+            $this->rab = $amendment;
+            $this->mountDataFromRab();
+            session()->flash('rab_found', 'Adendum RAB ditemukan! Data telah dimuat.');
+            return;
+        }
+
+        // Jika tidak ditemukan sebagai amendment, cari sebagai nomor RAB asli
+        $rab = \App\Models\Rab::where('nomor', $this->rab_nomor)->first();
 
         if (!$rab) {
             $this->addError('rab_nomor', 'RAB dengan nomor tersebut tidak ditemukan');
@@ -78,33 +102,48 @@ class Create extends Component
             return;
         }
 
-        $this->rab = $rab;
+        // Cek apakah RAB memiliki amendment yang approved
+        if ($rab->hasApprovedAmendments()) {
+            $latestAmendment = $rab->amendments()->where('status', 'approved')->first();
+            $this->addError('rab_nomor', 'RAB ini sudah memiliki adendum. Gunakan nomor adendum terbaru: ' . $latestAmendment->nomor);
+            return;
+        }
 
-        // Mount data dari RAB
-        $this->name = $rab->name;
-        $this->sudin_id = $rab->sudin_id;
-        $this->district_id = $rab->district_id;
-        $this->subdistrict_id = $rab->subdistrict_id;
-        $this->address = $rab->address ?? '';
-        $this->panjang = $rab->panjang ?? '';
-        $this->lebar = $rab->lebar ?? '';
-        $this->tinggi = $rab->tinggi ?? '';
+        // Tidak ada amendment, gunakan RAB asli
+        $this->originalRab = $rab;
+        $this->rab = $rab;
+        $this->mountDataFromRab();
+        session()->flash('rab_found', 'RAB ditemukan! Data telah dimuat.');
+    }
+
+    private function mountDataFromRab()
+    {
+        // Mount data dari RAB/amendment
+        // Informasi lokasi diambil dari RAB parent, nama juga dari parent (amendment tidak punya field name)
+        $this->name = $this->originalRab->name;
+        $this->sudin_id = $this->originalRab->sudin_id;
+        $this->district_id = $this->originalRab->district_id;
+        $this->subdistrict_id = $this->originalRab->subdistrict_id;
+        $this->address = $this->originalRab->address ?? '';
+        $this->panjang = $this->originalRab->panjang ?? '';
+        $this->lebar = $this->originalRab->lebar ?? '';
+        $this->tinggi = $this->originalRab->tinggi ?? '';
 
         // Dispatch data RAB ke modal
         $this->dispatch('setRequestData', [
             'nomor' => '',
-            'name' => $rab->name,
-            'sudin_id' => $rab->sudin_id,
+            'name' => $this->originalRab->name,
+            'sudin_id' => $this->originalRab->sudin_id,
             'warehouse_id' => '',
-            'district_id' => $rab->district_id,
-            'subdistrict_id' => $rab->subdistrict_id,
+            'district_id' => $this->originalRab->district_id,
+            'subdistrict_id' => $this->originalRab->subdistrict_id,
             'tanggal_permintaan' => '',
-            'address' => $rab->address ?? '',
-            'panjang' => $rab->panjang ?? '',
-            'lebar' => $rab->lebar ?? '',
-            'tinggi' => $rab->tinggi ?? '',
+            'address' => $this->originalRab->address ?? '',
+            'panjang' => $this->originalRab->panjang ?? '',
+            'lebar' => $this->originalRab->lebar ?? '',
+            'tinggi' => $this->originalRab->tinggi ?? '',
             'notes' => '',
-            'rab' => $rab,
+            'rab' => $this->rab,
         ]);
 
         // Tutup modal
@@ -113,8 +152,6 @@ class Create extends Component
 
         // Initialize items dari RAB
         $this->initializeItems();
-
-        session()->flash('rab_found', 'RAB ditemukan! Data telah dimuat.');
     }
 
     #[On('requestInformationSaved')]
@@ -139,6 +176,7 @@ class Create extends Component
     public function resetRab()
     {
         $this->rab = null;
+        $this->originalRab = null;
         $this->rab_nomor = '';
         $this->name = '';
         $this->sudin_id = '';
@@ -159,6 +197,7 @@ class Create extends Component
             return;
 
         $this->items = [];
+        // $this->rab is already the latest version
         $rabItems = $this->rab->items()->with('item.category.unit')->get();
 
         foreach ($rabItems as $rabItem) {
@@ -232,7 +271,7 @@ class Create extends Component
         if (!$this->rab)
             return collect();
 
-        $warehouses = Warehouse::where('sudin_id', $this->rab->sudin_id)
+        $warehouses = Warehouse::where('sudin_id', $this->originalRab->sudin_id)
             ->with([
                 'stocks' => function ($query) {
                     if (!empty($this->items)) {
@@ -316,7 +355,7 @@ class Create extends Component
             'name' => $this->name,
             'sudin_id' => $this->sudin_id,
             'warehouse_id' => $this->warehouse_id,
-            'item_type_id' => $this->rab->item_type_id, // ambil dari RAB
+            'item_type_id' => $this->originalRab->item_type_id, // ambil dari RAB asli
             'district_id' => $this->district_id,
             'subdistrict_id' => $this->subdistrict_id,
             'tanggal_permintaan' => $this->tanggal_permintaan,
@@ -327,7 +366,7 @@ class Create extends Component
             'user_id' => auth()->id(),
             'notes' => $this->notes,
             'status' => 'draft',
-            'rab_id' => $this->rab->id,
+            'rab_id' => $this->originalRab->id,
         ]);
 
         // Save items

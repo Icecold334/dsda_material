@@ -57,6 +57,44 @@ class Rab extends Model
 
     public function amendments()
     {
-        return $this->hasMany(RabAmendment::class);
+        return $this->hasMany(RabAmendment::class)->orderBy('amend_version', 'desc');
+    }
+
+    // Get latest version (amendment or original RAB)
+    public function getLatestVersionAttribute()
+    {
+        $latestAmendment = $this->amendments()->where('status', 'approved')->first();
+        return $latestAmendment ?? $this;
+    }
+
+    // Check if RAB has approved amendments
+    public function hasApprovedAmendments()
+    {
+        return $this->amendments()->where('status', 'approved')->exists();
+    }
+
+    // Get next amendment version number
+    public function getNextAmendmentVersion()
+    {
+        $latestVersion = $this->amendments()->max('amend_version') ?? 0;
+        return $latestVersion + 1;
+    }
+
+    // Get active items (from latest amendment or original)
+    public function getActiveItemsAttribute()
+    {
+        if ($this->hasApprovedAmendments()) {
+            return $this->latestVersion->items;
+        }
+        return $this->items;
+    }
+
+    // Get total requested quantity for an item
+    public function getRequestedQuantity($itemId)
+    {
+        return \App\Models\RequestItem::whereHas('request', function ($q) {
+            $q->where('rab_id', $this->id)
+                ->whereNotIn('status', ['draft', 'rejected']); // Hanya hitung permintaan yang sudah diajukan
+        })->where('item_id', $itemId)->sum('qty_request');
     }
 }
