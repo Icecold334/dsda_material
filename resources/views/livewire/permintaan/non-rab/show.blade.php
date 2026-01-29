@@ -146,42 +146,10 @@
                     onClose: (e) => {
                         Livewire.navigate("{{ route('permintaan.nonRab.index') }}");
                     }
-<<<<<<< Updated upstream
                 }
             )
             
         })
-=======
-                });
-
-                fetch('{{ route("permintaan.nonRab.item.upload-photo", ["permintaan" => $permintaan->id, "item" => "ITEM_ID"]) }}'.replace('ITEM_ID', currentUploadItemId), {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json'
-                    }
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: data.message || 'Foto berhasil diupload',
-                            timer: 2000
-                        }).then(() => {
-                            location.reload();
-                        });
-                    })
-                    .catch(error => {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal!',
-                            text: 'Terjadi kesalahan saat upload foto'
-                        });
-                    });
-            }
->>>>>>> Stashed changes
     </script>
     @endpush
 </div>
