@@ -2,20 +2,21 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
-use App\Models\RequestModel;
-use App\Models\RequestItem;
-use App\Models\Sudin;
+use App\Models\Rab;
+use App\Models\Item;
 use App\Models\Unit;
 use App\Models\User;
-use App\Models\Personnel;
-use App\Models\Item;
-use App\Models\ItemType;
-use App\Models\Rab;
-use App\Models\Warehouse;
+use App\Models\Sudin;
 use App\Models\Division;
+use App\Models\ItemType;
+use App\Models\Personnel;
+use App\Models\Warehouse;
+use App\Models\RequestItem;
 use App\Models\Subdistrict;
+use Illuminate\Support\Str;
+use App\Models\RequestModel;
+use Illuminate\Database\Seeder;
+use App\Services\ApprovalService;
 
 class RequestSeeder extends Seeder
 {
@@ -23,7 +24,6 @@ class RequestSeeder extends Seeder
     {
 
 
-        // Buat 5 request
         for ($i = 1; $i <= 50; $i++) {
             $sudin = Sudin::all()->random();
             $unit = Unit::first();
@@ -42,10 +42,11 @@ class RequestSeeder extends Seeder
                 $this->command->warn('Seeder Request dilewati, data master belum lengkap.');
                 return;
             }
+            $useRab = fake()->boolean;
             $request = RequestModel::create([
                 'nomor' => 'REQ-' . now()->format('Ymd') . '-' . str_pad($i, 3, '0', STR_PAD_LEFT),
                 'name' => 'Permintaan Barang ' . $i,
-                'rab_id' => fake()->boolean ? $rab->id : null,
+                'rab_id' => $useRab ? $rab->id : null,
                 'sudin_id' => $sudin->id,
                 'warehouse_id' => $warehouse?->id,
                 'item_type_id' => ItemType::where('active', true)->inRandomOrder()->first()?->id,
@@ -58,13 +59,18 @@ class RequestSeeder extends Seeder
                 'nopol' => 'B ' . rand(1000, 9999) . ' ' . fake()->randomLetter() . fake()->randomLetter(),
                 'unit_id' => $unit?->id,
                 'user_id' => $user->id,
-                'driver_id' => $driver?->id,
-                'security_id' => $security?->id,
+                // 'driver_id' => $driver?->id,
+                // 'security_id' => $security?->id,
                 'tanggal_permintaan' => now()->subDays(rand(0, 10)),
                 // 'status' => collect(['draft', 'pending', 'approved'])->random(),
-                'status' => 'draft',
+                'status' => 'pending',
                 'notes' => 'Seeder request ke-' . $i,
             ]);
+            if (!$useRab) {
+                app(ApprovalService::class)->init($request, 'permintaanNonRab');
+
+            }
+
 
             // Request Items
             foreach ($items->random(rand(10, 20)) as $item) {
