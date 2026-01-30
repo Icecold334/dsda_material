@@ -66,6 +66,31 @@
     <livewire:components.delivery-info-modal :permintaan="$permintaan" :key="'delivery-info-modal-' . $permintaan->id" />
 
     <div>
+        @php
+        $data = [
+        [ "name"=> "No", "id"=> "no", "width"=> "8%" ],
+        [ "name"=> "Kode Barang", "id"=> "kode", "width"=> "12%" ],
+        [ "name"=> "Barang", "id"=> "barang", "width"=> "15%" ],
+        [ "name"=> "Spesifikasi", "id"=> "spec" ],
+        [ "name"=> "Jumlah Diminta", "id"=> "qty_request", "width"=> "12%" ],
+        [ "name"=> "Jumlah Disetujui", "id"=> "qty_approved", "width"=> "12%" ],
+        [ "name"=> "Foto", "id"=> "foto", "width"=> "12%", "className"=>"text-center" ]
+        ];
+        $hideColumns = [];
+
+        if (false) {
+        $hideColumns[] = 'foto';
+        }
+
+        if (false) {
+        $hideColumns[] = 'qty_approved';
+        }
+
+        $data = array_values(array_filter($data, function ($col) use ($hideColumns) {
+        return !in_array($col['id'], $hideColumns);
+        }));
+        @endphp
+
         <x-card title="Daftar Barang">
             <div data-grid data-api="{{ route('permintaan.nonRab.show.json', $permintaan) }}" data-columns='[
         { "name": "No", "id": "no", "width": "8%" },
