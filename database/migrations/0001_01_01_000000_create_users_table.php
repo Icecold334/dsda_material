@@ -26,9 +26,11 @@ return new class extends Migration {
             $table->uuid('sudin_id')->nullable();
             $table->uuid('division_id')->nullable();
             $table->uuid('position_id')->nullable();
+            $table->uuid('supervisor_user_id')->nullable();
 
             // Relations
             $table->foreign('sudin_id')->references('id')->on('sudins')->nullOnDelete();
+            $table->foreign('supervisor_user_id')->references('id')->on('users')->nullOnDelete();
             $table->foreign('division_id')->references('id')->on('divisions')->nullOnDelete();
             $table->foreign('position_id')->references('id')->on('positions')->nullOnDelete();
 

@@ -4,6 +4,10 @@
             <div class="text-3xl font-semibold">Detail Pengiriman #{{ $delivery->nomor }}</div>
         </div>
         <div class="text-right flex gap-2 justify-end">
+
+
+            <livewire:approval-panel module="pengiriman" :approvable-type="App\Models\Delivery::class"
+                :approvable-id="$delivery->id" />
             <x-secondary-button wire:click="openInformasiModal" type="button">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -39,7 +43,8 @@
 
     <!-- Modal Surat Jalan -->
     <livewire:components.document-upload mode="show" :model-type="'App\\Models\\Delivery'" :model-id="$delivery->id"
-        category="surat_jalan" label="Surat Jalan" modal-id="surat-jalan-modal" :key="'surat-jalan-show-' . $delivery->id" />
+        category="surat_jalan" label="Surat Jalan" modal-id="surat-jalan-modal"
+        :key="'surat-jalan-show-' . $delivery->id" />
 
     <!-- Modal Foto Pengiriman -->
     <livewire:components.document-upload mode="show" :model-type="'App\\Models\\Delivery'" :model-id="$delivery->id"

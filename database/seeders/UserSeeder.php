@@ -94,6 +94,18 @@ class UserSeeder extends Seeder
                     'position' => 'Pengurus Barang',
                     'division' => null,
                 ],
+                [
+                    'name' => 'PPK',
+                    'email' => 'ppk@test.id',
+                    'position' => 'PPK',
+                    'division' => null,
+                ],
+                [
+                    'name' => 'PPTK',
+                    'email' => 'pptk@test.id',
+                    'position' => 'PPTK',
+                    'division' => null,
+                ],
             ];
 
             foreach ($users as $u) {

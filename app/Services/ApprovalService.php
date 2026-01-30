@@ -219,7 +219,6 @@ class ApprovalService
     {
 
 
-
         // 1️⃣ Cari PLT aktif (diutamakan)
         $pltUserId = PositionDelegation::where('position_id', $approval->position_id)
             ->where(function ($q) use ($approval) {
@@ -229,7 +228,6 @@ class ApprovalService
             ->whereDate('start_date', '<=', now())
             ->whereDate('end_date', '>=', now())
             ->value('user_id');
-
         if ($pltUserId) {
             return User::find($pltUserId);
         }
@@ -241,8 +239,7 @@ class ApprovalService
                 fn($q) => $q->where('division_id', $approval->division_id)
             )
             ->orderBy('id')
-            ->firstorFail();
-
+            ->firstOrFail();
         return $user;
     }
 

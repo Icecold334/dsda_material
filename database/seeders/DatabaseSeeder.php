@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             DistrictSeeder::class,
             UserSeeder::class,
             ApprovalFlowPermintaanNonRabSeeder::class,
+            ApprovalFlowPengirimanSeeder::class,
             SubdistrictSeeder::class,
             VendorSeeder::class,
             ItemUnitSeeder::class,

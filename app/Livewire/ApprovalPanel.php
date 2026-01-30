@@ -32,9 +32,9 @@ class ApprovalPanel extends Component
         $this->approvableType = $approvableType;
         $this->approvableId = $approvableId;
 
-
         $this->dispatch('approvalExtraCheckRequested');
         $this->getApprovals($approvalService);
+
     }
 
 
@@ -58,6 +58,7 @@ class ApprovalPanel extends Component
             ->orderBy('level')
             ->get()
             ->map(function ($approval, $i) use ($approvalService) {
+                // dd($approval);
                 $approval->approver_user = $approvalService->getApproverUserFor($approval, $i);
                 return $approval;
             });
