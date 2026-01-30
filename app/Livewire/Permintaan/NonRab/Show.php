@@ -20,7 +20,10 @@ class Show extends Component
         'approvalExtraCheckRequested' => 'handleExtraCheck',
         'approvalRejected' => 'onApprovalRejected',
         'confirmSubmit' => 'sendRequest',
-        'confirmDelete' => 'deleteRequest'
+        'confirmDelete' => 'deleteRequest',
+        'saveDocuments' => 'saveDocuments',
+        'documentsSaved' => 'onDocumentsSaved',
+        'documentSaveError' => 'onDocumentSaveError'
     ];
 
     public function mount()
@@ -98,6 +101,34 @@ class Show extends Component
         $nomor = $this->permintaan->nomor;
         $this->permintaan->forceDelete();
         return $this->dispatch('deleteSuccess', nomor: $nomor);
+    }
+
+    public function saveDocuments($modelId)
+    {
+        // This method will be called by DocumentUpload component
+        // The actual saving is handled by DocumentUpload's saveDocuments method
+        // We can add any additional logic here if needed, like refreshing data
+        $this->dispatch('documentsSaved');
+    }
+
+    public function onDocumentsSaved()
+    {
+        // Show success message
+        $this->dispatch('showAlert', [
+            'type' => 'success',
+            'title' => 'Berhasil!',
+            'text' => 'Dokumen berhasil diupload',
+        ]);
+    }
+
+    public function onDocumentSaveError($message)
+    {
+        // Show error message
+        $this->dispatch('showAlert', [
+            'type' => 'error',
+            'title' => 'Gagal!',
+            'text' => 'Gagal upload dokumen: ' . $message,
+        ]);
     }
 
     protected function hasPickupPhotos(): bool

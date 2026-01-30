@@ -79,6 +79,13 @@
                                     </li>
                                 @endforeach
                             </ul>
+                            @if($autoUpload)
+                            <div class="mt-4">
+                                <x-primary-button wire:click="saveDocumentsToParent" class="w-full">
+                                    Upload Dokumen
+                                </x-primary-button>
+                            </div>
+                            @endif
                         </div>
                     @endif
                 </div>

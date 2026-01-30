@@ -20,6 +20,7 @@ class DocumentUpload extends Component
     public $multiple = false; // Allow multiple upload
     public $accept = '*'; // File types accepted
     public $modalId = 'document-upload-modal'; // Unique modal ID
+    public $autoUpload = false; // If true, show upload button for immediate upload; if false, wait for form save
 
     // State
     public $files = []; // For upload (create mode)
@@ -75,6 +76,19 @@ class DocumentUpload extends Component
         }
     }
 
+    public function saveDocumentsToParent()
+    {
+        if (empty($this->files)) {
+            return;
+        }
+
+        // Dispatch event to parent to save documents
+        $this->dispatch('saveDocuments', $this->modelId);
+
+        // Close modal after dispatching
+        $this->dispatch('close');
+    }
+
     public function deleteDocument($documentId)
     {
         $document = Document::find($documentId);
@@ -113,30 +127,38 @@ class DocumentUpload extends Component
             return;
         }
 
-        $folderName = $this->getFolderName();
+        try {
+            $folderName = $this->getFolderName();
 
-        foreach ($this->files as $file) {
-            $originalFileName = $file->getClientOriginalName();
-            // Generate random filename while preserving extension
-            $extension = $file->getClientOriginalExtension();
-            $randomFileName = \Illuminate\Support\Str::uuid() . '.' . $extension;
+            foreach ($this->files as $file) {
+                $originalFileName = $file->getClientOriginalName();
+                // Generate random filename while preserving extension
+                $extension = $file->getClientOriginalExtension();
+                $randomFileName = \Illuminate\Support\Str::uuid() . '.' . $extension;
 
-            // Store file with random name
-            $filePath = $file->storeAs($folderName, $randomFileName, 'public');
+                // Store file with random name
+                $filePath = $file->storeAs($folderName, $randomFileName, 'public');
 
-            Document::create([
-                'documentable_type' => $this->modelType,
-                'documentable_id' => $modelId,
-                'category' => $this->category,
-                'file_path' => $filePath,
-                'file_name' => $originalFileName,
-                'mime_type' => $file->getMimeType(),
-                'size_kb' => round($file->getSize() / 1024, 2),
-                'user_id' => auth()->id(),
-            ]);
+                Document::create([
+                    'documentable_type' => $this->modelType,
+                    'documentable_id' => $modelId,
+                    'category' => $this->category,
+                    'file_path' => $filePath,
+                    'file_name' => $originalFileName,
+                    'mime_type' => $file->getMimeType(),
+                    'size_kb' => round($file->getSize() / 1024, 2),
+                    'user_id' => auth()->id(),
+                ]);
+            }
+
+            $this->files = [];
+
+            // Dispatch success event
+            $this->dispatch('documentsSaved');
+        } catch (\Exception $e) {
+            // Dispatch error event
+            $this->dispatch('documentSaveError', message: $e->getMessage());
         }
-
-        $this->files = [];
     }
 
     /**
