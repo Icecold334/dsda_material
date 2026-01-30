@@ -30,7 +30,8 @@ class ApprovalService
                     'level' => $flow->level,
                     'position_id' => $flow->position_id,
                     'division_id' => $flow->division_id,
-                    'sudin_id' => Auth::user()->sudin->id,
+                    // 'sudin_id' => Auth::user()->sudin->id,
+                    'sudin_id' => $model->sudin_id,
                     'status' => 'pending',
                 ]);
             }
@@ -121,6 +122,8 @@ class ApprovalService
                 'approved_at' => now(),
             ]);
         });
+
+
     }
 
     public function reject(Model $model, User $user, string $reason): void
@@ -242,5 +245,20 @@ class ApprovalService
 
         return $user;
     }
+
+    public function isComplete(Model $model): bool
+    {
+        // kalau ada reject → tidak complete
+        if ($this->isRejected($model)) {
+            return false;
+        }
+
+        // masih ada pending → belum complete
+        return !RequestApproval::where('document_type', get_class($model))
+            ->where('document_id', $model->id)
+            ->where('status', 'pending')
+            ->exists();
+    }
+
 
 }

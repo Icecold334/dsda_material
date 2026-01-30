@@ -36,6 +36,7 @@ class Show extends Component
 
     public function handleExtraCheck()
     {
+        $approval = app(ApprovalService::class);
         $ready = true;
         $message = '';
 
@@ -64,28 +65,21 @@ class Show extends Component
         }
 
         // Validasi tambahan
-        if (!$this->hasPickupPhotos() && false) {
-            $ready = false;
-            $message = 'Foto barang belum lengkap';
-        } elseif (!$this->permintaan->driver_id) {
-            $ready = false;
-            $message = 'Driver belum dipilih';
-        } elseif (!$this->permintaan->security_id) {
-            $ready = false;
-            $message = 'Security belum dipilih';
-        }
+        // if (!$this->hasPickupPhotos()) {
+        //     $ready = false;
+        //     $message = 'Foto barang belum lengkap';
+        // } elseif (!$this->permintaan->driver_id) {
+        //     $ready = false;
+        //     $message = 'Driver belum dipilih';
+        // } elseif (!$this->permintaan->security_id) {
+        //     $ready = false;
+        //     $message = 'Security belum dipilih';
+        // }
 
         $this->dispatch('approvalExtraCheckResult', ready: $ready, message: $message);
     }
 
-    public function onApprovalRejected()
-    {
-        // $this->permintaan->status = 'rejected';
-        // $this->permintaan->save();
 
-        // optional:
-        // kirim notifikasi ke pemohon
-    }
 
     public function sendRequest()
     {

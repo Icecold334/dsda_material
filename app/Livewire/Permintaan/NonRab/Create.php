@@ -10,10 +10,11 @@ use Livewire\Component;
 use App\Models\Division;
 use App\Models\Warehouse;
 use App\Models\Subdistrict;
+use Livewire\Attributes\On;
 use App\Models\ItemCategory;
 use App\Models\RequestModel;
 use Livewire\Attributes\Title;
-use Livewire\Attributes\On;
+use App\Services\StockLedgerService;
 
 class Create extends Component
 {
@@ -199,32 +200,89 @@ class Create extends Component
 
     public function save()
     {
-        $this->validate();
+        // $this->validate();
 
-        // Validate items
-        if (empty($this->items)) {
-            session()->flash('error', 'Minimal harus ada 1 item dalam permintaan');
-            return;
+        // // Validate items
+        // if (empty($this->items)) {
+        //     session()->flash('error', 'Minimal harus ada 1 item dalam permintaan');
+        //     return;
+        // }
+
+        // dd([
+        //     'nomor' => $this->nomor,
+        //     'name' => $this->name,
+        //     'sudin_id' => $this->sudin_id,
+        //     'warehouse_id' => $this->warehouse_id,
+        //     'item_type_id' => $this->item_type_id,
+        //     'district_id' => $this->district_id,
+        //     'subdistrict_id' => $this->subdistrict_id,
+        //     'tanggal_permintaan' => $this->tanggal_permintaan,
+        //     'address' => $this->address,
+        //     'panjang' => $this->panjang,
+        //     'lebar' => $this->lebar,
+        //     'tinggi' => $this->tinggi,
+        //     'user_id' => auth()->user()->id,
+        //     'notes' => $this->notes,
+        //     'status' => 'draft',
+        //     'rab_id' => null,
+        // ], $this->items);
+
+        if (true) {
+            $data = [
+                "nomor" => "12156866",
+                "name" => "ak kasian ak",
+                "sudin_id" => "019bfd94-bab1-7261-82f7-bdacc43a61e1",
+                "warehouse_id" => "c9dba913-402f-49b3-90fa-6d7b7245b93b",
+                "item_type_id" => "019bfd94-f031-7383-8658-53f5b27005e7",
+                "district_id" => "019bfd94-bba8-70ed-99e8-ec2ba2ed56c3",
+                "subdistrict_id" => "019bfd94-eed0-71a0-bdce-3dd1a66d1428",
+                "tanggal_permintaan" => "2026-01-01",
+                "address" => "ooke aret",
+                "panjang" => "t3empe",
+                "lebar" => "342",
+                "tinggi" => "fds",
+                "user_id" => "019bfd94-bf0d-7107-8c7a-77b55105754a",
+                "notes" => "dsf3",
+                "status" => "draft",
+                "rab_id" => null,
+            ];
+
+            $this->items = [
+                [
+                    "item_id" => "019bfd94-f15c-71e3-a9f8-436f5a215f5e",
+                    "item_category" => "Aspernatur inventore laudantium ipsa.",
+                    "item_spec" => "Et odit quia pariatur non.",
+                    "item_unit" => "repudiandae",
+                    "qty_request" => "50",
+                    "stock_available" => "74.93"
+                ]
+            ];
+        } else {
+            $data = [
+                'nomor' => $this->nomor,
+                'name' => $this->name,
+                'sudin_id' => $this->sudin_id,
+                'warehouse_id' => $this->warehouse_id,
+                'item_type_id' => $this->item_type_id,
+                'district_id' => $this->district_id,
+                'subdistrict_id' => $this->subdistrict_id,
+                'tanggal_permintaan' => $this->tanggal_permintaan,
+                'address' => $this->address,
+                'panjang' => $this->panjang,
+                'lebar' => $this->lebar,
+                'tinggi' => $this->tinggi,
+                'user_id' => auth()->user()->id,
+                'notes' => $this->notes,
+                'status' => 'draft',
+                'rab_id' => null,
+            ];
         }
 
-        $request = RequestModel::create([
-            'nomor' => $this->nomor,
-            'name' => $this->name,
-            'sudin_id' => $this->sudin_id,
-            'warehouse_id' => $this->warehouse_id,
-            'item_type_id' => $this->item_type_id,
-            'district_id' => $this->district_id,
-            'subdistrict_id' => $this->subdistrict_id,
-            'tanggal_permintaan' => $this->tanggal_permintaan,
-            'address' => $this->address,
-            'panjang' => $this->panjang,
-            'lebar' => $this->lebar,
-            'tinggi' => $this->tinggi,
-            'user_id' => auth()->user()->id,
-            'notes' => $this->notes,
-            'status' => 'draft',
-            'rab_id' => null,
-        ]);
+
+
+
+
+        $request = RequestModel::create($data);
 
         // Save request items
         foreach ($this->items as $item) {
@@ -232,7 +290,18 @@ class Create extends Component
                 'item_id' => $item['item_id'],
                 'qty_request' => $item['qty_request'],
             ]);
+            app(StockLedgerService::class)
+                ->out([
+                    'item_id' => $item['item_id'],
+                    'warehouse_id' => 'c9dba913-402f-49b3-90fa-6d7b7245b93b',
+                    'qty' => $item['qty_request'],
+                    'ref_type' => RequestModel::class,
+                    'ref_id' => $request->id,
+                    'sudin_id' => $request->sudin_id,
+                    'user_id' => auth()->id(),
+                ]);
         }
+        dd('asd');
 
         // Save documents
         $this->dispatch('saveDocuments', modelId: $request->id);
