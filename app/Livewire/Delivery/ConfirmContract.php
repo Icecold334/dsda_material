@@ -3,21 +3,23 @@
 namespace App\Livewire\Delivery;
 
 use App\Models\Contract;
+use App\Models\ContractAmendment;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
 class ConfirmContract extends Component
 {
 
-    public $contractData = [], $showDetail = false, $titleModal = '', $isApi = false, $contract;
+    public $contractData = [], $showDetail = false, $titleModal = '', $isApi = false, $contract, $amendmentId = null;
 
     #[On('confirmContract')]
-    public function confirmContract(Contract $contract, $data = [])
+    public function confirmContract(Contract $contract, $data = [], $amendment = null)
     {
         $this->showDetail = false;
         $this->changeTitleModal();
         $this->contractData = $data;
         $this->contract = $contract;
+        $this->amendmentId = $amendment;
         $this->isApi = $contract->is_api;
     }
 

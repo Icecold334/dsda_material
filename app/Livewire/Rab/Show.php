@@ -2,39 +2,41 @@
 
 namespace App\Livewire\Rab;
 
+use Livewire\Component;
 use App\Models\Rab;
 use Livewire\Attributes\Title;
-use Livewire\Component;
+use Livewire\Attributes\Computed;
 
 class Show extends Component
 {
     #[Title('Detail RAB')]
-    public Rab $rab;
 
-    public function mount()
+    public Rab $rab;
+    public $showVersion = 'latest'; // 'latest', 'original', or amendment_id
+
+    public function mount(Rab $rab)
     {
-        // Dispatch RAB data to modal
-        $this->dispatch('setRabData', [
-            'id' => $this->rab->id,
-            'nomor' => $this->rab->nomor,
-            'name' => $this->rab->name,
-            'tahun' => $this->rab->tahun,
-            'tanggal_mulai' => $this->rab->tanggal_mulai?->format('Y-m-d'),
-            'tanggal_selesai' => $this->rab->tanggal_selesai?->format('Y-m-d'),
-            'sudin_id' => $this->rab->sudin_id,
-            'district_id' => $this->rab->district_id,
-            'subdistrict_id' => $this->rab->subdistrict_id,
-            'address' => $this->rab->address,
-            'panjang' => $this->rab->panjang,
-            'lebar' => $this->rab->lebar,
-            'tinggi' => $this->rab->tinggi,
-            'status' => $this->rab->status,
-            'status_text' => $this->rab->status_text,
-            'status_color' => $this->rab->status_color,
-            'pembuat' => $this->rab->user?->name,
-            'total' => $this->rab->total,
-            'item_type' => $this->rab->itemType?->name,
-        ]);
+        // Load RAB with items
+        $this->rab = $rab->load('items.item.category.unit');
+    }
+
+    #[Computed]
+    public function currentVersion()
+    {
+        if ($this->showVersion === 'original') {
+            return $this->rab->load('items.item.category.unit');
+        } elseif ($this->showVersion === 'latest') {
+            return $this->rab->latestVersion->load('items.item.category.unit');
+        } else {
+            // Show specific amendment
+            return $this->rab->amendments()->with('items.item.category.unit')->find($this->showVersion);
+        }
+    }
+
+    #[Computed]
+    public function amendments()
+    {
+        return $this->rab->amendments()->with('items.item.category.unit')->get();
     }
 
     public function render()

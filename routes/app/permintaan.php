@@ -34,7 +34,16 @@ Route::prefix('permintaan')->name('permintaan.')->group(function () {
         })->name('json');
 
         Route::get('/{permintaan}/json', function (RequestModel $permintaan) {
-            $data = $permintaan->load(['items.item.category.unit'])->items->map(function ($requestItem, $index) {
+            $data = $permintaan->load(['items.item.category.unit', 'items.photo'])->items->map(function ($requestItem, $index) {
+                $hasPhoto = $requestItem->photo !== null;
+
+                if ($hasPhoto) {
+                    $photoUrl = \Illuminate\Support\Facades\Storage::url($requestItem->photo->file_path);
+                    $buttonHtml = '<button type="button" class="btn-view-photo inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded transition" data-photo-url="' . htmlspecialchars($photoUrl, ENT_QUOTES) . '">Lihat Foto</button>';
+                } else {
+                    $buttonHtml = '<button type="button" class="btn-upload-photo inline-flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-medium rounded transition" data-item-id="' . $requestItem->id . '">Upload Foto</button>';
+                }
+
                 return [
                     'no' => $index + 1,
                     'kode' => $requestItem->item->code ?? '-',
@@ -44,6 +53,7 @@ Route::prefix('permintaan')->name('permintaan.')->group(function () {
                     'qty_approved' => $requestItem->qty_approved
                         ? number_format($requestItem->qty_approved, 2) . ' ' . ($requestItem->item->category->unit->name ?? '')
                         : '-',
+                    'foto' => $buttonHtml,
                 ];
             });
 
@@ -52,6 +62,39 @@ Route::prefix('permintaan')->name('permintaan.')->group(function () {
                 'data' => $data,
             ]);
         })->name('show.json');
+
+        Route::post('/{permintaan}/item/{item}/upload-photo', function (RequestModel $permintaan, $item) {
+            $request = request();
+            $request->validate([
+                'photo' => 'required|image|max:5120',
+            ]);
+
+            $requestItem = \App\Models\RequestItem::findOrFail($item);
+
+            if ($requestItem->photo) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($requestItem->photo->file_path);
+                $requestItem->photo->delete();
+            }
+
+            $file = $request->file('photo');
+            $path = $file->store('item-photos', 'public');
+
+            \App\Models\Document::create([
+                'documentable_type' => \App\Models\RequestItem::class,
+                'documentable_id' => $requestItem->id,
+                'category' => 'item_photo',
+                'file_path' => $path,
+                'file_name' => $file->getClientOriginalName(),
+                'mime_type' => $file->getMimeType(),
+                'size_kb' => $file->getSize() / 1024,
+                'user_id' => auth()->id(),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Foto berhasil diupload'
+            ]);
+        })->name('item.upload-photo');
 
         Route::get('/{permintaan}', ShowRab::class)->name('show');
     });
@@ -81,7 +124,22 @@ Route::prefix('permintaan')->name('permintaan.')->group(function () {
         })->name('json');
 
         Route::get('/{permintaan}/json', function (RequestModel $permintaan) {
-            $data = $permintaan->load(['items.item.category.unit'])->items->map(function ($requestItem, $index) {
+            $data = $permintaan->load(['items.item.category.unit', 'items.photo'])->items->map(function ($requestItem, $index) {
+                // Generate button HTML based on photo existence
+                $hasPhoto = $requestItem->photo !== null;
+
+                if ($hasPhoto) {
+                    $photo = $requestItem->photo;
+                    $photoUrl = \Illuminate\Support\Facades\Storage::url($photo->file_path);
+                    $buttonHtml = '<button type="button" class="btn-view-photo inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded transition" data-photo-url="' . htmlspecialchars($photoUrl, ENT_QUOTES) . '">
+                        Lihat Foto
+                    </button>';
+                } else {
+                    $buttonHtml = '<button type="button" class="btn-upload-photo inline-flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-medium rounded transition" data-item-id="' . $requestItem->id . '">
+                        Upload Foto
+                    </button>';
+                }
+
                 return [
                     'no' => $index + 1,
                     'kode' => $requestItem->item->code ?? '-',
@@ -91,6 +149,7 @@ Route::prefix('permintaan')->name('permintaan.')->group(function () {
                     'qty_approved' => $requestItem->qty_approved
                         ? number_format($requestItem->qty_approved, 2) . ' ' . ($requestItem->item->category->unit->name ?? '')
                         : '-',
+                    'foto' => $buttonHtml,
                 ];
             });
 
@@ -99,6 +158,41 @@ Route::prefix('permintaan')->name('permintaan.')->group(function () {
                 'data' => $data,
             ]);
         })->name('show.json');
+
+        Route::post('/{permintaan}/item/{item}/upload-photo', function (RequestModel $permintaan, $item) {
+            $request = request();
+            $request->validate([
+                'photo' => 'required|image|max:5120',
+            ]);
+
+            $requestItem = \App\Models\RequestItem::findOrFail($item);
+
+            // Delete old photo if exists
+            if ($requestItem->photo) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($requestItem->photo->file_path);
+                $requestItem->photo->delete();
+            }
+
+            // Upload new photo
+            $file = $request->file('photo');
+            $path = $file->store('item-photos', 'public');
+
+            \App\Models\Document::create([
+                'documentable_type' => \App\Models\RequestItem::class,
+                'documentable_id' => $requestItem->id,
+                'category' => 'item_photo',
+                'file_path' => $path,
+                'file_name' => $file->getClientOriginalName(),
+                'mime_type' => $file->getMimeType(),
+                'size_kb' => $file->getSize() / 1024,
+                'user_id' => auth()->id(),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Foto berhasil diupload'
+            ]);
+        })->name('item.upload-photo');
 
         Route::get('/{permintaan}', ShowNonRab::class)->name('show');
     });

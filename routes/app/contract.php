@@ -4,6 +4,8 @@ use App\Models\Contract;
 use App\Livewire\Contract\Show;
 use App\Livewire\Contract\Index;
 use App\Livewire\Contract\Create;
+use App\Livewire\Contract\ShowAmendment;
+use App\Livewire\Contract\CreateAmendment;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
@@ -82,7 +84,13 @@ Route::prefix('contract')->name('contract.')->group(function () {
         }
         return response()->json(['status' => 'success', 'data' => $contract]);
     })->name('emonev');
+
     Route::get('/create', Create::class)->name('create');
+
+    // Amendment routes
+    Route::get('/{contract}/amendment/create', CreateAmendment::class)->name('amendment.create');
+    Route::get('/{contract}/amendment/{amendment}', ShowAmendment::class)->name('amendment.show');
+
     Route::get('/{contract}', Show::class)->name('show');
 
 

@@ -58,8 +58,9 @@
         { "name": "Kode Barang", "id": "kode", "width": "12%" },
         { "name": "Barang", "id": "barang", "width": "15%" },
         { "name": "Spesifikasi", "id": "spec" },
-        { "name": "Jumlah Diminta", "id": "qty_request", "width": "15%" },
-        { "name": "Jumlah Disetujui", "id": "qty_approved", "width": "15%" }
+        { "name": "Jumlah Diminta", "id": "qty_request", "width": "12%" },
+        { "name": "Jumlah Disetujui", "id": "qty_approved", "width": "12%" },
+        { "name": "Foto", "id": "foto", "width": "12%" }
     ]' wire:ignore>
             </div>
         </x-card>
@@ -72,4 +73,112 @@
 
     <!-- Modal Lihat Dokumen -->
     <livewire:components.document-modal :permintaanId="$permintaan->id" :key="'document-modal-rab-' . $permintaan->id" />
+
+    @push('scripts')
+        <script type="module">
+            let currentUploadItemId = null;
+
+            // Event delegation untuk tombol foto
+            document.addEventListener('click', function (e) {
+                // Handle view photo button
+                if (e.target.closest('.btn-view-photo')) {
+                    const btn = e.target.closest('.btn-view-photo');
+                    const photoUrl = btn.getAttribute('data-photo-url');
+
+                    Swal.fire({
+                        imageUrl: photoUrl,
+                        imageAlt: 'Foto Barang',
+                        showConfirmButton: false,
+                        showCloseButton: true,
+                        width: 'auto',
+                        customClass: {
+                            image: 'max-h-96'
+                        }
+                    });
+                }
+
+                // Handle upload photo button
+                if (e.target.closest('.btn-upload-photo')) {
+                    const btn = e.target.closest('.btn-upload-photo');
+                    currentUploadItemId = btn.getAttribute('data-item-id');
+
+                    Swal.fire({
+                        title: 'Upload Foto Barang',
+                        html: '<input type="file" id="photo-file-input" accept="image/*" class="swal2-input" style="display:block;">',
+                        showCancelButton: true,
+                        confirmButtonText: 'Upload',
+                        cancelButtonText: 'Batal',
+                        preConfirm: () => {
+                            const fileInput = document.getElementById('photo-file-input');
+                            const file = fileInput.files[0];
+
+                            if (!file) {
+                                Swal.showValidationMessage('Pilih foto terlebih dahulu');
+                                return false;
+                            }
+
+                            if (!file.type.startsWith('image/')) {
+                                Swal.showValidationMessage('File harus berupa gambar');
+                                return false;
+                            }
+
+                            if (file.size > 5120 * 1024) {
+                                Swal.showValidationMessage('Ukuran file maksimal 5MB');
+                                return false;
+                            }
+
+                            return file;
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed && result.value) {
+                            uploadPhoto(result.value);
+                        }
+                    });
+                }
+            });
+
+            function uploadPhoto(file) {
+                const formData = new FormData();
+                formData.append('photo', file);
+                formData.append('_token', '{{ csrf_token() }}');
+
+                Swal.fire({
+                    title: 'Mengupload...',
+                    text: 'Mohon tunggu',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                fetch('{{ route("permintaan.rab.item.upload-photo", ["permintaan" => $permintaan->id, "item" => "ITEM_ID"]) }}'.replace('ITEM_ID', currentUploadItemId), {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: data.message || 'Foto berhasil diupload',
+                            timer: 2000
+                        }).then(() => {
+                            location.reload();
+                        });
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: 'Terjadi kesalahan saat upload foto'
+                        });
+                    });
+            }
+        </script>
+    @endpush
 </div>
