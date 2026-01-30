@@ -8,7 +8,9 @@ use App\Models\RequestItem;
 use App\Models\Warehouse;
 use App\Models\Stock;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\On;
 use Livewire\Component;
+use Illuminate\Support\Facades\Validator;
 
 class Create extends Component
 {
@@ -56,21 +58,35 @@ class Create extends Component
 
     public function searchRab()
     {
-        $this->validate([
-            'rab_nomor' => 'required|string',
-        ]);
+        $validator = Validator::make(
+            [
+                'rab_nomor' => $this->rab_nomor,
+            ],
+            [
+                'rab_nomor' => 'required|string',
+            ],
+            [
+                'rab_nomor.required' => 'Nomor RAB wajib diisi',
+                'rab_nomor.string' => 'Nomor RAB harus berupa teks',
+            ]
+        );
+
+        if ($validator->fails()) {
+            $this->dispatch('alert', type: 'error', title: 'Gagal!', text: $validator->errors()->first());
+            return;
+        }
 
         $rab = Rab::with(['sudin', 'district', 'subdistrict', 'user'])
             ->where('nomor', $this->rab_nomor)
             ->first();
 
         if (!$rab) {
-            $this->addError('rab_nomor', 'RAB dengan nomor tersebut tidak ditemukan');
+            $this->dispatch('alert', type: 'error', title: 'Gagal!', text: 'RAB dengan nomor tersebut tidak ditemukan');
             return;
         }
 
         if ($rab->status !== 'approved') {
-            $this->addError('rab_nomor', 'RAB belum disetujui, tidak dapat membuat permintaan');
+            $this->dispatch('alert', type: 'error', title: 'Gagal!', text: 'RAB belum disetujui, tidak dapat membuat permintaan');
             return;
         }
 
@@ -258,23 +274,60 @@ class Create extends Component
         });
     }
 
-    public function save()
+    public function validateForm()
     {
         if (!$this->rab) {
-            $this->addError('rab_nomor', 'Silakan cari dan pilih RAB terlebih dahulu');
+            $this->dispatch('alert', type: 'error', title: 'Gagal!', text: 'Silakan cari dan pilih RAB terlebih dahulu');
             return;
         }
 
-        $this->validate();
+        $validator = Validator::make(
+            [
+                'rab_nomor' => $this->rab_nomor,
+                'nomor' => $this->nomor,
+                'warehouse_id' => $this->warehouse_id,
+                'tanggal_permintaan' => $this->tanggal_permintaan,
+                'notes' => $this->notes,
+            ],
+            [
+                'rab_nomor' => 'required|string',
+                'nomor' => 'required|string|max:255',
+                'warehouse_id' => 'required|exists:warehouses,id',
+                'tanggal_permintaan' => 'required|date',
+                'notes' => 'nullable|string',
+            ],
+            [
+                'rab_nomor.required' => 'Nomor RAB wajib diisi',
+                'nomor.required' => 'Nomor SPB wajib diisi',
+                'nomor.string' => 'Nomor SPB harus berupa teks',
+                'nomor.max' => 'Nomor SPB maksimal 255 karakter',
+                'warehouse_id.required' => 'Gudang wajib dipilih',
+                'warehouse_id.exists' => 'Gudang yang dipilih tidak valid',
+                'tanggal_permintaan.required' => 'Tanggal permintaan wajib diisi',
+                'tanggal_permintaan.date' => 'Format tanggal permintaan tidak valid',
+                'notes.string' => 'Keterangan harus berupa teks',
+            ]
+        );
+
+        if ($validator->fails()) {
+            $this->dispatch('alert', type: 'error', title: 'Gagal!', text: $validator->errors()->first());
+            return;
+        }
 
         // Validasi minimal ada 1 item yang diminta
         $hasItems = collect($this->items)->filter(fn($item) => $item['qty_request'] > 0)->isNotEmpty();
-
         if (!$hasItems) {
-            session()->flash('error', 'Minimal harus ada 1 barang yang diminta');
+            $this->dispatch('alert', type: 'error', title: 'Gagal!', text: 'Minimal harus ada 1 barang yang diminta');
             return;
         }
 
+        $this->dispatch('validation-passed-create');
+        return;
+    }
+
+    #[On('confirm-save-permintaan-rab')]
+    public function confirmSave()
+    {
         $request = RequestModel::create([
             'nomor' => $this->nomor,
             'name' => $this->name,

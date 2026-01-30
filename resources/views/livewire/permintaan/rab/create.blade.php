@@ -43,10 +43,6 @@
                     Cari
                 </x-button>
             </div>
-
-            @error('rab_nomor')
-                <div class="text-sm text-red-600">{{ $message }}</div>
-            @enderror
         </div>
     </x-modal>
 
@@ -57,15 +53,15 @@
     @endif
 
     @if ($rab)
-        <form wire:submit="save">
+        <form wire:submit.prevent="validateForm">
             <div class="grid grid-cols-1 gap-4">
                 <x-card title="Informasi Permintaan">
                     <div class="space-y-4">
                         <div class="flex items-center justify-between">
                             <x-input-label for="nomor" value="Nomor SPB" />
                             <div class="mt-1 block w-full max-w-[500px]">
-                                <x-text-input id="nomor" wire:model="nomor" placeholder="Masukkan nomor SPB" type="text"
-                                    class="w-full" />
+                                <x-text-input id="nomor" wire:model="nomor" placeholder="Masukkan nomor SPB"
+                                    type="text" class="w-full" />
                                 <x-input-error :messages="$errors->get('nomor')" class="mt-2" />
                             </div>
                         </div>
@@ -98,8 +94,8 @@
                                         <x-text-input type="text" class="w-full bg-gray-100"
                                             value="{{ $selectedWarehouse['name'] ?? '-' }}" disabled />
                                     @else
-                                        <x-text-input type="text" class="w-full bg-gray-100" placeholder="-- Pilih Gudang --"
-                                            disabled />
+                                        <x-text-input type="text" class="w-full bg-gray-100"
+                                            placeholder="-- Pilih Gudang --" disabled />
                                     @endif
                                     <x-button type="button" wire:click="openWarehouseModal">
                                         Pilih
@@ -142,16 +138,16 @@
                             <x-input-label for="panjang" value="Dimensi" />
                             <div class="w-full max-w-[500px] grid grid-cols-3 gap-4">
                                 <div class="w-full">
-                                    <x-text-input id="panjang" wire:model="panjang" type="text" class="w-full bg-gray-100"
-                                        placeholder="0" disabled />
+                                    <x-text-input id="panjang" wire:model="panjang" type="text"
+                                        class="w-full bg-gray-100" placeholder="0" disabled />
                                 </div>
                                 <div class="w-full">
-                                    <x-text-input id="lebar" wire:model="lebar" type="text" class="w-full bg-gray-100"
-                                        placeholder="0" disabled />
+                                    <x-text-input id="lebar" wire:model="lebar" type="text"
+                                        class="w-full bg-gray-100" placeholder="0" disabled />
                                 </div>
                                 <div class="w-full">
-                                    <x-text-input id="tinggi" wire:model="tinggi" type="text" class="w-full bg-gray-100"
-                                        placeholder="0" disabled />
+                                    <x-text-input id="tinggi" wire:model="tinggi" type="text"
+                                        class="w-full bg-gray-100" placeholder="0" disabled />
                                 </div>
                             </div>
                         </div>
@@ -170,12 +166,6 @@
 
                 <!-- Daftar Barang dari RAB -->
                 <x-card title="Daftar Barang dari RAB">
-                    @if (session('error'))
-                        <div class="mb-4 p-4 text-sm text-red-800 rounded-lg bg-red-50" role="alert">
-                            {{ session('error') }}
-                        </div>
-                    @endif
-
                     @if (!$warehouse_id)
                         <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50" role="alert">
                             <strong>Perhatian!</strong> Silakan pilih gudang terlebih dahulu untuk melihat stok yang
@@ -231,15 +221,13 @@
                                         </td>
                                         <td class="px-4 py-3">
                                             <div class="flex items-center gap-2">
-                                                <input type="number" wire:model.live="items.{{ $index }}.qty_request"
+                                                <input type="number"
+                                                    wire:model.live="items.{{ $index }}.qty_request"
                                                     step="0.01" min="0" max="{{ $item['max_qty'] }}"
                                                     class="w-24 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm"
                                                     {{ !$warehouse_id || $item['max_qty'] <= 0 ? 'disabled' : '' }} />
                                                 <span class="text-gray-600">{{ $item['item_unit'] }}</span>
                                             </div>
-                                            @error('items.' . $index . '.qty_request')
-                                                <div class="text-xs text-red-600 mt-1">{{ $message }}</div>
-                                            @enderror
                                         </td>
                                     </tr>
                                 @empty
@@ -275,3 +263,30 @@
         <livewire:permintaan.rab.warehouse-selection-modal :key="'warehouse-modal-' . ($rab?->id ?? 'empty')" />
     @endif
 </div>
+
+@push('scripts')
+    <script type="module">
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('validation-passed-create', () => {
+                showConfirm({
+                    title: "Konfirmasi Simpan Permintaan",
+                    text: "Apakah anda yakin ingin menyimpan permintaan ini?",
+                    type: "question",
+                    confirmButtonText: "Ya, Simpan",
+                    cancelButtonText: "Batal",
+                    onConfirm: () => {
+                        Swal.fire({
+                            title: "Menyimpan Permintaan...",
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            },
+                        });
+                        Livewire.dispatch('confirm-save-permintaan-rab');
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

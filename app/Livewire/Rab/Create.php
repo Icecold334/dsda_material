@@ -11,7 +11,9 @@ use App\Models\Stock;
 use App\Models\Item;
 use App\Models\ItemCategory;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\On;
 use Livewire\Component;
+use Illuminate\Support\Facades\Validator;
 
 class Create extends Component
 {
@@ -89,22 +91,34 @@ class Create extends Component
 
     public function addItem()
     {
-        $this->validate([
-            'item_id' => 'required|exists:items,id',
-            'qty' => 'required|numeric|min:0.01',
-        ], [
-            'item_id.required' => 'Pilih barang terlebih dahulu',
-            'item_id.exists' => 'Barang tidak valid',
-            'qty.required' => 'Jumlah harus diisi',
-            'qty.numeric' => 'Jumlah harus berupa angka',
-            'qty.min' => 'Jumlah minimal 0.01',
-        ]);
+        $validator = Validator::make(
+            [
+                'item_id' => $this->item_id,
+                'qty' => $this->qty,
+            ],
+            [
+                'item_id' => 'required|exists:items,id',
+                'qty' => 'required|numeric|min:0.01',
+            ],
+            [
+                'item_id.required' => 'Pilih barang terlebih dahulu',
+                'item_id.exists' => 'Barang tidak valid',
+                'qty.required' => 'Jumlah harus diisi',
+                'qty.numeric' => 'Jumlah harus berupa angka',
+                'qty.min' => 'Jumlah minimal 0.01',
+            ]
+        );
+
+        if ($validator->fails()) {
+            $this->dispatch('alert', type: 'error', title: 'Gagal!', text: $validator->errors()->first());
+            return;
+        }
 
         $item = Item::with('category.unit')->find($this->item_id);
 
         // Check if item already exists in the list
         if (collect($this->items)->contains('item_id', $this->item_id)) {
-            $this->addError('item_id', 'Item sudah ada dalam daftar');
+            $this->dispatch('alert', type: 'error', title: 'Gagal!', text: 'Item sudah ada dalam daftar');
             return;
         }
 
@@ -123,6 +137,9 @@ class Create extends Component
 
         // Reset validation errors
         $this->resetValidation(['item_id', 'qty']);
+
+        // Show success message
+        $this->dispatch('alert', type: 'success', title: 'Berhasil!', text: 'Item berhasil ditambahkan ke daftar');
     }
 
     public function removeItem($index)
@@ -131,15 +148,80 @@ class Create extends Component
         $this->items = array_values($this->items);
     }
 
-    public function save()
+    public function validateForm()
     {
-        $this->validate();
+        $validator = Validator::make(
+            [
+                'nomor' => $this->nomor,
+                'name' => $this->name,
+                'tahun' => $this->tahun,
+                'tanggal_mulai' => $this->tanggal_mulai,
+                'tanggal_selesai' => $this->tanggal_selesai,
+                'sudin_id' => $this->sudin_id,
+                'district_id' => $this->district_id,
+                'subdistrict_id' => $this->subdistrict_id,
+                'address' => $this->address,
+                'panjang' => $this->panjang,
+                'lebar' => $this->lebar,
+                'tinggi' => $this->tinggi,
+            ],
+            $this->rules(),
+            [
+                'nomor.string' => 'Nomor RAB harus berupa teks',
+                'nomor.max' => 'Nomor RAB maksimal 255 karakter',
+                'name.required' => 'Nama kegiatan wajib diisi',
+                'name.string' => 'Nama kegiatan harus berupa teks',
+                'name.max' => 'Nama kegiatan maksimal 255 karakter',
+                'tahun.required' => 'Tahun anggaran wajib diisi',
+                'tahun.integer' => 'Tahun anggaran harus berupa angka',
+                'tahun.min' => 'Tahun anggaran minimal 2000',
+                'tahun.max' => 'Tahun anggaran maksimal 2100',
+                'tanggal_mulai.required' => 'Tanggal mulai wajib diisi',
+                'tanggal_mulai.date' => 'Format tanggal mulai tidak valid',
+                'tanggal_selesai.date' => 'Format tanggal selesai tidak valid',
+                'tanggal_selesai.after_or_equal' => 'Tanggal selesai harus setelah atau sama dengan tanggal mulai',
+                'sudin_id.required' => 'Sudin wajib dipilih',
+                'sudin_id.exists' => 'Sudin yang dipilih tidak valid',
+                'district_id.required' => 'Kecamatan wajib dipilih',
+                'district_id.exists' => 'Kecamatan yang dipilih tidak valid',
+                'subdistrict_id.required' => 'Kelurahan wajib dipilih',
+                'subdistrict_id.exists' => 'Kelurahan yang dipilih tidak valid',
+                'address.required' => 'Alamat wajib diisi',
+                'address.string' => 'Alamat harus berupa teks',
+                'panjang.string' => 'Panjang harus berupa teks',
+                'panjang.max' => 'Panjang maksimal 255 karakter',
+                'lebar.string' => 'Lebar harus berupa teks',
+                'lebar.max' => 'Lebar maksimal 255 karakter',
+                'tinggi.string' => 'Tinggi harus berupa teks',
+                'tinggi.max' => 'Tinggi maksimal 255 karakter',
+            ]
+        );
+
+        if ($validator->fails()) {
+            $this->dispatch('alert', type: 'error', title: 'Gagal!', text: $validator->errors()->first());
+            return;
+        }
 
         // Validate items
         if (empty($this->items)) {
-            session()->flash('error', 'Minimal harus ada 1 item dalam RAB');
+            $this->dispatch('alert', type: 'error', title: 'Gagal!', text: 'Minimal harus ada 1 item dalam RAB');
             return;
         }
+
+        $this->dispatch('validation-passed-create');
+        return;
+    }
+
+    #[On('confirm-save-rab')]
+    public function save()
+    {
+        // $this->validate();
+
+        // // Validate items
+        // if (empty($this->items)) {
+        //     session()->flash('error', 'Minimal harus ada 1 item dalam RAB');
+        //     return;
+        // }
 
         $rab = Rab::create([
             'nomor' => $this->nomor,
