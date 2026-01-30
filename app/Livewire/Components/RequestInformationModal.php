@@ -6,6 +6,7 @@ use App\Models\Division;
 use App\Models\Sudin;
 use App\Models\Subdistrict;
 use App\Models\Warehouse;
+use App\Models\RequestModel;
 use Livewire\Component;
 
 class RequestInformationModal extends Component
@@ -42,7 +43,7 @@ class RequestInformationModal extends Component
     // Data untuk RAB (readonly)
     public $rab = null;
 
-    protected $listeners = ['openRequestModal', 'setRequestData'];
+    protected $listeners = ['openRequestModal', 'setRequestData', 'setRequestDataById'];
 
     public function mount($mode = 'create', $isRab = false)
     {
@@ -134,6 +135,48 @@ class RequestInformationModal extends Component
 
         if (isset($data['rab'])) {
             $this->rab = $data['rab'];
+        }
+    }
+
+    public function setRequestDataById($data)
+    {
+        $permintaanId = $data['permintaan_id'] ?? null;
+        $isRab = $data['is_rab'] ?? false;
+
+        if (!$permintaanId) {
+            return;
+        }
+
+        $permintaan = RequestModel::with(['user', 'itemType', 'rab.sudin', 'rab.district', 'rab.subdistrict'])
+            ->find($permintaanId);
+
+        if (!$permintaan) {
+            return;
+        }
+
+        $this->nomor = $permintaan->nomor;
+        $this->name = $permintaan->name;
+        $this->sudin_id = $permintaan->sudin_id;
+        $this->warehouse_id = $permintaan->warehouse_id;
+        $this->district_id = $permintaan->district_id;
+        $this->subdistrict_id = $permintaan->subdistrict_id;
+        $this->tanggal_permintaan = $permintaan->tanggal_permintaan?->format('Y-m-d');
+        $this->address = $permintaan->address;
+        $this->panjang = $permintaan->panjang;
+        $this->lebar = $permintaan->lebar;
+        $this->tinggi = $permintaan->tinggi;
+        $this->notes = $permintaan->notes;
+        $this->status = $permintaan->status;
+        $this->status_text = $permintaan->status_text;
+        $this->status_color = $permintaan->status_color;
+        $this->pemohon = $permintaan->user?->name;
+        $this->item_type = $permintaan->itemType?->name;
+
+        if ($isRab && $permintaan->rab) {
+            $this->rab_nomor = $permintaan->rab->nomor;
+            $this->rab_tahun = $permintaan->rab->tahun;
+            $this->rab_id = $permintaan->rab_id;
+            $this->rab = $permintaan->rab;
         }
     }
 
