@@ -80,6 +80,10 @@
                         Tolak
                     </button>
                 </div>
+                <div
+                    class="{{ $extraReady || $isComplete ? 'hidden':'' }} px-3 py-2 rounded bg-secondary-600 text-white">
+                    {{ $extraError }}
+                </div>
             </div>
         </div>
     </x-modal>

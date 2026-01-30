@@ -42,7 +42,12 @@ class RequestInformationModal extends Component
     // Data untuk RAB (readonly)
     public $rab = null;
 
-    protected $listeners = ['openRequestModal', 'setRequestData'];
+    protected $listeners = [
+        'openRequestModal' => 'openRequestModal',
+        'setRequestData' => 'setRequestData',
+    ];
+
+
 
     public function mount($mode = 'create', $isRab = false)
     {

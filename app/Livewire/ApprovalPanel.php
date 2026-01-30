@@ -12,6 +12,7 @@ class ApprovalPanel extends Component
 {
     public string $module;
     public $approvals;
+    public $isComplete = false;
     public string $approvableType;
     public string|int $approvableId;
     public bool $showRejectForm = false;
@@ -88,7 +89,10 @@ class ApprovalPanel extends Component
 
         // 3) refresh: minta parent cek lagi (kadang level berubah)
         $this->dispatch('approvalExtraCheckRequested');
-        $this->dispatch('approvalApproved'); // parent bisa nangkap buat update status bisnis dll
+        if ($approvalService->isComplete($model)) {
+            $this->isComplete = true;
+            $this->dispatch('approvalComplete');
+        }
         $this->getApprovals($approvalService);
 
     }
