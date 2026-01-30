@@ -12,6 +12,8 @@ class Show extends Component
     #[Title('Detail Permintaan')]
     public RequestModel $permintaan;
 
+    public $data = [];
+
     public function mount()
     {
         // Dispatch event untuk set data permintaan ke modal
@@ -38,6 +40,15 @@ class Show extends Component
             'rab_id' => $this->permintaan->rab_id,
             'rab' => $this->permintaan->rab,
         ]);
+
+        $this->data = [
+            ["name" => "No", "id" => "no", "width" => "8%"],
+            ["name" => "Kode Barang", "id" => "kode", "width" => "12%"],
+            ["name" => "Barang", "id" => "barang", "width" => "15%"],
+            ["name" => "Spesifikasi", "id" => "spec"],
+            ["name" => "Jumlah Diminta", "id" => "qty_request", "width" => "15%"],
+            ["name" => "Jumlah Disetujui", "id" => "qty_approved", "width" => "15%"]
+        ];
     }
 
     public function render()

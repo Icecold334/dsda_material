@@ -12,17 +12,13 @@
         <div class="text-right">
             <x-button x-on:click="$dispatch('open-modal', 'create-item-type')">
                 Tambah Tipe Barang
-                </x-button>
+            </x-button>
         </div>
     </div>
 
-    <div data-grid data-api="{{ route('item-type.json') }}" data-columns='[
-        { "name": "Nama", "id": "name","width": "40%" },
-        { "name": "Status", "id": "active","width": "30%"  },
-        { "name": "", "id": "action" ,"width": "30%"}
-    ]' data-limit="10" wire:ignore
-        x-data="{ reloadGrid() { this.$el.dispatchEvent(new CustomEvent('reload-grid')); } }"
-        @refresh-grid.window="reloadGrid()">
+    <div data-grid data-api="{{ route('item-type.json') }}" data-columns='{{ json_encode($data) }}' data-limit="10"
+        wire:ignore x-data="{ reloadGrid() { this.$el.dispatchEvent(new CustomEvent('reload-grid')); } }"
+        @refresh-grid.window="reloadGrid    ()">
     </div>
 
     <livewire:item-type.create />

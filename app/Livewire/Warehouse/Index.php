@@ -11,6 +11,16 @@ class Index extends Component
 {
     #[Title('Daftar Gudang')]
 
+    public $data = [];
+    public function mount()
+    {
+        $this->data = [
+            ["name" => "Nama", "id" => "name", "width" => "30%"],
+            ["name" => "Sudin", "id" => "sudin", "width" => "30%"],
+            ["name" => "Lokasi", "id" => "location", "width" => "30%"],
+            ["name" => "", "id" => "action", "width" => "10%"],
+        ];
+    }
     public $editWarehouseId = null;
 
     #[On('warehouse-created')]

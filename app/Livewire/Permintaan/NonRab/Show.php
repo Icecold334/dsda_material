@@ -16,6 +16,8 @@ class Show extends Component
     #[Title('Detail Permintaan')]
     public RequestModel $permintaan;
 
+    public $data = [];
+
     protected $listeners = [
         'approvalExtraCheckRequested' => 'handleExtraCheck',
         'approvalRejected' => 'onApprovalRejected',
@@ -45,6 +47,15 @@ class Show extends Component
             'pemohon' => $this->permintaan->user?->name,
             'item_type' => $this->permintaan->itemType?->name,
         ]);
+
+        $this->data = [
+            ["name" => "No", "id" => "no", "width" => "8%"],
+            ["name" => "Kode Barang", "id" => "kode", "width" => "12%"],
+            ["name" => "Barang", "id" => "barang", "width" => "15%"],
+            ["name" => "Spesifikasi", "id" => "spec"],
+            ["name" => "Jumlah Diminta", "id" => "qty_request", "width" => "15%"],
+            ["name" => "Jumlah Disetujui", "id" => "qty_approved", "width" => "15%"]
+        ];
     }
 
     public function handleExtraCheck()

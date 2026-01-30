@@ -12,6 +12,8 @@ class Show extends Component
 
     public InterSudinTransfer $transfer;
 
+    public $data = [];
+
     public function mount()
     {
         // Dispatch transfer data to modal
@@ -26,6 +28,15 @@ class Show extends Component
             'status_color' => $this->transfer->status_color,
             'pembuat' => $this->transfer->user?->name,
         ]);
+
+        $this->data = [
+            ["name" => "No", "id" => "no", "width" => "8%"],
+            ["name" => "Kode Barang", "id" => "kode", "width" => "12%"],
+            ["name" => "Barang", "id" => "barang", "width" => "20%"],
+            ["name" => "Spesifikasi", "id" => "spec"],
+            ["name" => "Jumlah", "id" => "qty", "width" => "15%"],
+            ["name" => "Catatan", "id" => "notes", "width" => "15%"],
+        ];
     }
 
     public function render()

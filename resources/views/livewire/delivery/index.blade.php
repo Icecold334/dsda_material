@@ -9,12 +9,8 @@
                 Pengiriman</a>
         </div>
     </div>
-    <div data-grid data-api="{{ route('delivery.json') }}" data-columns='[
-        { "name": "Nomor Pengiriman", "id": "nomor","width": "50%" },
-        { "name": "Gudang Pengiriman", "id": "gudang","width": "20%" },
-        { "name": "Status", "id": "status","width": "20%", "className": "text-center"  },
-        { "name": "", "id": "action" ,"width": "10%","className": "text-center"}
-    ]' data-limit="10" wire:ignore>
+    <div data-grid data-api="{{ route('delivery.json') }}" data-columns='{{ json_encode($data) }}' data-limit="10"
+        wire:ignore>
     </div>
 
 

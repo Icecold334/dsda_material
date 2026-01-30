@@ -11,6 +11,15 @@ class Index extends Component
 {
     #[Title('Daftar Kecamatan')]
 
+    public $data = [];
+    public function mount()
+    {
+        $this->data = [
+            ["name" => "Nama", "id" => "name", "width" => "40%"],
+            ["name" => "Sudin", "id" => "sudin", "width" => "40%"],
+            ["name" => "", "id" => "action", "width" => "20%"],
+        ];
+    }
     public $editDistrictId = null;
 
     #[On('district-created')]

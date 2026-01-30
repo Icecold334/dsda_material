@@ -19,14 +19,8 @@
 
     <div>
         <x-card title="Daftar Barang">
-            <div data-grid data-api="{{ route('transfer.pengiriman.show.json', $transfer) }}" data-columns='[
-        { "name": "No", "id": "no", "width": "8%" },
-        { "name": "Kode Barang", "id": "kode", "width": "12%" },
-        { "name": "Barang", "id": "barang", "width": "20%" },
-        { "name": "Spesifikasi", "id": "spec" },
-        { "name": "Jumlah", "id": "qty", "width": "15%" },
-        { "name": "Catatan", "id": "notes", "width": "15%" }
-    ]' wire:ignore>
+            <div data-grid data-api="{{ route('transfer.pengiriman.show.json', $transfer) }}"
+                data-columns='{{ json_encode($data) }}' wire:ignore>
             </div>
         </x-card>
     </div>

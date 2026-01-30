@@ -10,7 +10,18 @@ use Livewire\Component;
 class Index extends Component
 {
     #[Title('Daftar Sudin')]
-
+    public $data = [];
+    public function mount()
+    {
+        $this->data = [
+            ["name" => "Nama", "id" => "name", "width" => "20%"],
+            ["name" => "Singkatan", "id" => "short", "width" => "10%"],
+            ["name" => "Alamat", "id" => "address", "width" => "25%"],
+            ["name" => "Kode Pos", "id" => "postal_code", "width" => "10%"],
+            ["name" => "Telepon", "id" => "phone", "width" => "15%"],
+            ["name" => "", "id" => "action", "width" => "10%"],
+        ];
+    }
     public $editSudinId = null;
 
     #[On('sudin-created')]

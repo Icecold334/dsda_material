@@ -35,10 +35,9 @@
                 </x-button>
             </div>
 
-            <div data-grid data-api="{{ route('district.show.json', $district) }}" data-columns='[
-                { "name": "Nama", "id": "name","width": "80%" },
-                { "name": "", "id": "action","width": "20%", "sortable": false }
-            ]' wire:ignore x-data="{ reloadGrid() { this.$el.dispatchEvent(new CustomEvent('reload-grid')); } }"
+            <div data-grid data-api="{{ route('district.show.json', $district) }}"
+                data-columns='{{ json_encode($data) }}' wire:ignore
+                x-data="{ reloadGrid() { this.$el.dispatchEvent(new CustomEvent('reload-grid')); } }"
                 @refresh-grid.window="reloadGrid()">
             </div>
         </x-card>

@@ -9,11 +9,8 @@
                 Kontrak</a>
         </div>
     </div>
-    <div data-grid data-api="{{ route('contract.json') }}" data-columns='[
-        { "name": "Nomor Kontrak", "id": "nomor","width": "70%" },
-        { "name": "Terdaftar Pada E-Monev", "id": "status","width": "20%", "className": "text-center"  },
-        { "name": "", "id": "action" ,"width": "10%", "className": "text-center"}
-    ]' data-limit="10" wire:ignore>
+    <div data-grid data-api="{{ route('contract.json') }}" data-columns='{{ json_encode($data) }}' data-limit="10"
+        wire:ignore>
     </div>
 
 

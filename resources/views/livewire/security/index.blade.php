@@ -12,16 +12,12 @@
         <div class="text-right">
             <x-button x-on:click="$dispatch('open-modal', 'create-security')">
                 Tambah Security
-                </x-button>
+            </x-button>
         </div>
     </div>
 
-    <div data-grid data-api="{{ route('security.json') }}" data-columns='[
-        { "name": "Nama", "id": "name","width": "40%" },
-        { "name": "Sudin", "id": "sudin","width": "40%"  },
-        { "name": "", "id": "action" ,"width": "20%"}
-    ]' data-limit="10" wire:ignore
-        x-data="{ reloadGrid() { this.$el.dispatchEvent(new CustomEvent('reload-grid')); } }"
+    <div data-grid data-api="{{ route('security.json') }}" data-columns='{{ json_encode($data) }}' data-limit="10"
+        wire:ignore x-data="{ reloadGrid() { this.$el.dispatchEvent(new CustomEvent('reload-grid')); } }"
         @refresh-grid.window="reloadGrid()">
     </div>
 

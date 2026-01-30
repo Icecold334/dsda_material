@@ -12,8 +12,18 @@ class Show extends Component
 {
     #[Title('Detail Kecamatan')]
 
+    public $data = [];
+
     public Division $district;  // tetap pakai nama $district untuk backward compatibility
     public $editSubdistrictId = null;
+
+    public function mount()
+    {
+        $this->data = [
+            ['name' => 'Nama', 'id' => 'name', 'width' => '80%'],
+            ['name' => '', 'id' => 'action', 'width' => '20%', 'sortable' => false],
+        ];
+    }
 
     #[On('subdistrict-created')]
     #[On('subdistrict-updated')]

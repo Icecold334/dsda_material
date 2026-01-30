@@ -35,12 +35,9 @@
                 </button>
             </div>
 
-            <div data-grid data-api="{{ route('item-category.show.json', $itemCategory) }}" data-columns='[
-                { "name": "Spesifikasi", "id": "name","width": "40%" },
-                { "name": "Sudin", "id": "sudin","width": "30%" },
-                { "name": "Status", "id": "status","width": "15%" },
-                { "name": "", "id": "action","width": "15%", "sortable": false }
-            ]' wire:ignore x-data="{ reloadGrid() { this.$el.dispatchEvent(new CustomEvent('reload-grid')); } }"
+            <div data-grid data-api="{{ route('item-category.show.json', $itemCategory) }}"
+                data-columns='{{ json_encode($data) }}' wire:ignore
+                x-data="{ reloadGrid() { this.$el.dispatchEvent(new CustomEvent('reload-grid')); } }"
                 @refresh-grid.window="reloadGrid()">
             </div>
         </x-card>

@@ -16,16 +16,8 @@
         </div>
     </div>
 
-    <div data-grid data-api="{{ route('user.json') }}" data-columns='[
-        { "name": "Nama", "id": "name","width": "15%" },
-        { "name": "Email", "id": "email","width": "15%" },
-        { "name": "NIP", "id": "nip","width": "10%" },
-        { "name": "Sudin", "id": "sudin","width": "12%"  },
-        { "name": "Divisi", "id": "division","width": "12%"  },
-        { "name": "Jabatan", "id": "position","width": "12%"  },
-        { "name": "", "id": "action" ,"width": "14%"}
-    ]' data-limit="10" wire:ignore
-        x-data="{ reloadGrid() { this.$el.dispatchEvent(new CustomEvent('reload-grid')); } }"
+    <div data-grid data-api="{{ route('user.json') }}" data-columns='{{ json_encode($data) }}' data-limit="10"
+        wire:ignore x-data="{ reloadGrid() { this.$el.dispatchEvent(new CustomEvent('reload-grid')); } }"
         @refresh-grid.window="reloadGrid()">
     </div>
 

@@ -12,16 +12,12 @@
         <div class="text-right">
             <x-button x-on:click="$dispatch('open-modal', 'create-item-category')">
                 Tambah Barang
-                </x-button>
+            </x-button>
         </div>
     </div>
 
-    <div data-grid data-api="{{ route('item-category.json') }}" data-columns='[
-        { "name": "Nama", "id": "name","width": "60%" },
-        { "name": "Satuan", "id": "unit","width": "20%" },
-        { "name": "", "id": "action" ,"width": "20%"}
-    ]' data-limit="10" wire:ignore
-        x-data="{ reloadGrid() { this.$el.dispatchEvent(new CustomEvent('reload-grid')); } }"
+    <div data-grid data-api="{{ route('item-category.json') }}" data-columns='{{json_encode($data) }}' data-limit="10"
+        wire:ignore x-data="{ reloadGrid() { this.$el.dispatchEvent(new CustomEvent('reload-grid')); } }"
         @refresh-grid.window="reloadGrid()">
     </div>
 

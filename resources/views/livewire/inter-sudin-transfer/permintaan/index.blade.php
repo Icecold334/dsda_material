@@ -10,13 +10,7 @@
             </a>
         </div>
     </div>
-    <div data-grid data-api="{{ route('transfer.permintaan.json') }}" data-columns='[
-        { "name": "Tanggal", "id": "tanggal","width": "12%" },
-        { "name": "Sudin Peminta", "id": "sudin_pengirim","width": "22%" },
-        { "name": "Sudin Diminta", "id": "sudin_penerima","width": "22%" },
-        { "name": "Pembuat", "id": "user","width": "17%" },
-        { "name": "Status", "id": "status","width": "12%", "className": "text-center"  },
-        { "name": "", "id": "action" ,"width": "10%"}
-    ]' data-limit="10" wire:ignore>
+    <div data-grid data-api="{{ route('transfer.permintaan.json') }}" data-columns='{{ json_encode($data) }}'
+        data-limit="10" wire:ignore>
     </div>
 </div>

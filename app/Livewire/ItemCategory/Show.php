@@ -11,13 +11,25 @@ use Livewire\Attributes\Title;
 class Show extends Component
 {
     #[Title('Detail Barang')]
-
     public ItemCategory $itemCategory;
     public $editItemId = null;
+
+    public $data = [];
 
     #[On('item-created')]
     #[On('item-updated')]
     #[On('deleteItem')]
+
+    public function mount()
+    {
+        $this->data = [
+            ["name" => "Spesifikasi", "id" => "name", "width" => "40%"],
+            ["name" => "Sudin", "id" => "sudin", "width" => "30%"],
+            ["name" => "Status", "id" => "status", "width" => "15%"],
+            ["name" => "", "id" => "action", "width" => "15%", "sortable" => false]
+        ];
+    }
+
     public function refreshItems()
     {
         $this->dispatch('refresh-grid');

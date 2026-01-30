@@ -10,12 +10,8 @@
             </a>
         </div>
     </div>
-    <div data-grid data-api="{{ route('permintaan.nonRab.json') }}" data-columns='[
-        { "name": "Nomor Permintaan", "id": "nomor","width": "20%" },
-        { "name": "Pemohon", "id": "user","width": "30%" },
-        { "name": "Status", "id": "status","width": "20%", "className": "text-center"  },
-        { "name": "", "id": "action" ,"width": "10%"}
-    ]' data-limit="10" wire:ignore>
+    <div data-grid data-api="{{ route('permintaan.nonRab.json') }}" data-columns='{{ json_encode($data) }}'
+        data-limit="10" wire:ignore>
     </div>
 
 

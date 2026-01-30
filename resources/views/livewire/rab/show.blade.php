@@ -31,12 +31,8 @@
 
     <div>
         <x-card title="Daftar Barang">
-            <div data-grid data-api="{{ route('rab.show.json', $rab) }}" data-columns='[
-        { "name": "Kode", "id": "code", "width": "20%" },
-        { "name": "Spesifikasi", "id": "item" },
-        { "name": "Jumlah", "id": "qty", "width": "15%" },
-        { "name": "", "id": "action","width": "10%" , "sortable": false }
-    ]' wire:ignore>
+            <div data-grid data-api="{{ route('rab.show.json', $rab) }}" data-columns='{{ json_encode($data) }}'
+                wire:ignore>
             </div>
 
         </x-card>

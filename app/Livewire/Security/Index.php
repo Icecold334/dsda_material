@@ -10,7 +10,15 @@ use Livewire\Component;
 class Index extends Component
 {
     #[Title('Daftar Security')]
-
+    public $data = [];
+    public function mount()
+    {
+        $this->data = [
+            ["name" => "Nama", "id" => "name", "width" => "40%"],
+            ["name" => "Sudin", "id" => "sudin", "width" => "40%"],
+            ["name" => "", "id" => "action", "width" => "20%"],
+        ];
+    }
     public $editSecurityId = null;
 
     #[On('security-created')]

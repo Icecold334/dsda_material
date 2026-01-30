@@ -11,6 +11,19 @@ class Index extends Component
 {
     #[Title('Daftar Spesifikasi')]
 
+    public $data = [];
+    public function mount()
+    {
+        $this->data = [
+            ["name" => "Spesifikasi", "id" => "name", "width" => "25%"],
+            ["name" => "Barang", "id" => "category", "width" => "20%"],
+            ["name" => "Sudin", "id" => "sudin", "width" => "20%"],
+            ["name" => "Satuan", "id" => "unit", "width" => "10%"],
+            ["name" => "Status", "id" => "status", "width" => "10%"],
+            ["name" => "", "id" => "action", "width" => "15%"],
+        ];
+    }
+
     public $editItemId = null;
 
     #[On('item-created')]

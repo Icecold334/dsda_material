@@ -11,6 +11,8 @@ class Show extends Component
     #[Title('Detail RAB')]
     public Rab $rab;
 
+    public $data = [];
+
     public function mount()
     {
         // Dispatch RAB data to modal
@@ -35,6 +37,13 @@ class Show extends Component
             'total' => $this->rab->total,
             'item_type' => $this->rab->itemType?->name,
         ]);
+
+        $this->data = [
+            ["name" => "Kode", "id" => "code", "width" => "20%"],
+            ["name" => "Spesifikasi", "id" => "item"],
+            ["name" => "Jumlah", "id" => "qty", "width" => "15%"],
+            ["name" => "", "id" => "action", "width" => "10%", "sortable" => false]
+        ];
     }
 
     public function render()
